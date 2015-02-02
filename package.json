@@ -44,5 +44,11 @@
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "2.1.1"
-  }
+  },
+  "keywords": [
+    "gulp",
+    "browserify",
+    "react",
+    "build"
+  ]
 }
