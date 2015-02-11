@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Web app build system using Browserify, Gulp, React.js and Less",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
