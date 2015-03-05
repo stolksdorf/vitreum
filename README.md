@@ -1,4 +1,7 @@
 # Vitreum
+[![NPM](https://nodei.co/npm/vitreum.png)](https://nodei.co/npm/vitreum/)
+
+
 Web app build system using Browserify, Gulp, React.js and Less
 
 
