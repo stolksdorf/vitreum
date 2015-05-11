@@ -5,10 +5,12 @@ var headTags = {};
 
 module.exports = {
 	setTitle : function(titleText){
+		if(!titleText) return;
 		headTags.title = React.createElement("title", null, titleText);
 		if(typeof document !== 'undefined') document.title = titleText;
 	},
 	setDescription : function(descriptionText){
+		if(!descriptionText) return;
 		headTags.description = React.createElement("meta", {
 			name : "description",
 			content : descriptionText
