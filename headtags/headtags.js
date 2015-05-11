@@ -9,7 +9,7 @@ module.exports = {
 		if(typeof document !== 'undefined') document.title = titleText;
 	},
 	setDescription : function(descriptionText){
-		global.HEAD_TAGS.description = React.createElement("meta", {
+		headTags.description = React.createElement("meta", {
 			name : "description",
 			content : descriptionText
 		});
