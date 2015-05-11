@@ -8,6 +8,12 @@ module.exports = {
 		headTags.title = React.createElement("title", null, titleText);
 		if(typeof document !== 'undefined') document.title = titleText;
 	},
+	setDescription : function(descriptionText){
+		global.HEAD_TAGS.description = React.createElement("meta", {
+			name : "description",
+			content : descriptionText
+		});
+	},
 	addTags : function(tagObj){
 		headTags = _.extend(headTags, tagObj);
 	},
