@@ -17,6 +17,9 @@ module.exports = {
 		});
 	},
 	addTags : function(tagObj){
+		if (!_.isPlainObject(tagObj)) {
+			throw new Error('Argument to addTags must be an object.');
+		}
 		headTags = _.extend(headTags, tagObj);
 	},
 	convertToString : function(){
