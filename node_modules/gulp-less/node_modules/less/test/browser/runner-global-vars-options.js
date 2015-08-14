@@ -1,4 +1,7 @@
-var less = {};
-less.globalVars = {
-  "@global-var": "red"
+var less = {
+    logLevel: 4,
+    errorReporting: "console",
+    globalVars: {
+        "@global-var": "red"
+    }
 };

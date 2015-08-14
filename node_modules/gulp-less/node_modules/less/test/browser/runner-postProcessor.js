@@ -1,3 +1,3 @@
-describe("less.js postProcessor", function() {
-  testLessEqualsInDocument();
+describe("less.js postProcessor (deprecated)", function() {
+    testLessEqualsInDocument();
 });
