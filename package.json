@@ -16,7 +16,7 @@
   "dependencies": {
     "async": "^0.9.0",
     "brfs": "^1.2.0",
-    "browserify": "6.3.2",
+    "browserify": "^11.2.0",
     "colors": "^1.0.3",
     "gulp": "^3.8.9",
     "gulp-clean": "^0.3.1",
@@ -31,15 +31,15 @@
     "gulp-watch": "^1.1.0",
     "handlebars": "^2.0.0",
     "literalify": "^0.4.0",
-    "react": "^0.12.0",
-    "reactify": "^1.1.0",
+    "react": "^0.14.0",
+    "reactify": "^1.1.1",
     "run-sequence": "^1.0.1",
     "stream": "0.0.1",
     "tiny-lr": "^0.1.4",
     "underscore": "^1.7.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.0.0",
-    "watchify": "2.1.1"
+    "watchify": "^3.4.0"
   },
   "keywords": [
     "gulp",
