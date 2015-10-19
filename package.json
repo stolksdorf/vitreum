@@ -15,6 +15,7 @@
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
     "async": "^1.4.2",
+    "babelify": "^6.3.0",
     "brfs": "^1.4.1",
     "browserify": "^11.2.0",
     "colors": "^1.1.2",
@@ -33,7 +34,6 @@
     "literalify": "^0.4.0",
     "react": "^0.14.0",
     "react-dom": "^0.14.0",
-    "reactify": "^1.1.1",
     "run-sequence": "^1.1.4",
     "stream": "0.0.2",
     "tiny-lr": "^0.2.1",
