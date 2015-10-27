@@ -4,7 +4,7 @@ var _ = require('lodash');
 var runSequence = require('run-sequence');
 var defaultConfig = require('./defaultConfig.js');
 
-
+var watch = require('gulp-watch');
 var utils = require('./utils');
 
 module.exports = function(gulp, configOverride){
@@ -21,7 +21,7 @@ module.exports = function(gulp, configOverride){
 	gulp.task('html', require('./tasks/html').bind(this, config));
 	gulp.task('libs', require('./tasks/libs').bind(this, config));
 	gulp.task('assets', require('./tasks/assets').bind(this, config));
-	gulp.task('watch', require('./tasks/watch').bind(this, gulp, config));
+	//gulp.task('watch', require('./tasks/watch').bind(this, gulp, config));
 	gulp.task('clean', require('./tasks/clean').bind(this, config));
 	gulp.task('server', require('./tasks/server').bind(this, config));
 	gulp.task('livereload', require('./tasks/livereload').bind(this, config));
@@ -31,6 +31,16 @@ module.exports = function(gulp, configOverride){
 	gulp.task('less-watch', function(){
 		gulp.watch(utils.makeBlob(config.projectPaths, config.styleExts, '/**/'), ['less'])
 	});
+
+
+
+	//Triggers when a new js file is added
+	gulp.task('js-new', function(){
+		watch(utils.makeBlob(config.projectPaths, ['*.js', '*.jsx'], '/**/'), {events : ['add']}, function(){
+			console.log('new file!');
+			gulp.start('js-watch');
+		})
+	})
 
 
 

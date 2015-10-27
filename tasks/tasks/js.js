@@ -13,7 +13,7 @@ module.exports = function (config, watch, doneTask) {
 	var source = require('vinyl-source-stream');
 	//var buffer = require('vinyl-buffer');
 	var babelify = require('babelify');
-	var literalify = require('literalify');
+	//var literalify = require('literalify');
 	var watchify = require('watchify');
 	var colors = require('colors/safe');
 
@@ -85,14 +85,8 @@ module.exports = function (config, watch, doneTask) {
 		}
 	});
 
-	if(watch){
-		return async.map(entryPoints, function(ep, doneMap){
-			ep.setupWatch();
-			ep.bundle(doneMap);
-		}, doneTask);
-	}
-
 	return async.map(entryPoints, function(ep,doneMap){
+		if(watch) ep.setupWatch();
 		ep.bundle(doneMap);
 	}, doneTask);
 }

@@ -2,7 +2,6 @@
   "name": "vitreum",
   "version": "2.0.10",
   "description": "Web app build system using Browserify, Gulp, React.js and Less",
-  "main": "vitreum.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
