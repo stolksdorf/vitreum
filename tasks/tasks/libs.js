@@ -3,10 +3,6 @@ var gulp = require('gulp');
 var _ = require('lodash');
 var fs = require('fs');
 
-
-
-
-
 module.exports = function (config) {
 	var browserify = require('browserify');
 	var uglify = require('gulp-uglify');

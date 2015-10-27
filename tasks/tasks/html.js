@@ -1,19 +1,26 @@
 var utils = require('../utils');
 var gulp = require('gulp');
-var _ = require('underscore');
+var _ = require('lodash');
 var fs = require('fs');
 var async = require('async');
 var path = require('path');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 
-var template;
+var templateRenderer;
+
 module.exports = function (config, callback) {
 	var Handlebars = require('handlebars');
+	var doT = require('dot');
+
+	doT.templateSettings.strip = false;
+	doT.templateSettings.varname= 'vitreum';
+	//doT.templateSettings.append= false;
+
 	var rename = require('gulp-rename');
 
-	if(!template){
-		template = Handlebars.compile(fs.readFileSync(config.pageTemplate, 'utf8'));
+	if(!templateRenderer){
+		templateRenderer = doT.template(fs.readFileSync(config.pageTemplate, 'utf8'));
 	}
 
 	async.map(config.entryPoints, function (entryPoint, cb) {
@@ -30,18 +37,18 @@ module.exports = function (config, callback) {
 		entryPointPath = entryPointPath.split('\\').join('\\\\');
 
 		var fileName= 'bundle.hbs'
-		var file = template({
-			vitreum: {
+		var file = templateRenderer({
+			//vitreum: {
 				component: '{{{component}}}',
 				cdn: cdnTags,
 				css: cssTag,
-				inProduction: process.env.NODE_ENV == 'production',
+				inProduction: true, //process.env.NODE_ENV == 'production',
 				libs: '<script src="/libs.js"></script>',
 				config: '{{{config}}}',
 				headtags: '{{{headtags}}}',
 				js: '<script src="/' + name + '/bundle.js"></script>',
 				reactRender: '<script>require("react-dom").render(require("react").createElement(require("' + entryPointPath + '"), {{{initial_props}}}), document.getElementById("reactContainer"));</script>'
-			}
+			//}
 		});
 
 		/*
