@@ -50,6 +50,12 @@ module.exports = function(gulp, configOverride){
 	});
 
 
+	gulp.task('fresh2', function(callback){
+		runSequence('clean', 'js-watch',
+			['libs', 'assets', 'less', 'html'],
+			['livereload'], 'server', callback);
+	})
+
 
 
 

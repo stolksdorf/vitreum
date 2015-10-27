@@ -28,6 +28,7 @@ module.exports = function (config, watch, doneTask) {
 		var name = path.basename(ep);
 
 		var deps = [];
+		var warnings = [];
 
 
 		var bundler = browserify({
@@ -46,10 +47,24 @@ module.exports = function (config, watch, doneTask) {
 				deps.push(data);
 			})
 			.on('end', function () {
+
+				var warnings = [];
 				deps = _.reduce(deps, function (r, d) {
-					r[d.id] = _.keys(d.deps)
+					r[d.id] = _.keys(d.deps);
+
+					//TODO: exclude the required browserify modules from the warnings
+					if(d.id.indexOf('node_modules') !== -1){
+						warnings.push(d.id.substring(d.id.indexOf('node_modules') + 13));
+					}
 					return r;
 				}, {});
+
+				if(warnings.length){
+					console.log(colors.red("Warning: ") + "The following node modules are in your js bundle.");
+					console.log('    ' + colors.yellow(warnings.join('\n    ')));
+					console.log(colors.green("Consider adding these the 'libs' field in the gulpfile\n"));
+				}
+
 				fs.writeFile(ep + '/architecture.json', JSON.stringify(deps, null, '\t'));
 			})
 
