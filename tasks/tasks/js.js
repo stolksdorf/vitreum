@@ -13,16 +13,16 @@ module.exports = function (config, watch, doneTask) {
 	var source = require('vinyl-source-stream');
 	//var buffer = require('vinyl-buffer');
 	var babelify = require('babelify');
-	var literalify = require('literalify');
+	//var literalify = require('literalify');
 	var watchify = require('watchify');
 	var colors = require('colors/safe');
 
 
-
+/*
 	var literalifyConfig = _.object(_.map(config.cdn, function (cdnVal, module) {
 		return [module, cdnVal[0]]
 	}));
-
+*/
 
 	var entryPoints = _.map(config.entryPoints, function(ep, index){
 		var name = path.basename(ep);
@@ -39,7 +39,7 @@ module.exports = function (config, watch, doneTask) {
 			})
 			.require(ep + '/' + name + '.jsx')
 			.transform({global: true}, babelify)
-			.transform({global: true} , literalify.configure(literalifyConfig))
+			//.transform({global: true} , literalify.configure(literalifyConfig))
 			.external(config.libs)
 
 		bundler.pipeline.get('deps')
@@ -52,7 +52,6 @@ module.exports = function (config, watch, doneTask) {
 				deps = _.reduce(deps, function (r, d) {
 					r[d.id] = _.keys(d.deps);
 
-					//TODO: exclude the required browserify modules from the warnings
 					if(d.id.indexOf('node_modules') !== -1){
 						warnings.push(d.id.substring(d.id.indexOf('node_modules') + 13));
 					}

@@ -26,11 +26,11 @@ module.exports = function (config, callback) {
 		var fullPath = path.resolve(entryPoint);
 		var entryPointName = path.basename(entryPoint);
 
-
+/*
 		var cdnTags = _.reduce(config.cdn, function (r, cdnVals) {
 			return r + cdnVals[1] + '\n';
 		}, '')
-
+*/
 
 		var entryPointPath = path.join(fullPath, entryPointName + '.jsx');
 		//fix for Windows-style seperators
@@ -39,7 +39,7 @@ module.exports = function (config, callback) {
 		var file = templateRenderer({
 			//vitreum: {
 				component: '{{=render.component}}',
-				cdn: cdnTags,
+				//cdn: cdnTags,
 				css: '<link rel="stylesheet" type="text/css" href="/' + entryPointName + '/bundle.css" />',
 				inProduction: !config.DEV,
 				inDev: config.DEV,

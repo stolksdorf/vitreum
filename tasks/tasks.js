@@ -11,6 +11,7 @@ module.exports = function(gulp, configOverride){
 	var runSequence = require('run-sequence').use(gulp);
 	var config = _.extend(defaultConfig, configOverride);
 
+	//the union of these two config values is used often throughout the build process.
 	config.projectPaths = _.union(config.entryPoints, config.projectModules);
 
 

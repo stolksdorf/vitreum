@@ -4,7 +4,6 @@ module.exports = {
 	serverWatchPaths: [],
 	serverScript: null,
 	buildPath: './build/',
-	projectType : 'STATIC',
 
 	pageTemplate: null,
 
@@ -12,8 +11,7 @@ module.exports = {
 
 	jsExts: ['*.js', '*.jsx'],
 	styleExts: ['*.less', '*.css'],
-	assetExts: ['*.svg', '*.png'],
-	cdn: {},
+	assetExts: ['*.svg', '*.png',, '*.ico'],
 	libs: [],
 	clientLibs: []
 }
