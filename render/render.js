@@ -2,16 +2,9 @@ var path = require('path');
 var fs = require('fs');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
-//var Handlebars = require('handlebars');
-
-
-
 var HeadTags = require('../headtags');
 var _ = require('lodash');
 var gulp = require('gulp');
-
-
-
 var doT = require('dot');
 doT.templateSettings.strip = false;
 doT.templateSettings.varname= 'render';
@@ -21,15 +14,42 @@ doT.templateSettings.varname= 'render';
 var cachedPageTemplate = {};
 
 
+
+var clearCache = function(opts){
+	var requireUncache = function(filePath){
+		var rc = require.cache[filePath];
+		if(rc){
+			if(rc.parent.id) requireUncache(rc.parent.id);
+			delete require.cache[filePath];
+		}
+	}
+	var architecturePath = path.join(path.dirname(opts.prerenderWith), 'architecture.json');
+	if(fs.existsSync(architecturePath)){
+		var architecture = JSON.parse(fs.readFileSync(architecturePath, 'utf8'));
+		_.each(architecture, function(val, filePath){
+			requireUncache(filePath);
+		});
+	}
+}
+
+
+
+
 module.exports = function (opts, callback) {
 	require('babel-core/register')({ ignore: false });
-
 	callback = callback || function () {};
+
+
+
+
 	var pageComponent = '';
 	if(opts.prerenderWith) {
+		if(opts.clearRequireCache) clearCache(opts)
 		var Page = require(path.resolve(opts.prerenderWith));
 		pageComponent = ReactDOMServer.renderToString(React.createElement(Page, opts.initialProps));
 	}
+
+
 
 	var config = '';
 	if(opts.config){
