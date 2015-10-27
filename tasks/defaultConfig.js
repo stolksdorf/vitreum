@@ -10,10 +10,10 @@ module.exports = {
 
 	projectModules: [],
 
-
 	jsExts: ['*.js', '*.jsx'],
 	styleExts: ['*.less', '*.css'],
 	assetExts: ['*.svg', '*.png'],
 	cdn: {},
 	libs: [],
+	clientLibs: []
 }
