@@ -7,7 +7,7 @@ var utils = require('../utils');
 
 var fs = require('fs');
 
-module.exports = function (config, watch, doneTask) {
+module.exports = function (config, shouldWatch, doneTask) {
 	var browserify = require('browserify');
 	var uglify = require('gulp-uglify');
 	var source = require('vinyl-source-stream');
@@ -100,7 +100,7 @@ module.exports = function (config, watch, doneTask) {
 	});
 
 	return async.map(entryPoints, function(ep,doneMap){
-		if(watch) ep.setupWatch();
+		if(shouldWatch) ep.setupWatch();
 		ep.bundle(doneMap);
 	}, doneTask);
 }

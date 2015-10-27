@@ -4,18 +4,15 @@ var React = require('react');
 var ReactDOMServer = require('react-dom/server');
 var HeadTags = require('../headtags');
 var _ = require('lodash');
-var gulp = require('gulp');
 var doT = require('dot');
 doT.templateSettings.strip = false;
 doT.templateSettings.varname= 'render';
 
 
-
-var cachedPageTemplate = {};
-
-
-
+//Clears the server's requrie cache for client-side files to be browserified
+//Used only during continously builds on DEV
 var clearCache = function(opts){
+	//Iterates through a file cache in require and uncaches it and all it's deps
 	var requireUncache = function(filePath){
 		var rc = require.cache[filePath];
 		if(rc){
@@ -23,6 +20,8 @@ var clearCache = function(opts){
 			delete require.cache[filePath];
 		}
 	}
+
+	//Load the project's architecture file to determine what to uncache
 	var architecturePath = path.join(path.dirname(opts.prerenderWith), 'architecture.json');
 	if(fs.existsSync(architecturePath)){
 		var architecture = JSON.parse(fs.readFileSync(architecturePath, 'utf8'));
@@ -33,14 +32,18 @@ var clearCache = function(opts){
 }
 
 
+var cachedPageTemplate = {};
+var getTemplate = function(opts){
+	if(!cachedPageTemplate[opts.page]){
+		cachedPageTemplate[opts.page] = doT.template(fs.readFileSync(opts.page, 'utf8'));
+	}
+	return cachedPageTemplate[opts.page];
+}
 
 
 module.exports = function (opts, callback) {
 	require('babel-core/register')({ ignore: false });
 	callback = callback || function () {};
-
-
-
 
 	var pageComponent = '';
 	if(opts.prerenderWith) {
@@ -49,30 +52,15 @@ module.exports = function (opts, callback) {
 		pageComponent = ReactDOMServer.renderToString(React.createElement(Page, opts.initialProps));
 	}
 
-
-
 	var config = '';
 	if(opts.config){
 		config = '<script>config = ' + JSON.stringify(opts.config) + '</script>'
 	}
 
-	var buildTemplate = function(compiledPageTemplate){
-		callback(null, compiledPageTemplate({
-			headtags : HeadTags.convertToString(),
-			config : config,
-			component: pageComponent,
-			initial_props: JSON.stringify(opts.initialProps || {})
-		}));
-	}
-
-	if(cachedPageTemplate[opts.page]){
-		buildTemplate(cachedPageTemplate[opts.page]);
-	}else{
-		fs.readFile(opts.page, 'utf8', function (err, pageTemplate) {
-			if(err) return callback(err);
-			cachedPageTemplate[opts.page] = doT.template(pageTemplate);
-			buildTemplate(cachedPageTemplate[opts.page])
-		});
-	}
-
+	callback(null, getTemplate(opts)({
+		headtags      : HeadTags.convertToString(),
+		config        : config,
+		component     : pageComponent,
+		initial_props : JSON.stringify(opts.initialProps || {})
+	}));
 }
