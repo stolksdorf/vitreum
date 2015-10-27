@@ -54,6 +54,12 @@ module.exports = function(gulp, configOverride){
 		runSequence('clean', 'js-watch',
 			['libs', 'assets', 'less', 'html'],
 			['livereload'], 'server', callback);
+	});
+
+	gulp.task('run2', function(callback){
+		runSequence('js-watch',
+			['less', 'html'],
+			['livereload'], 'server', callback);
 	})
 
 

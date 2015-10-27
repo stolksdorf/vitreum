@@ -24,6 +24,11 @@ module.exports = function (config, callback) {
 		}, '')
 		var cssTag = '<link rel="stylesheet" type="text/css" href="/' + name + '/bundle.css" />';
 
+
+		var entryPointPath = path.join(fullPath, name + '.jsx');
+		//fix for Windows-style seperators
+		entryPointPath = entryPointPath.split('\\').join('\\\\');
+
 		var fileName= 'bundle.hbs'
 		var file = template({
 			vitreum: {
@@ -35,20 +40,22 @@ module.exports = function (config, callback) {
 				config: '{{{config}}}',
 				headtags: '{{{headtags}}}',
 				js: '<script src="/' + name + '/bundle.js"></script>',
-				reactRender: '<script>require("react-dom").render(require("react").createElement(require("' + fullPath + '/' + name + '.jsx"), {{{initial_props}}}), document.getElementById("reactContainer"));</script>'
+				reactRender: '<script>require("react-dom").render(require("react").createElement(require("' + entryPointPath + '"), {{{initial_props}}}), document.getElementById("reactContainer"));</script>'
 			}
 		});
 
+		/*
 		if(config.projectType === 'STATIC'){
 			require('babel-core/register')({ ignore: false });
 			fileName = 'index.html';
-			var Page = require(path.resolve(entryPoint + '/' + name + '.jsx'));
+			var Page = require(path.resolve(path.join(entryPoint, name + '.jsx')));
 			file = Handlebars.compile(file)({
 				config : "",
 				component: ReactDOMServer.renderToString(React.createElement(Page)),
 				initial_props: JSON.stringify({})
 			});
 		}
+		*/
 
 		utils.streamify(file)
 			.pipe(rename(fileName))
