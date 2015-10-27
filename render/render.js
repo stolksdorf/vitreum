@@ -2,10 +2,21 @@ var path = require('path');
 var fs = require('fs');
 var React = require('react');
 var ReactDOMServer = require('react-dom/server');
-var Handlebars = require('handlebars');
+//var Handlebars = require('handlebars');
+
+
+
 var HeadTags = require('../headtags');
 var _ = require('lodash');
 var gulp = require('gulp');
+
+
+
+var doT = require('dot');
+doT.templateSettings.strip = false;
+doT.templateSettings.varname= 'render';
+
+
 
 var cachedPageTemplate = {};
 
@@ -39,7 +50,7 @@ module.exports = function (opts, callback) {
 	}else{
 		fs.readFile(opts.page, 'utf8', function (err, pageTemplate) {
 			if(err) return callback(err);
-			cachedPageTemplate[opts.page] = Handlebars.compile(pageTemplate);
+			cachedPageTemplate[opts.page] = doT.template(pageTemplate);
 			buildTemplate(cachedPageTemplate[opts.page])
 		});
 	}
