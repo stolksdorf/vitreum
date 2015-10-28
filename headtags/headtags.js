@@ -1,5 +1,6 @@
 var _ = require('lodash');
 var React = require('react');
+var ReactDOMServer = require('react-dom/server');
 
 var headTags = {};
 
@@ -17,13 +18,16 @@ module.exports = {
 		});
 	},
 	addTags : function(tagObj){
+		if (!_.isPlainObject(tagObj)) {
+			throw new Error('Argument to addTags must be an object.');
+		}
 		headTags = _.extend(headTags, tagObj);
 	},
 	convertToString : function(){
 		return _.reduce(headTags, function(r, tags, key){
 			if(!_.isArray(tags)) tags = [tags];
 			var convertedTags = _.map(tags, function(tag){
-				return React.renderToStaticMarkup(tag);
+				return ReactDOMServer.renderToStaticMarkup(tag);
 			});
 			return _.union(r, convertedTags);
 		}, []).join('\n')
