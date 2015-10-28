@@ -15,9 +15,12 @@
   "dependencies": {
     "babel-core": "^5.8.30",
     "dot": "^1.0.3",
+    "gulp-util": "^3.0.7",
+    "gulp-watch": "^4.3.5",
     "lodash": "^3.10.1",
     "react": "^0.14.0",
-    "react-dom": "^0.14.0"
+    "react-dom": "^0.14.0",
+    "run-sequence": "^1.1.4"
   },
   "keywords": [
     "gulp",

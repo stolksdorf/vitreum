@@ -1,7 +1,6 @@
 "use strict";
 console.time("Loading vitreum");
 var _ = require('lodash');
-var runSequence = require('run-sequence');
 var defaultConfig = require('./defaultConfig.js');
 
 var watch = require('gulp-watch');
