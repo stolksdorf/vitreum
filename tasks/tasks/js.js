@@ -11,7 +11,7 @@ module.exports = function (config, shouldWatch, doneTask) {
 	var browserify = require('browserify');
 	var uglify = require('gulp-uglify');
 	var source = require('vinyl-source-stream');
-	//var buffer = require('vinyl-buffer');
+	var buffer = require('vinyl-buffer');
 	var babelify = require('babelify');
 	//var literalify = require('literalify');
 	var watchify = require('watchify');
@@ -80,7 +80,7 @@ module.exports = function (config, shouldWatch, doneTask) {
 						utils.handleError.call(this, config.DEV, err)
 					})
 					.pipe(source('bundle.js'))
-					//.pipe(buffer())
+					.pipe(buffer())
 					.pipe(gulpIf(!config.DEV, uglify()))
 					.pipe(gulp.dest(config.buildPath + '/' + name))
 					.on('finish', done);

@@ -52,14 +52,18 @@ module.exports = function (opts, callback) {
 		pageComponent = ReactDOMServer.renderToString(React.createElement(Page, opts.initialProps));
 	}
 
-	var config = '';
-	if(opts.config){
-		config = '<script>config = ' + JSON.stringify(opts.config) + '</script>'
+	var globals = '';
+	if(opts.globals){
+		globals = '<script>' +
+			_.map(opts.globals, function(vals, varName){
+				return varName + ' = ' + JSON.stringify(vals);
+			}).join('\n')
+		+ '</script>';
 	}
 
 	callback(null, getTemplate(opts)({
 		headtags      : HeadTags.convertToString(),
-		config        : config,
+		globals       : globals ,
 		component     : pageComponent,
 		initial_props : JSON.stringify(opts.initialProps || {})
 	}));
