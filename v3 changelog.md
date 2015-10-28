@@ -1,6 +1,17 @@
 # migrating to vitreum 3
 Oh boy. Vitreum3 is big news. Let's get your projects ready to rumble.
 
+#### improvements
+* Huge speed improvements. Sometimes up to 6x faster.
+* Size of project down 40%
+* Code is much easier read and follow
+* All dependacies are up to date
+* React 0.14 support
+* Built projects should be smaller
+* Ignoring `node_modules` now, keeping the project up to date
+
+
+
 #### computer stuff
 * Update npm to 3.3.x and node to 4.2.x
 * Add `NODE_PATH=./shared` to your environment variables.
