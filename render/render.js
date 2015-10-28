@@ -10,7 +10,7 @@ doT.templateSettings.varname= 'render';
 
 
 //Clears the server's requrie cache for client-side files to be browserified
-//Used only during continously builds on DEV
+//Used only during continous builds on DEV
 var clearCache = function(opts){
 	//Iterates through a file cache in require and uncaches it and all it's deps
 	var requireUncache = function(filePath){
