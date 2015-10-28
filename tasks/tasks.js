@@ -2,7 +2,6 @@
 console.time("Loading vitreum");
 var _ = require('lodash');
 var defaultConfig = require('./defaultConfig.js');
-
 var watch = require('gulp-watch');
 var utils = require('./utils');
 
