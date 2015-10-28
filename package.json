@@ -13,7 +13,11 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
-
+    "babel-core": "^5.8.30",
+    "dot": "^1.0.3",
+    "lodash": "^3.10.1",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0"
   },
   "keywords": [
     "gulp",
