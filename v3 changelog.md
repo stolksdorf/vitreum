@@ -10,8 +10,7 @@ Oh boy. Vitreum3 is big news. Let's get your projects ready to rumble.
 * Remove `/** @jsx React.DOM */` from the top of any `.jsx` files
 * We are not using `react/addons` anymore.
 * `react/addons/cx` has been replaced with the `classnames` module
-* `react/addons/CSSTransitionGroups` have been replaced with the `INSERT NAME` module
-*
+* `react/addons/CSSTransitionGroups` have been replaced with the `react-csstransitgroup` module. This will make your libs much smaller.
 
 
 #### project modules
