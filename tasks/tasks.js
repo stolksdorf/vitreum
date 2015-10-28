@@ -15,23 +15,24 @@ module.exports = function(gulp, configOverride){
 	config.projectPaths = _.union(config.entryPoints, config.projectModules);
 
 
-	//gulp.task('architecture', require('./tasks/architecture').bind(this, config));
 	gulp.task('js', require('./tasks/js').bind(this, config, false));
 	gulp.task('less', require('./tasks/less').bind(this, config));
 
-	gulp.task('html', require('./tasks/html').bind(this, config));
+	gulp.task('js-watch', require('./tasks/js').bind(this, config, true));
+	gulp.task('less-watch', ['less'], function(){
+		gulp.watch(utils.makeBlob(config.projectPaths, config.styleExts, '/**/'), ['less'])
+	});
+
+	gulp.task('template', require('./tasks/template').bind(this, config));
 	gulp.task('libs', require('./tasks/libs').bind(this, config));
 	gulp.task('assets', require('./tasks/assets').bind(this, config));
 	//gulp.task('watch', require('./tasks/watch').bind(this, gulp, config));
 	gulp.task('clean', require('./tasks/clean').bind(this, config));
-	gulp.task('server', require('./tasks/server').bind(this, config));
+	gulp.task('runserver', require('./tasks/runserver').bind(this, config));
 	gulp.task('livereload', require('./tasks/livereload').bind(this, config));
 
 
-	gulp.task('js-watch', require('./tasks/js').bind(this, config, true));
-	gulp.task('less-watch', function(){
-		gulp.watch(utils.makeBlob(config.projectPaths, config.styleExts, '/**/'), ['less'])
-	});
+
 
 
 

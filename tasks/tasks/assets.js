@@ -7,7 +7,6 @@ module.exports = function(config, callback){
 
 	//For each of the project paths, match on all assets,
 	// but maintain their folder paths from the project path
-
 	async.map(config.projectPaths, function(projectPath, cb){
 		return gulp.src(utils.makeBlob([projectPath + '/**/'], config.assetExts),
 				{ base: path.resolve(projectPath, '../') })
