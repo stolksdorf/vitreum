@@ -1,66 +1,42 @@
-# Vitreum
-[![NPM](https://nodei.co/npm/vitreum.png)](https://nodei.co/npm/vitreum/)
+#vitreum
+vitreum is a build system for web apps using a specific project structure. It use React, gulp, Browserify, and Less. It's broken into three main components.
 
+**Tasks** : Adds a series of gulp tasks to create built files for development and production
 
-Web app build system using Browserify, Gulp, React.js and Less
+**Render** : Used on the server to pre-render your web-app server-side to give you isomorphism.
 
+**Headtags** : (might be moved into it's own module later) Modifying tags within the head with an isomorphic app is tricky. This package makes it easy.
 
-
-## Directory Structure
-
-
-## Commands
-
-
-## Sample gulpfile.js
+### project structure
 ```
-"use strict";
+myProj
+├─ build
+├─ node_modules
+├─ client
+|   ├─ template.dot
+|   └─ entryPointA
+|      ├─ entryPointA.jsx
+|      └─ entryPointA.less
+├─ server.js
+└─ gulpfile.js
 
-var gulp = require('gulp');
-var vitreum = require("vitreum");
-
-gulp = vitreum.tasks(gulp, {
-	entryPoints: ["./client/samplePage"],
-	DEV: true,
-	buildPath: "./build/",
-
-	pageTemplate: "./client/template.hbs",
-
-	configPath : 'sample/config',
-
-	projectModules: ["./node_modules/sample", "./node_modules/palette"],
-	assetExts: ["*.svg", "*.png", "*.jpg", "*.pdf", "*.eot", "*.ttf", "*.woff", "*.woff2"],
-
-	serverWatchPaths: ["server"],
-	serverScript: "./server/server.js",
-
-	cdn: {
-		"react": ["window.React", "<script src='//cdnjs.cloudflare.com/ajax/libs/react/0.10.0/react-with-addons.js'></script>"],
-		"jquery": ["window.jQuery", "<script src='//code.jquery.com/jquery-1.11.0.min.js'></script>"],
-		"lodash": ["window._", "<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js'></script>"]
-	},
-	libs: [],
-});
+├── _includes
+|   ├── footer.html
+|   └── header.html
+├── _layouts
+|   ├── default.html
+|   └── post.html
+├── _posts
+|   ├── 2007-10-29-why-every-programmer-should-play-nethack.textile
+|   └── 2009-04-26-barcamp-boston-4-roundup.textile
+├── _data
+|   └── members.yml
 ```
 
-`entryPoints` : An array that describes the location of each 'web app'. Each will be built separately from eachother. Normally it will just be one.
+### tasks
 
-`DEV` : Sets Vitreum into Dev mode.
-buildPath: "./build/",
 
-pageTemplate: "./client/template.hbs",
 
-configPath : 'sample/config',
 
-projectModules: ["./node_modules/sample", "./node_modules/palette"],
-assetExts: ["*.svg", "*.png", "*.jpg", "*.pdf", "*.eot", "*.ttf", "*.woff", "*.woff2"],
+### render
 
-serverWatchPaths: ["server"],
-serverScript: "./server/server.js",
-
-cdn: {
-	"react": ["window.React", "<script src='//cdnjs.cloudflare.com/ajax/libs/react/0.10.0/react-with-addons.js'></script>"],
-	"jquery": ["window.jQuery", "<script src='//code.jquery.com/jquery-1.11.0.min.js'></script>"],
-	"lodash": ["window._", "<script src='//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js'></script>"]
-},
-libs: [],
