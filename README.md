@@ -9,31 +9,28 @@ vitreum is a build system for web apps using a specific project structure. It us
 
 ### project structure
 ```
-myProj
-├─ build
-├─ node_modules
-├─ client
+/myProj
+├─ /build/...
+├─ /node_modules/...
+├─ /client
 |   ├─ template.dot
-|   └─ entryPointA
+|   └─ /entryPointA
 |      ├─ entryPointA.jsx
 |      └─ entryPointA.less
+├─ /shared
+|   └─ /myProj
 ├─ server.js
 └─ gulpfile.js
-
-├── _includes
-|   ├── footer.html
-|   └── header.html
-├── _layouts
-|   ├── default.html
-|   └── post.html
-├── _posts
-|   ├── 2007-10-29-why-every-programmer-should-play-nethack.textile
-|   └── 2009-04-26-barcamp-boston-4-roundup.textile
-├── _data
-|   └── members.yml
 ```
 
+### gulpfile.js
+
+
 ### tasks
+
+**clean** - clears out the build folder and removes all `architecture.json` files
+**libs** - uses browserify to build your `libs.js` file from the list provide in the config. These files will not be a part of your js bundle and will be minified.
+
 
 
 
