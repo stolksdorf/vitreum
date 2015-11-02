@@ -44,7 +44,7 @@ module.exports = function(gulp, configOverride){
 	});
 
 	gulp.task('fresh', function (callback){
-		runSequence('clean','libs','run', callback);
+		runSequence('clean','libs', callback);
 	});
 
 	gulp.task('build', function (callback){
@@ -61,7 +61,7 @@ module.exports = function(gulp, configOverride){
 
 	gulp.task('cmds', function(){
 		console.log('    gulp run   : assets, js-watch, less-watch, template, livereload, runserver');
-		console.log('    gulp fresh : clean, libs, run');
+		console.log('    gulp fresh : clean, libs');
 		console.log('    gulp build : clean, libs, assets, js, less, template');
 		console.log('    gulp prod  : build (but with the dev flag set to false)');
 		console.log('    gulp       : run');

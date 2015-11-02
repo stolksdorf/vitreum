@@ -110,7 +110,7 @@ Vitreum/tasks will setup a series of tasks to help you help your project. The in
 
 **run** - `assets, js-watch, less-watch, template, livereload, runserver`
 
-**fresh** - `clean, libs, run`
+**fresh** - `clean, libs`
 
 **build** - `clean, libs, assets, js, less, template`
 
