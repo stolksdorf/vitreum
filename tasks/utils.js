@@ -28,7 +28,6 @@ module.exports = utils = {
 		if(!isDev) process.exit(1);
 		gutil.beep();
 		this.emit('end');
-		this.end();
 	},
 
 
