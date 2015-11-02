@@ -24,7 +24,7 @@ var createBundler = function(entryPoint, config){
 	var warnings = [];
 
 
-	var showWarnings = function(){
+	var showWarnings = function(warnings){
 		if(warnings.length){
 			console.log(colors.red("Warning: ") + "The following node modules are in your js bundle.");
 			console.log('    ' + colors.yellow(warnings.join('\n    ')));
@@ -59,7 +59,7 @@ var createBundler = function(entryPoint, config){
 				}
 				return r;
 			}, {});
-			showWarnings();
+			showWarnings(warnings);
 			fs.writeFile(entryPoint + '/architecture.json', JSON.stringify(deps, null, '\t'));
 		})
 
