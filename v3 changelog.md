@@ -14,7 +14,6 @@ Oh boy. Vitreum3 is big news. Let's get your projects ready to rumble.
 
 #### computer stuff
 * Update npm to 3.3.x and node to 4.2.x
-* Add `NODE_PATH=./shared` to your environment variables.
 
 #### component stuff
 * We are now using React 0.14.x, update it.
@@ -30,11 +29,13 @@ Oh boy. Vitreum3 is big news. Let's get your projects ready to rumble.
 * Move `/node_modules/[Proj Name]` to `/shared/[Proj Name]`
 * Re-add palette and prism as submodules in your `/shared` folder
 * Vitreum will now be a node_module, not a submodule, so you can just install it, `npm install vitreum`
+* If the proejct node_modules were installed with npm2 (in a tree structure, rather than flat), it's **strongly** recommended that you delete all existing node_modules and do a fresh `npm install`
 
 #### server.js
 * Change `var vitreum = require('vitreum')` to `var vitreumRender = require('vitreum/render')`. The render has been separated to improve load times.
 * If your project was using 'cache busting', you can remove it completely.
 * `.hbs` changed to `.dot`
+* Add `require('app-module-path').addPath('./shared');` to the top of the file
 * Added a `clearRequireCache` which should only be true in dev (this replaces the old cache busting)
 * Changed `config` to `globals` to be more general. `globals` now consumes an object and adds it to the `<head>` as global variables.
 * Your render call to look like this:
@@ -90,6 +91,7 @@ module.exports = require('browserify-stockpiler')({
 * `projectModules` should all point to `'./shared/amethyst'` instead of `'./node_modules/amethyst'`
 * `pageTemplate` should end with a `.dot`
 * Add most of the stuff from `cdn` to `libs`
+* Add `additionalRequirePaths : ['./shared'],` in the config obj
 
 #### gulp tasks
 * `architecture` is now ran automatically with `js`
