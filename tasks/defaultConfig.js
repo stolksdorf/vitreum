@@ -9,6 +9,8 @@ module.exports = {
 
 	projectModules: [],
 
+	additionalRequirePaths : [],
+
 	jsExts: ['*.js', '*.jsx'],
 	styleExts: ['*.less', '*.css'],
 	assetExts: ['*.svg', '*.png',, '*.ico'],

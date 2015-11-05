@@ -36,7 +36,8 @@ var createBundler = function(entryPoint, config){
 			debug: config.DEV,
 			cache: {},
 			packageCache: {},
-			fullPaths: true
+			fullPaths: true,
+			paths : config.additionalRequirePaths
 		})
 		.require(entryPoint + '/' + name + '.jsx')
 		.transform({global: true}, babelify)

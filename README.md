@@ -41,6 +41,7 @@ var gulp = vitreumTasks(gulp, {
 	pageTemplate: "./client/template.dot",
 
 	projectModules: ["./shared/vitreumSample"],
+	additionalRequirePaths : ['./shared'],
 	assetExts: ["*.svg", "*.png", "*.jpg", "*.ttf", "*.ico"],
 
 	serverWatchPaths: ["server"],
@@ -67,6 +68,8 @@ gulp.task('myCustomTask', function(){ ... });
 `templatePath` - path to where your core template file is. Modify this to add things like CDNs, Google analytics tags, etc.
 
 `projectModules` - an array of paths to folder that contains client-side project code outside of `/client`. This is useful for sharing code between components. Letting Vitreum know these paths lets it setup watchers properly.
+
+`additionalRequirePaths` - an array of paths that Browserify will consider node modules to be in.
 
 `assetExts` - a glob-list of all the assets Vitreum should care about.
 
