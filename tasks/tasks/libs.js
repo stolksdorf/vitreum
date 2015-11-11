@@ -11,7 +11,7 @@ module.exports = function (config) {
 	var insert = require('gulp-insert');
 
 	var clientLibs = _.reduce(config.clientLibs, function(r, clientLibPath){
-		r += ';' + fs.readFileSync(clientLibPath, 'utf8');
+		r += '\n;\n' + fs.readFileSync(clientLibPath, 'utf8');
 		return r;
 	}, '');
 
