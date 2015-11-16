@@ -15,7 +15,7 @@ module.exports = function (config) {
 		return r;
 	}, '');
 
-	return browserify()
+	return browserify({ paths: config.additionalRequirePaths })
 		.require(config.libs)
 		.bundle()
 		.on('error', function(err){
