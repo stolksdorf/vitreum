@@ -1,7 +1,7 @@
 var gutil = require('gulp-util');
 var _ = require('lodash');
-
-
+var path = require('path');
+var colors = require('colors/safe');
 
 module.exports = utils = {
 
@@ -24,7 +24,14 @@ module.exports = utils = {
 
 	handleError : function(isDev, err) {
 		delete err.stream;
-		gutil.log(err);
+
+		try{
+			gutil.log(colors.red("\n\nERROR: ") + colors.yellow(path.basename(err.filename) +
+				':' + (err.lineNumber ? err.lineNumber : err.loc.line)) + '\n' + err.message + '\n');
+		}catch(e){
+			gutil.log(err);
+		}
+
 		if(!isDev) process.exit(1);
 		gutil.beep();
 		this.emit('end');
