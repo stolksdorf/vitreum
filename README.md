@@ -1,4 +1,6 @@
 #vitreum
+[![bitHound Overall Score](https://www.bithound.io/github/stolksdorf/vitreum/badges/score.svg)](https://www.bithound.io/github/stolksdorf/vitreum)
+
 vitreum is a build system for web apps using a specific project structure. It use React, gulp, Browserify, and Less. It's broken into three main components.
 
 **Tasks** : Adds a series of gulp tasks to create built files for development and production
