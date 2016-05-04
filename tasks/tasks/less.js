@@ -43,7 +43,7 @@ module.exports = function (config, callback) {
 		utils.streamify(getStyleImportString(entryPoint))
 			.pipe(gulpIf(config.DEV, lesssourcemaps.init()))
 			.pipe(less({
-					paths: ['./shared'],
+					paths: config.additionalRequirePaths,
 					compress: !config.DEV,
 				})
 				.on('error', function(err){
