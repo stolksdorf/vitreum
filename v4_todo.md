@@ -5,6 +5,7 @@
   - You should just expose a series of functions to use
   - All tasks should be converted to using promises
 - Create some [global tooling](https://docs.npmjs.com/files/package.json#bin)
+  - Use [minimist](https://www.npmjs.com/package/minimist) 
   - add a `jsx` tool that creates component folders for you. 
   - Add a `vitreum` tool that bootstraps a project for you
     - Should create a gulpfile, server, client folder with one component 
