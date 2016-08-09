@@ -10,5 +10,6 @@
 - Remove the dependacy on using a template engine
   - This will be tricky, as right now vitreum is using a double template system (tmpl -> bundle -> render)
   - Focus on using raw functions or strings. No fancy markup
+- Switch to using Promises for all tasks
 - Move your `animations.less` into it's own repo
   - Make it into a css.js file, with a build step to `.less` and `.css`
