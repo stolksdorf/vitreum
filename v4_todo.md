@@ -1,12 +1,12 @@
 ## v4 Ideas
 - Switch over to using css.js by default.
--- Provide tooling to build sourcemaps and dump the result into the build folder.
+  - Provide tooling to build sourcemaps and dump the result into the build folder.
 - Remove `gulp` as a dependacy
--- You should just expose a series of functions to use
+  - You should just expose a series of functions to use
 - Create some [global tooling](https://docs.npmjs.com/files/package.json#bin)
--- add a `jsx` tool that creates component folders for you. 
--- Add a `vitreum` tool that bootstraps a project for you
+  - add a `jsx` tool that creates component folders for you. 
+  - Add a `vitreum` tool that bootstraps a project for you
 - Add in [react hot loading](https://github.com/milankinen/livereactload)
 - Remove the dependacy on using a template engine
--- This will be tricky, as right now vitreum is using a double template system (tmpl -> bundle -> render)
--- Focus on using raw functions or strings. No fancy markup
+  - This will be tricky, as right now vitreum is using a double template system (tmpl -> bundle -> render)
+  - Focus on using raw functions or strings. No fancy markup
