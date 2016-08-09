@@ -3,13 +3,22 @@
   - Provide tooling to build sourcemaps and dump the result into the build folder.
 - Remove `gulp` as a dependacy
   - You should just expose a series of functions to use
+  - All tasks should be converted to using promises
 - Create some [global tooling](https://docs.npmjs.com/files/package.json#bin)
   - add a `jsx` tool that creates component folders for you. 
   - Add a `vitreum` tool that bootstraps a project for you
+    - Should create a gulpfile, server, client folder with one component 
 - Add in [react hot loading](https://github.com/milankinen/livereactload)
 - Remove the dependacy on using a template engine
   - This will be tricky, as right now vitreum is using a double template system (tmpl -> bundle -> render)
   - Focus on using raw functions or strings. No fancy markup
+  - Consider using a react component for the main template, can pass the data via props.
+  - default to using a base template internal to vitreum
 - Switch to using Promises for all tasks
 - Move your `animations.less` into it's own repo
   - Make it into a css.js file, with a build step to `.less` and `.css`
+- Move all my regular css into a new repo and npm module
+- Remove `headtags` and switch to using [Helmet](https://github.com/nfl/react-helmet) maybe?
+  - Maybe not, I could build in my own `rewind` on vitreum render
+- Build a new css moudle within vitreum for handling css processing
+  - Use an external lib to do the CSS work, but this should be a tiny shim 
