@@ -23,3 +23,4 @@
   - Maybe not, I could build in my own `rewind` on vitreum render
 - Build a new css moudle within vitreum for handling css processing
   - Use an external lib to do the CSS work, but this should be a tiny shim 
+- Make `clearRequireCahce` on while in dev mode
