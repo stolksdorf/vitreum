@@ -1,6 +1,9 @@
 ## v4 Ideas
-- Switch over to using css.js by default.
+- ~Switch over to using css.js by default.~
   - Provide tooling to build sourcemaps and dump the result into the build folder.
+  - css.js is too fincky
+- Remove the need for an acrhitecture.json, keep the style list in memory
+  - Rename the less task to be more generic 
 - Remove `gulp` as a dependacy
   - You should just expose a series of functions to use
   - All tasks should be converted to using promises
