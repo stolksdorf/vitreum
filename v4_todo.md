@@ -27,4 +27,4 @@
 - Build a new css moudle within vitreum for handling css processing
   - Use an external lib to do the CSS work, but this should be a tiny shim 
 - Make `clearRequireCahce` on while in dev mode
-- Look into make a full [dashboard](https://formidable.com/blog/2016/08/15/introducing-webpack-dashboard/)
+- Look into make a full [dashboard](https://formidable.com/blog/2016/08/15/introducing-webpack-dashboard/) oh god [look at this](https://github.com/yaronn/blessed-contrib)
