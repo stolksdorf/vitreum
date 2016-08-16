@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "3.2.1",
+  "version": "3.3.0",
   "description": "Web app build system using Browserify, Gulp, React.js and Less",
   "repository": {
     "type": "git",
@@ -10,6 +10,10 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stolksdorf/vitreum/issues"
+  },
+  "bin": {
+    "jsx": "./bin/jsx/jsx",
+    "vitreum": "./bin/bootstrap/bootstrap"
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
@@ -31,7 +35,8 @@
     "gulp-uglify": "^1.4.2",
     "gulp-util": "^3.0.7",
     "gulp-watch": "^4.3.5",
-    "lodash": "^4.9.0",
+    "lodash": "^4.15.0",
+    "mkdirp": "^0.5.1",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
     "run-sequence": "^1.1.4",
