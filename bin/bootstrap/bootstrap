@@ -5,17 +5,32 @@ var fs   = require('fs');
 var mkdirp = require('mkdirp');
 var colors = require('colors');
 var _ = require('lodash');
+var exec = require('child_process').exec;
 var root  = path.join(path.dirname(fs.realpathSync(__filename)), '../');
 var location = process.cwd();
 
 var projectName = process.argv[2];
 if(!projectName){
-	console.log('Error : You must provide a project name'.red);
+	console.log('Error: You must provide a project name'.red);
 	return;
 }
 
-var exec = require('child_process').exec;
+try{
+	fs.accessSync(path.join(location, 'package.json'), fs.F_OK);
+}catch(e){
+	console.log('Error: You must run "npm init" first'.red);
+	return;
+}
 
-exec('npm init', (err, stdOut, stdErr) => {
-	console.log('done');
-});
+
+var installDeps = ()=>{
+	console.log('Installing dependacies...'.yellow);
+	var deps = ['colors', 'lodash']
+
+	exec(`npm install ${deps.join(' ')} --save`, (err, stdOut, stdErr) => {
+		console.log(stdOut);
+	})
+
+};
+
+installDeps();
