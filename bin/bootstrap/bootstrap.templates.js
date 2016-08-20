@@ -91,4 +91,17 @@ console.log('Listening on localhost:' + port);
 </html>
 `;
 	},
+
+	/* ---- GITIGNORE ---- */
+
+	gitIgnore : () => {
+		return `logs
+*.log
+
+build/*
+architecture.json
+
+node_modules
+`;
+		},
 }
