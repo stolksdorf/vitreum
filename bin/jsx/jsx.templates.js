@@ -4,8 +4,8 @@ module.exports = {
 	jsx : (name) => {
 		var Name = _.upperFirst(name);
 		return `var React = require('react');
-var _ = require('lodash');
-var cx = require('classnames');
+var _     = require('lodash');
+var cx    = require('classnames');
 
 var ${Name} = React.createClass({
 
