@@ -1,0 +1,135 @@
+#!/usr/bin/env node
+
+var path = require('path');
+var fs   = require('fs');
+var mkdirp = require('mkdirp');
+var colors = require('colors');
+var _ = require('lodash');
+var exec = require('child_process').exec;
+var root  = path.join(path.dirname(fs.realpathSync(__filename)), '../');
+var location = process.cwd();
+
+var templates = require('./bootstrap.templates.js');
+var jsxTemplates = require('../jsx/jsx.templates.js');
+
+const DEPS = [
+	'lodash',
+	'react',
+	'react-dom',
+	'classnames',
+	'express',
+	'app-module-path',
+	'gulp',
+	'vitreum'
+];
+
+var package;
+
+var npmInstall = ()=>{
+	return new Promise((resolve, reject) => {
+		try{
+			var packageRaw = fs.readFileSync(path.join(location, 'package.json'), 'utf8');
+			package = JSON.parse(packageRaw);
+			console.log('Found package.json'.yellow);
+		}catch(e){
+			throw 'You must run "npm init" first';
+		}
+
+		console.log('Installing dependacies... (this might take a while)'.yellow);
+		exec(`npm install ${DEPS.join(' ')} --save`, (err, stdOut, stdErr) => {
+			if(err) return reject(stdErr);
+
+			console.log(stdOut);
+			return resolve();
+		})
+	});
+};
+
+var createGulpFile = ()=>{
+	return new Promise((resolve) => {
+		fs.writeFileSync(path.join(location, 'gulpfile.js'), templates.gulp());
+		console.log('Created gulpfile.js'.yellow);
+		return resolve();
+	});
+}
+
+var makeClient = ()=>{
+	return new Promise((resolve) => {
+		mkdirp(path.join(location, 'client'), (err) => {
+			if(err) throw 'Could not create client folder';
+
+			fs.writeFileSync(path.join(location, 'client', 'template.dot'), templates.template());
+			console.log('Created root page template'.yellow);
+
+			var name = 'main';
+			mkdirp(path.join(location, 'client', name), (err) => {
+				if(err) throw 'Could not create name component folder';
+				fs.writeFileSync(
+					path.join(location, 'client', name, `${name}.jsx`),
+					jsxTemplates.jsx(name));
+				fs.writeFileSync(
+					path.join(location, 'client', name, `${name}.less`),
+					jsxTemplates.less(name));
+				console.log('Created main component'.yellow);
+				return resolve();
+			});
+		});
+	})
+}
+
+var makeServer = () => {
+	return new Promise((resolve) => {
+		fs.writeFileSync(path.join(location,'server.js'), templates.server());
+		console.log('Created server.js'.yellow);
+		mkdirp(path.join(location, 'server'), (err) => {
+			if(err) throw 'Could not create server folder';
+			console.log('Created server folder'.yellow);
+			mkdirp(path.join(location, 'shared'), (err) => {
+				if(err) throw 'Could not create shared folder';
+				console.log('Created shared folder'.yellow);
+				return resolve();
+			});
+		});
+	});
+};
+
+var makeGitIgnore = () => {
+	return new Promise((resolve) => {
+		fs.writeFileSync(path.join(location,'.gitignore'), templates.gitIgnore());
+		console.log('Created gitignore'.yellow);
+		return resolve();
+	});
+}
+
+var cleanupPackage = () => {
+	return new Promise((resolve) => {
+		if(!package) throw 'Could not find a package.json';
+
+		package.main = 'server.js';
+		package.scripts.postinstall = 'gulp prod';
+
+		fs.writeFileSync(path.join(location,'package.json'), JSON.stringify(package, null, '  '));
+		console.log('Updated package.json'.yellow);
+		return resolve();
+	})
+}
+
+var wrapUp = () => {
+	return new Promise((resolve) => {
+		console.log('\n\nDone!'.green);
+		console.log('\n`gulp fresh && gulp` to do a fresh build'.cyan);
+	});
+};
+
+
+npmInstall()
+	.then(createGulpFile)
+	.then(makeClient)
+	.then(makeServer)
+	.then(makeGitIgnore)
+	.then(cleanupPackage)
+	.then(wrapUp)
+	.catch((err) => {
+		console.log(`ERR: ${err.toString()}`.red);
+	})
+
