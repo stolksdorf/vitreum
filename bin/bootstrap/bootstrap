@@ -36,7 +36,6 @@ var npmInstall = ()=>{
 		}
 
 		console.log('Installing dependacies... (this might take a while)'.yellow);
-
 		exec(`npm install ${DEPS.join(' ')} --save`, (err, stdOut, stdErr) => {
 			if(err) return reject(stdErr);
 

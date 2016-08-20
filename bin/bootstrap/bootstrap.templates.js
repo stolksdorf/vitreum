@@ -76,7 +76,7 @@ console.log('Listening on localhost:' + port);
 		<link rel='icon' href='/assets/main/favicon.ico' type='image/x-icon' />
 		{{=vitreum.css}}
 		{{=vitreum.globals}}
-		<title>New ProJect</title>
+		<title>New Project</title>
 	</head>
 	<body>
 		<div id='reactContainer'>{{=vitreum.component}}</div>

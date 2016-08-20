@@ -26,6 +26,13 @@ vitreum is a build system for web apps using a specific project structure. It us
 └─ gulpfile.js
 ```
 
+### global functions
+If you install vitreum globally, `npm install -g vitreum`, it will create a `jsx` and `vitreum` bin that you can use from the commandline.
+
+`jsx [componentName]` - Create a folder, a jsx, and less file prefiled with the component info
+
+`vitreum` - Will bootstrap a full vitreum project at the current location. A `package.json` must be present.
+
 ### gulpfile.js
 
 Vitreum/tasks takes a configuration objection to setup a series of gulp tasks for you. Here's what it looks like:
