@@ -9,28 +9,112 @@ var exec = require('child_process').exec;
 var root  = path.join(path.dirname(fs.realpathSync(__filename)), '../');
 var location = process.cwd();
 
+var templates = require('./bootstrap.templates.js');
+var jsxTemplates = require('../jsx/jsx.templates.js');
+
+/*
 var projectName = process.argv[2];
 if(!projectName){
 	console.log('Error: You must provide a project name'.red);
 	return;
 }
+*/
 
-try{
-	fs.accessSync(path.join(location, 'package.json'), fs.F_OK);
-}catch(e){
-	console.log('Error: You must run "npm init" first'.red);
-	return;
-}
+//TEST
+//location = path.join(location, 'test');
+
+const DEPS = [
+	'lodash',
+	'react',
+	'react-dom',
+	'classnames',
+	'express',
+	'app-module-path',
+	'gulp',
+	'vitreum'
+];
 
 
-var installDeps = ()=>{
-	console.log('Installing dependacies...'.yellow);
-	var deps = ['colors', 'lodash']
+var npmInstall = ()=>{
+	return new Promise((resolve) => {
+		try{
+			fs.accessSync(path.join(location, 'package.json'), fs.F_OK);
+		}catch(e){
+			throw 'You must run "npm init" first';
+		}
 
-	exec(`npm install ${deps.join(' ')} --save`, (err, stdOut, stdErr) => {
-		console.log(stdOut);
-	})
+		console.log('Installing dependacies... (this might take a while)'.yellow);
 
+		/*
+		exec(`npm install ${DEPS.join(' ')} --save`, (err, stdOut, stdErr) => {
+			console.log(stdOut);
+			console.log('Done!'.green);
+			return resolve();
+		})
+		*/
+
+		return resolve();
+	});
 };
 
-installDeps();
+var createGulpFile = ()=>{
+	return new Promise((resolve) => {
+		fs.writeFileSync('gulpfile.js', templates.gulp());
+		return resolve();
+	});
+}
+
+var makeClient = ()=>{
+	return new Promise((resolve) => {
+		mkdirp(path.join(location, 'client'), (err) => {
+			if(err) throw 'Could not create client folder';
+
+			fs.writeFileSync(path.join(location, 'client', 'template.dot'), templates.template());
+			var name = 'main';
+			mkdirp(path.join(location, 'client', name), (err) => {
+				if(err) throw 'Could not create name component folder';
+				fs.writeFileSync(
+					path.join(location, 'client', name, `${name}.jsx`),
+					jsxTemplates.jsx(name));
+				fs.writeFileSync(
+					path.join(location, 'client', name, `${name}.less`),
+					jsxTemplates.less(name));
+
+				return resolve();
+			});
+		});
+	})
+}
+
+var makeServer = () => {
+	return new Promise((resolve) => {
+		fs.writeFileSync('server.js', templates.server());
+		mkdirp(path.join(location, 'server'), (err) => {
+			if(err) throw 'Could not create server folder';
+			mkdirp(path.join(location, 'shared'), (err) => {
+				if(err) throw 'Could not create shared folder';
+				return resolve();
+			});
+		});
+	});
+};
+
+var wrapUp = () => {
+	return new Promise((resolve) => {
+		console.log('\n\n DONE');
+	});
+};
+
+
+//npmInstall()
+//	.then(createGulpFile)
+createGulpFile
+	.then(makeClient)
+	.then(makeServer)
+	.then(wrapUp)
+	.catch((err) => {
+		console.log(`ERR: ${err.toString()}`.red);
+	})
+
+
+
