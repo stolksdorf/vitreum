@@ -18,6 +18,10 @@
   - default to using a base template internal to vitreum
   
 - Switch to using Promises for all tasks
+- Name the entry points using objects instead of arrays
+- Make the render be able to be used statically during tasks
+- Rename 'tasks' in vitreum to 'steps'
+- Vitreum Render should have a 'set to dev mode' in the `server.js`. Should default to on, but throw wranings unless explicitly set.
 
 - Remove `headtags` and switch to using [Helmet](https://github.com/nfl/react-helmet) maybe?
   - Maybe not, I could build in my own `rewind` on vitreum render
