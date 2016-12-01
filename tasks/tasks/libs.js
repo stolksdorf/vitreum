@@ -1,5 +1,6 @@
 var utils = require('../utils');
 var gulp = require('gulp');
+var gulpif = require('gulp-if');
 var _ = require('lodash');
 var fs = require('fs');
 
@@ -24,6 +25,6 @@ module.exports = function (config) {
 		.pipe(source('libs.js'))
 		.pipe(buffer())
 		.pipe(insert.append(clientLibs))
-		.pipe(uglify())
+		.pipe(gulpif(!config.DEV, uglify()))
 		.pipe(gulp.dest(config.buildPath));
 };
