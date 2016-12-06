@@ -1,12 +1,13 @@
+const log = require('./timeLog.js');
+
 const _ = require('lodash');
+const fs = require('fs');
 const browserify = require('browserify');
 const babelify = require('babelify');
-const chalk = require('chalk');
+const uglify = require("uglify-js");
 
-const uglify = require('gulp-uglify');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
-const gulp = require('gulp');
+
+const chalk = require('chalk');
 
 const storage = require('./storage.js');
 
@@ -36,7 +37,11 @@ const processDeps = (deps) => {
 
 
 module.exports = {
-	get : function(name, path, libs=[], shared=[]){
+	get : function(name, rootPath, libs=[], shared=[]){
+
+		//TODO: dump rootPath into storage
+
+
 		const bundler = browserify({
 				debug: !isProd,
 				cache: {},
@@ -44,7 +49,7 @@ module.exports = {
 				standalone : name,
 				paths : shared
 			})
-			.require(path)
+			.require(rootPath)
 			.transform({global: true}, babelify)
 			.external(libs);
 
@@ -57,28 +62,28 @@ module.exports = {
 			.on('end', () => {
 				const res = processDeps(deps);
 				showBundleWarnings(res.warnings);
-				storage.set(name, res.deps)
+				storage.set(name, res.deps);
+				//TODO: also dump jsx files in here
 			})
 
 		return bundler;
 	},
 	run : function(name, bundler){
-		return new Promise((resolve) => {
-			const bundle = bundler
-				.bundle()
-				.on('error', (err)=>{
-					console.log('BUNDLE ERR', err);
-					//utils.handleError.call(this, config.DEV, err)
-					throw err;
-				})
-				.pipe(source('bundle.js'))
-				.pipe(buffer());
+		return new Promise((resolve, reject) => {
+			bundler.bundle((err, buf) => {
+				if(err) return reject(err);
 
-			if(isProd) bundle.pipe(uglify());
+				let code = buf.toString();
 
-			bundle
-				.pipe(gulp.dest(`build/${name}`))
-				.on('finish', resolve);
+				if(isProd){
+					code = uglify.minify(buf.toString(), {fromString: true}).code;
+				}
+
+				fs.writeFile(`build/${name}/bundle.js`, code, (err)=>{
+					if(err) return reject(err);
+					return resolve();
+				});
+			})
 		});
 	}
 }

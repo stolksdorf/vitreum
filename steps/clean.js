@@ -1,3 +1,8 @@
+
+const log = require('./utils/timeLog.js');
+
+//TODO: make sure it creates a build folder
+
 var fs = require('fs');
 var rmdirAsync = function(path, callback) {
 	fs.readdir(path, function(err, files) {
@@ -43,10 +48,10 @@ var rmdirAsync = function(path, callback) {
 const label = 'clean';
 
 module.exports = () => {
-	console.time(label);
+	const end = log('clean');
 	return new Promise((resolve) => {
 		rmdirAsync('./build', ()=>{
-			console.timeEnd(label);
+			end();
 			return resolve();
 		})
 	});

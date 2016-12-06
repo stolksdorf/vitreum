@@ -1,35 +1,32 @@
-const gulp = require('gulp');
+const log = require('./utils/timeLog.js');
+
+const fs = require('fs');
 const browserify = require('browserify');
-const uglify = require('gulp-uglify');
-const source = require('vinyl-source-stream');
-const buffer = require('vinyl-buffer');
+const uglify = require("uglify-js");
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const label = 'libs';
 
 module.exports = (libs=[], addPaths=[]) => {
-	console.time(label);
-	return new Promise((resolve) => {
+	const logEnd = log('libs');
+	return new Promise((resolve, reject) => {
 
 		const bundle = browserify({ paths: addPaths })
 			.require(libs)
-			.bundle()
-			.on('error', (err)=>{
-				console.log('LIB BUNDLE ERR', err);
-				throw err;
-				//utils.handleError.call(this, config.DEV, err)
+			.bundle((err, buf) => {
+				if(err) return reject(err);
+
+				let code = buf.toString();
+
+				if(isProd){
+					code = uglify.minify(buf.toString(), {fromString: true}).code;
+				}
+
+				fs.writeFile(`build/libs.js`, code, (err)=>{
+					if(err) return reject(err);
+					logEnd();
+					return resolve();
+				});
 			})
-			.pipe(source('libs.js'))
-			.pipe(buffer())
-
-		if(isProd) bundle.pipe(uglify());
-
-		bundle
-			.pipe(gulp.dest('build'))
-			.on('finish', ()=>{
-				console.timeEnd(label);
-				return resolve();
-			});
 	});
 };

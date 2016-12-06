@@ -3,16 +3,11 @@ const React = require('react');
 const path = require('path');
 
 
-
 const isProd = process.env.NODE_ENV === 'production';
 
 
 var requireUncache = function(filePath){
-	var rc = require.cache[filePath];
-	if(rc){
-		//if(rc.parent.id) requireUncache(rc.parent.id);
-		delete require.cache[filePath];
-	}
+	delete require.cache[filePath];
 }
 
 
@@ -50,12 +45,16 @@ const getBody = (name, props) => {
 
 const render = (name, props={}, templateFn) => {
 	return new Promise((resolve) => {
-		const page = templateFn({
-			head : getHead(name),
-			body : getBody(name, props),
-			js   : getJS(name, props)
-		});
-		return resolve(page)
+		try{
+			const page = templateFn({
+				head : getHead(name),
+				body : getBody(name, props),
+				js   : getJS(name, props)
+			});
+			return resolve(page)
+		}catch(err){
+			console.log('CAUGHT ERR', err);
+		}
 	});
 };
 
