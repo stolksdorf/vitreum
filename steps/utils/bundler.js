@@ -1,17 +1,17 @@
-const log = require('./timeLog.js');
-
 const _ = require('lodash');
-const fs = require('fs');
+const fse = require('fs-extra');
+const path = require('path');
 const browserify = require('browserify');
 const babelify = require('babelify');
 const uglify = require("uglify-js");
-
-
 const chalk = require('chalk');
 
 const storage = require('./storage.js');
+const log = require('./timeLog.js');
 
 const isProd = process.env.NODE_ENV === 'production';
+
+
 
 const showBundleWarnings = (bundledLibs) => {
 	if(!bundledLibs.length) return;
@@ -25,6 +25,8 @@ const processDeps = (deps) => {
 		if(_.endsWith(file.id, '.jsx')){
 			r.jsx.push(file.id);
 		}
+
+		//TODO: Remove?
 		r.deps[file.id] = _.keys(file.deps);
 
 		//Check for bundled files that are actually libs
@@ -35,12 +37,12 @@ const processDeps = (deps) => {
 	}, { warnings : [], deps : {}, jsx : [] });
 };
 
+let jsxDeps = {};
 
 module.exports = {
-	get : function(name, rootPath, libs=[], shared=[]){
+	get : function(name, entryPoint, libs=[], shared=[]){
 
-		//TODO: dump rootPath into storage
-
+		storage.entryDir(name, path.dirname(entryPoint));
 
 		const bundler = browserify({
 				debug: !isProd,
@@ -49,11 +51,12 @@ module.exports = {
 				standalone : name,
 				paths : shared
 			})
-			.require(rootPath)
+			.require(entryPoint)
 			.transform({global: true}, babelify)
 			.external(libs);
 
 		//As we're bundling collect the project dependacies
+
 		let deps = [];
 		bundler.pipeline.get('deps')
 			.on('data', (data) => {
@@ -62,16 +65,22 @@ module.exports = {
 			.on('end', () => {
 				const res = processDeps(deps);
 				showBundleWarnings(res.warnings);
-				storage.set(name, res.deps);
-				//TODO: also dump jsx files in here
+				storage.deps(name, res.jsx);
+				console.log(name, res.jsx);
+				jsxDeps[name] = res.jsx;
 			})
 
 		return bundler;
 	},
 	run : function(name, bundler){
 		return new Promise((resolve, reject) => {
+
+			console.log(jsxDeps);
+
 			bundler.bundle((err, buf) => {
 				if(err) return reject(err);
+
+				console.log('test', jsxDeps);
 
 				let code = buf.toString();
 
@@ -79,9 +88,10 @@ module.exports = {
 					code = uglify.minify(buf.toString(), {fromString: true}).code;
 				}
 
-				fs.writeFile(`build/${name}/bundle.js`, code, (err)=>{
+				fse.outputFile(`build/${name}/bundle.js`, code, (err)=>{
 					if(err) return reject(err);
-					return resolve();
+					console.log(jsxDeps[name]);
+					return resolve(true, jsxDeps[name]);
 				});
 			})
 		});

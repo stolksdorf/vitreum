@@ -1,16 +1,16 @@
 const Bundler = require('./utils/bundler.js');
 const log = require('./utils/timeLog.js');
+const addPartial = require('./utils/addPartial.js');
 
 
-const runBundle = (name, path, libs, shared)=>{
+const runJSBundle = (name, path, libs, shared)=>{
 	const logEnd = log(`${name}[js]`);
+	return Bundler
+		.run(name, Bundler.get(name, path, libs))
+		.then((res) => {
+			logEnd();
+			return res;
+		})
+};
 
-	const bundler = Bundler.get(name, path, libs)
-
-	return Bundler.run(name, bundler)
-		.then(logEnd)
-
-}
-
-
-module.exports = runBundle;
+module.exports = addPartial(runJSBundle);

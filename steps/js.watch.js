@@ -1,13 +1,14 @@
+require('source-map-support').install();
+
 const watchify = require('watchify');
+const chokidar  = require('chokidar');
+const path  = require('path');
 
 const Bundler = require('./utils/bundler.js');
 const log = require('./utils/timeLog.js');
+const addPartial = require('./utils/addPartial.js');
+const storage = require('./storage.js');
 
-const chokidar  = require('chokidar');
-
-require('source-map-support').install();
-
-//TODO: Use chodirak to watch for added and removed files to rebuild
 
 const rebuild = (name, bundler) => {
 	const logEnd = log(`${name}-rebuild`);
@@ -15,17 +16,15 @@ const rebuild = (name, bundler) => {
 		.then(logEnd)
 		.catch((err) => {
 			console.error(err.toString());
-			//console.log(err);
 		});
-}
+};
 
-
-const watch = (name, path, libs)=>{
+const watch = (name, rootPath, libs)=>{
 	const bundler = Bundler.get(name, path, libs);
 	const _rebuild = rebuild.bind(null, name, bundler);
 
 	//Pull from storage
-	const rootPath = `client/${name}`;
+	const rootPath = path.dirname( `client/${name}`;
 
 	const logEnd = log(`${name}[js]`);
 	return Bundler.run(name, bundler)
@@ -33,15 +32,17 @@ const watch = (name, path, libs)=>{
 			logEnd();
 
 
-			watchify(bundler).on('update', _rebuild);
+
 
 			chokidar.watch(`${rootPath}/**/*.jsx`, {ignoreInitial : true})
-				.on('add', _rebuild);
-				.on('unlink', _rebuild);
+				.on('add', _rebuild); //Probably run a rebundle here
+				.on('unlink', _rebuild); //
+
+			watchify(bundler).on('update', _rebuild);
 
 			console.log(`Enabling js-watch for ${name}   ✓`);
 		});
 }
 
 
-module.exports = watch;
+module.exports = addPartial(watch);

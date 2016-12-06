@@ -11,11 +11,13 @@
 
 
 
-const LessStep = require('./less.js');
+const addPartial = require('./utils/addPartial.js');
 
 const chokidar  = require('chokidar');
 
 
+
+const LessStep = require('./less.js');
 
 /*
 if(fs.existsSync(lessName)) {
@@ -26,6 +28,7 @@ if(fs.existsSync(lessName)) {
 //TODO: Should close watcher on error
 
 const watch = (name, shared=[]) => {
+
 	//TODO: pull from storage
 	const rootPath = `client/${name}`;
 
@@ -33,9 +36,8 @@ const watch = (name, shared=[]) => {
 	return LessStep(name, shared)
 		.then(() => {
 			chokidar.watch(`${rootPath}/**/*.less`)
-				.on('change', () => {
-					LessStep(name, shared);
-				});
+				.on('change', LessStep.partial(name, shared))
+
 			console.log(`Enabling less-watch for ${name}   ✓`);
 		})
 

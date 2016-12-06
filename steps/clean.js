@@ -1,58 +1,21 @@
-
 const log = require('./utils/timeLog.js');
+const fse = require('fs-extra');
 
-//TODO: make sure it creates a build folder
 
-var fs = require('fs');
-var rmdirAsync = function(path, callback) {
-	fs.readdir(path, function(err, files) {
-		if(err) {
-			// Pass the error on to callback
-			callback(err, []);
-			return;
-		}
-		var wait = files.length,
-			count = 0,
-			folderDone = function(err) {
-			count++;
-			// If we cleaned out all the files, continue
-			if( count >= wait || err) {
-				fs.rmdir(path,callback);
-			}
-		};
-		// Empty directory to bail early
-		if(!wait) {
-			folderDone();
-			return;
-		}
-
-		// Remove one or more trailing slash to keep from doubling up
-		path = path.replace(/\/+$/,"");
-		files.forEach(function(file) {
-			var curPath = path + "/" + file;
-			fs.lstat(curPath, function(err, stats) {
-				if( err ) {
-					callback(err, []);
-					return;
-				}
-				if( stats.isDirectory() ) {
-					rmdirAsync(curPath, folderDone);
-				} else {
-					fs.unlink(curPath, folderDone);
-				}
-			});
-		});
-	});
-};
-
-const label = 'clean';
-
-module.exports = () => {
-	const end = log('clean');
-	return new Promise((resolve) => {
-		rmdirAsync('./build', ()=>{
-			end();
+const clean = (yo, b) => {
+	console.log(yo, b);
+	const endLog = log('clean');
+	return new Promise((resolve, reject) => {
+		fse.emptydir('./build', (err)=>{
+			if(err) return reject(err);
+			endLog();
 			return resolve();
 		})
 	});
+};
+
+clean.partial = (...args) => {
+	return clean.bind(this, ...args)
 }
+
+module.exports = clean;
