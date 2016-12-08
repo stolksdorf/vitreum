@@ -6,8 +6,8 @@ const fs = require('fs');
 //Add getRootDir(name)
 //Add get deps
 
-const storage = require('./utils/storage.js');
-const log = require('./utils/timeLog.js');
+//const storage = require('./utils/storage.js');
+const log = require('./utils/log.js');
 const addPartial = require('./utils/addPartial.js');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -34,36 +34,28 @@ const getLessImports = (deps) => {
 
 
 const runStyle = (name, shared, deps) => {
-	const logEnd = log(`${name}[less]`);
-
+	const logEnd = log.time(`${name}[less]`);
 	return new Promise((resolve, reject) => {
 		//const deps = storage.deps(name);
 		if(!shared && !deps) deps = shared;
-		if(!deps) return reject(`Dependacies for '${name}' not set. Try running the js build first.`);
+		if(!deps) return reject(log.noDeps(name));
 
-		less.render(getLessImports(deps),
-			{
+		less.render(getLessImports(deps), {
 				//TODO: auto add node_modules?
 				paths: shared,  // Specify search paths for @import directives
 				filename: `${name}.less`, // Specify a filename, for better error messages
 				compress: isProd,
-
 				sourceMap: {sourceMapFileInline: !isProd}
 			},
 			(err, res) => {
+				if(err) return reject(err);
 
-
-				if(err){
-					console.log('err', err);
-					return reject(err);
-				}
-
-			fs.writeFile(`build/${name}/bundle.css`, res.css, (err)=>{
-				logEnd();
-				return resolve();
+				fs.writeFile(`build/${name}/bundle.css`, res.css, (err)=>{
+					if(err) return reject(err);
+					logEnd();
+					return resolve();
+				});
 			});
-		})
-
 	});
 };
 

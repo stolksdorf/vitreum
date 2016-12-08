@@ -1,44 +1,37 @@
-
-
 const _ = require('lodash');
 const fse = require('fs-extra');
 const path = require('path');
+const minimatch = require('minimatch');
 
-const log = require('./utils/timeLog.js');
+const log = require('./utils/log.js');
 const addPartial = require('./utils/addPartial.js');
 
 
-
-const runAssets = (name, exts=[], shared=[]) => {
-	const endLog = log('assets');
+const scanFolder = (globs, folder) => {
 	return new Promise((resolve, reject) => {
-
-		//TODO: try adding entryDir to shared list
-
-		//loop over the following for each shared
-
-		const rootPath = './client/main';
-		const name = 'main';
-		const exts = ['.txt'];
-
-		console.log(path.basename(rootPath));
-
 		let items = [];
-		fse.walk(rootPath)
+		fse.walk(folder)
 			.on('data', (item) => {
-				if(_.includes(exts, path.extname(item.path))){
-					items.push(item.path)
-				}
+				const matched = _.find(globs, (glob) => {
+					return minimatch(item.path, glob, {matchBase : true});
+				});
+				if(matched) items.push(item.path);
 			})
 			.on('end', function () {
 				_.each(items, (assetPath)=>{
-					const dest = path.resolve(`./build/assets/${name}`, path.relative(rootPath, assetPath));
+					const dest = path.resolve(`./build/assets`, path.relative(folder, assetPath));
 					fse.copySync(assetPath, dest);
-				})
-				endLog();
+				});
 				return resolve();
 			});
 		});
+};
+
+const runAssets = (globs, folders) => {
+	const endLog = log.time('assets');
+	return Promise.all(_.map(_.flatten(folders), (folder)=>{
+		return scanFolder(globs, folder);
+	})).then(endLog);
 };
 
 module.exports = addPartial(runAssets);
