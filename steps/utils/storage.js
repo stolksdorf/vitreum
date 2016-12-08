@@ -2,6 +2,9 @@ let storage = {};
 let deps = {};
 let entryDir = {};
 
+
+//Rename to watch.storage
+
 module.exports = {
 	get : (key) => { return storage[key]; },
 	set : (key, value) => { storage[key] = value; },

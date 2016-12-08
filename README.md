@@ -1,6 +1,10 @@
 #vitreum
 [![bitHound Overall Score](https://www.bithound.io/github/stolksdorf/vitreum/badges/score.svg)](https://www.bithound.io/github/stolksdorf/vitreum)
 
+`vitreum` is a _very_ opinionated build system for front-end projects. Built for projects using React, Less, and Node. `vitreum` focuses on incredibly fast build times and tooling for tightly active development.
+
+
+
 vitreum is a build system for web apps using a specific project structure. It use React, gulp, Browserify, and Less. It's broken into three main components.
 
 **Tasks** : Adds a series of gulp tasks to create built files for development and production
@@ -9,22 +13,57 @@ vitreum is a build system for web apps using a specific project structure. It us
 
 **Headtags** : (might be moved into it's own module later) Modifying tags within the head with an isomorphic app is tricky. This package makes it easy.
 
-### project structure
+### example project structure
 ```
 /myProj
 ├─ /build/...
 ├─ /node_modules/...
 ├─ /client
-|   ├─ template.dot
+|   ├─ template.js
 |   └─ /entryPointA
 |      ├─ entryPointA.jsx
 |      └─ entryPointA.less
+├─ /scripts
+|   ├─ build.js
+|   ├─ dev.js
+|   └─ project.json
 ├─ /shared
 |   └─ /myProj/...
-├─ /server/...
-├─ server.js
-└─ gulpfile.js
+├─ /server
+|   ├─ myAPI.js
+|   └─ ...
+└─ server.js
 ```
+
+`/build` - Where vitreum will store it's built files. This folder should be `.gitignore`d.
+`/client` - Where all of your client side code should be put
+`/templateFn.js` - A function that produces a string-representation of your page.
+`/entrypoint` - Entrypoints are to-level React components that vitreum will build a bundle from. A project should have 1 or few of these, since each will create it's own standalone bundles
+
+
+
+### steps
+
+vitreum exposes a series of steps you can use to create build and development scripts for your project. Each step is a `promise`, so they can be easily chained.
+
+clean
+libs
+jsx
+less
+assets
+
+
+
+#### watch steps
+*Note*: These steps are only available when `vitreum` is installed in non-production envirnoments. Don't use them in production build steps!
+
+jsxWatch
+lessWatch
+assetsWatch
+livereload
+serverWatch
+
+
 
 ### global functions
 If you install vitreum globally, `npm install -g vitreum`, it will create a `jsx` and `vitreum` bin that you can use from the commandline.

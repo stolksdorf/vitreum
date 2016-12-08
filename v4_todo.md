@@ -1,3 +1,29 @@
+
+### Wednesday, 07/12/2016
+- [ ] Assets only takes two parameters
+- [x] rename `js.js` to `jsx.js`
+- [ ] Add optional npm install message to v-cli
+- [x] rename `timeLog.js` to `log.js`
+- [x] rename log to `time`
+- [x] Add a watch log to `log.js`
+- [x] Add bundle warnings to `log.js`
+- [ ] Add messages when file add/remove is detected
+- [ ] Add a `examples.md` outlining good examples for each file
+- [x] Make sure live reload works on just build folder
+- [ ] Get headtags working, make sure to merge into template head
+-Render should take a fourth parameter to merge with the original config
+- [ ] Asset should use a glob match for specific file names, `face.tracking.js`;
+- [ ] Make an `how_to.md`
+  - How to add a client-side config
+  - How to add client-only libs/scripts
+  - How to statically render a page
+  - How to avoid using `render` in prod. Make templates (for handlebars) using the render fn
+- [ ] Allow build folder to be set, maybe via storage?
+- [x] move logging into the bundler
+- [ ] Make sure that everything works with `.babelrc` (Can this be set actually within vitreum?)
+- Make sure you can import less directly from node_modules (eg. Palette)
+
+
 ## v4 Ideas
 - Remove the need for an acrhitecture.json, keep the style list in memory
   - Rename the less task to be more generic
@@ -16,7 +42,7 @@
   - Focus on using raw functions or strings. No fancy markup
   - Consider using a react component for the main template, can pass the data via props.
   - default to using a base template internal to vitreum
-  
+
 - Switch to using Promises for all tasks
 - Name the entry points using objects instead of arrays
 - Make the render be able to be used statically during tasks
@@ -35,7 +61,7 @@
 
 - Separate vitreum into a prod install and dev install
   - Prod install only installs deps needed for a prod build, no watching or colors or whatnot
-  
+
 - Simplify the `vitreumRender` function. It should take the bare minimum args: Component and args
   - Should be promised based
   - Remove `globals`
