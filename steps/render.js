@@ -2,6 +2,7 @@ const ReactDOMServer = require('react-dom/server');
 const React = require('react');
 const path = require('path');
 
+const HeadTags = require('./head/head.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -11,10 +12,10 @@ var requireUncache = function(filePath){
 }
 
 
-//TODO: add in head tags here
 const getHead = (name) => {
 	return `
 <link rel="stylesheet" type="text/css" href="/${name}/bundle.css" />
+${HeadTags()}
 `;
 };
 
@@ -44,11 +45,16 @@ const getBody = (name, props) => {
 };
 
 const render = (name, props={}, templateFn) => {
+
+
+
 	return new Promise((resolve) => {
+		const body = getBody(name, props); //body has to render first for head tags
+
 		try{
 			const page = templateFn({
 				head : getHead(name),
-				body : getBody(name, props),
+				body : body,
 				js   : getJS(name, props)
 			});
 			return resolve(page)

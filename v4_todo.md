@@ -1,6 +1,6 @@
 
 ### Wednesday, 07/12/2016
-- [ ] Assets only takes two parameters
+- [x] Assets only takes two parameters
 - [x] rename `js.js` to `jsx.js`
 - [ ] Add optional npm install message to v-cli
 - [x] rename `timeLog.js` to `log.js`
@@ -11,7 +11,7 @@
 - [ ] Add a `examples.md` outlining good examples for each file
 - [x] Make sure live reload works on just build folder
 - [ ] Get headtags working, make sure to merge into template head
--Render should take a fourth parameter to merge with the original config
+- [ ] Render should take a fourth parameter to merge with the original config
 - [ ] Asset should use a glob match for specific file names, `face.tracking.js`;
 - [ ] Make an `how_to.md`
   - How to add a client-side config

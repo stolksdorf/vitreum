@@ -34,6 +34,7 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 			}
 			if(file.id.indexOf('node_modules') !== -1){
 				warnings.push(path.dirname(file.id.substring(file.id.indexOf('node_modules') + 13)));
+				//warnings.push(file.id.substring(file.id.indexOf('node_modules') + 13));
 			}
 		});
 

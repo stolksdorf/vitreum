@@ -1,12 +1,14 @@
+const _ = require('lodash');
 const chalk = require('chalk');
 
 module.exports = {
 
 	libWarnings : (bundledLibs) => {
 		if(!bundledLibs.length) return;
+		const libs = _.uniq(bundledLibs);
 		console.log(chalk.red("Warning: ") + "The following node modules are in your js bundle.");
-		console.log('    ' + chalk.yellow(bundledLibs.join('\n    ')));
-		console.log(chalk.green("Consider adding these the 'libs' field in your project.json\n"));
+		console.log('    ' + chalk.yellow(libs.join('\n    ')));
+		console.log(chalk.green("Consider adding these to the 'libs' parameter on your jsx step\n"));
 	},
 
 	time : (label) => {
