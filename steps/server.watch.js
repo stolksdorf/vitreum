@@ -8,18 +8,20 @@ const addPartial = require('./utils/addPartial.js');
 
 
 const watchServer = (serverPath, watchFolders=[])=>{
+	log.checkProduction('server-watch');
+
 	nodemon({
 		script: serverPath,
 		watch: _.map(_.concat(watchFolders, serverPath), (watch)=>{
 			return path.normalize(watch)
 		})
 	});
-	nodemon.on('start', () => {
-		//TODO: make all endabled a special color
-		log.watch(`Enabled server watching   ✓ 👁 🕒 `);
-	}).on('restart', (files) => {
-		console.log('Server restart');
-	});
+	nodemon
+		.on('restart', (files) => {
+			console.log('Server restart');
+		});
+
+	log.watch(`Enabled server watching`);
 	return Promise.resolve();
 };
 

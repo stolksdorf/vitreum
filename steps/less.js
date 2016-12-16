@@ -36,9 +36,9 @@ const getLessImports = (deps) => {
 const runStyle = (name, shared, deps) => {
 	const logEnd = log.time(`${name}[less]`);
 	return new Promise((resolve, reject) => {
-		//const deps = storage.deps(name);
 		if(!shared && !deps) deps = shared;
 		if(!deps) return reject(log.noDeps(name));
+		if(_.isString(shared)) shared = [shared];
 
 		less.render(getLessImports(deps), {
 				//TODO: auto add node_modules?
