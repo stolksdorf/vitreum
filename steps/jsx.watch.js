@@ -1,5 +1,6 @@
 require('source-map-support').install();
 
+const _ = require('lodash');
 const watchify = require('watchify');
 const chokidar  = require('chokidar');
 const path  = require('path');
@@ -22,7 +23,7 @@ const rebuild = (name, bundler) => {
 };
 */
 
-const watch = (name, entryPoint, libs, shared)=>{
+const jsxwatch = (name, entryPoint, libs, shared)=>{
 	log.checkProduction('jsx-watch');
 
 	//const bundler = Bundler.get(name, path, libs);
@@ -31,26 +32,26 @@ const watch = (name, entryPoint, libs, shared)=>{
 
 	//TODO: Add entryDir to storage for less-watch
 	const entryDir = path.dirname(entryPoint);
+	storage.entryDir(name, entryDir);
 
 
 	let bundler;
 	const remakeBundler = ()=>{
 		bundler = jsx.makeBundler(name, entryPoint, libs, shared);
+		bundler.rawBundler.plugin(watchify);
 	};
 	const rebundle = ()=>{
-		console.log('rebundling');
 		return bundler.run()
-			.then((deps) => {
-				console.log('new deps', deps);
-				//store these for access from less.watch
-				storage.deps(name, deps);
+			.then(() => {
+				const newDeps = _.keys(bundler.rawBundler._options.cache);
+				storage.deps(name, newDeps);
 			})
 			.catch((err) => {
 				console.error(err.toString());
 			});
 	}
 	const rebuild = (label) => {
-		console.log(label);
+		log.updateCache(label);
 		remakeBundler();
 		rebundle();
 	}
@@ -60,31 +61,23 @@ const watch = (name, entryPoint, libs, shared)=>{
 	//Possibly just use rebundle here
 	return bundler.run()
 		.then((deps) => {
-
-			//deps: store these for access from less.watch
 			storage.deps(name, deps);
 
-			console.log('setup watchify', bundler.rawBundler);
-			watchify(bundler.rawBundler).on('update', ()=>{
-
-				console.log('yo');
-				rebundle();
-			});
-
+			watchify(bundler.rawBundler).on('update', rebundle);
 
 			chokidar.watch([`${entryDir}/**/*.jsx`, `${entryDir}/**/*.js`], {ignoreInitial : true})
 				.on('add', ()=>{
-					rebuild('js file added');
-				}) //Probably run a rebundle here
+					rebuild('file added');
+				})
 				.on('unlink', ()=>{
-					rebuild('js file removed');
+					rebuild('file removed');
 				});
 
 
 
-			log.watch(`Enabling js-watch for ${name}   ✓`);
+			log.watch(`Enabling js-watch for ${name}`);
 		});
 }
 
 
-module.exports = addPartial(watch);
+module.exports = addPartial(jsxwatch);

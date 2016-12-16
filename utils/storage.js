@@ -1,7 +1,8 @@
 global.vitreum = {
 	title : null,
 	meta : [],
-	deps : {}
+	deps : {},
+	entryDir : {}
 };
 
 module.exports = {
@@ -17,5 +18,9 @@ module.exports = {
 	deps : (name, val) => {
 		if(val) global.vitreum.deps[name] = val;
 		return global.vitreum.deps[name];
+	},
+	entryDir : (name, val) => {
+		if(val) global.vitreum.entryDir[name] = val;
+		return global.vitreum.entryDir[name];
 	}
 };

@@ -16,7 +16,7 @@ module.exports = {
 		console.log(chalk.gray(`${label}...`));
 		//TODO: add some color
 		return () => {
-			console.log(`${label}     ${chalk.green('✓')} ${Date.now() - time}ms`);
+			console.log(`${label} \t ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
 		}
 	},
 
@@ -26,7 +26,7 @@ module.exports = {
 	},
 
 	watch : (label) => {
-		console.log(chalk.magenta(`${label}   `));
+		console.log(chalk.magenta(`   ${label}`));
 	},
 
 	checkProduction : (label) => {
@@ -34,6 +34,10 @@ module.exports = {
 		if(isProd){
 			console.log(`${chalk.red('Warning: ')} You are using the step '${label}' in production mode. This step will not work on a production install of Vitreum.`);
 		}
+	},
+
+	updateCache : (label) => {
+		console.log(chalk.gray(`  ${label}, updating bundle cache...`));
 	}
 
 };

@@ -24,7 +24,6 @@
     "minimatch": "^3.0.3",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "source-map-support": "^0.4.6",
     "uglify-js": "^2.7.5"
   },
   "keywords": [
@@ -36,6 +35,7 @@
     "chokidar": "^1.6.1",
     "livereload": "^0.6.0",
     "nodemon": "^1.11.0",
+    "source-map-support": "^0.4.6",
     "watchify": "^3.8.0"
   }
 }

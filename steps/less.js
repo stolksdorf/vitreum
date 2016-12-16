@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const less = require('less');
 const fs = require('fs');
+const path = require('path');
 
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
@@ -9,11 +10,12 @@ const isProd = process.env.NODE_ENV === 'production';
 
 
 const getLessImports = (deps) => {
-	return _.reduce(deps, (r, jsxFile)=>{
-		const lessPath = jsxFile.replace('.jsx', '.less');
+	return _.reduce(deps, (r, depFilename)=>{
+		if(path.extname(depFilename) !== '.jsx') return r;
+		const lessPath = depFilename.replace('.jsx', '.less');
 		try{
 			fs.accessSync(lessPath, fs.constants.R_OK);
-			r.push(`@import "${lessPath}";`);
+			r.unshift(`@import "${lessPath}";`);
 		}catch(e){}
 		return r;
 	},[]).join('\n');
@@ -38,7 +40,6 @@ const runStyle = (name, shared, deps) => {
 			},
 			(err, res) => {
 				if(err) return reject(err);
-
 				fs.writeFile(`build/${name}/bundle.css`, res.css, (err)=>{
 					if(err) return reject(err);
 					logEnd();
