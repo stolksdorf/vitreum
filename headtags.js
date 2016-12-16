@@ -13,7 +13,6 @@ module.exports = {
 			return null;
 		}
 	}),
-
 	meta : React.createClass({
 		componentWillMount: function() {
 			Storage.meta(this.props);

@@ -45,7 +45,7 @@ const watch = (name, shared=[]) => {
 					LessStep(name, shared, storage.deps(name))
 				})
 
-			console.log(`Enabling less-watch for ${name}   ✓`);
+			log.watch(`Enabling less-watch for ${name}`);
 		})
 
 

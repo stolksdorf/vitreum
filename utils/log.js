@@ -13,10 +13,10 @@ module.exports = {
 
 	time : (label) => {
 		const time = Date.now();
-		console.log(`${label}...`);
+		console.log(chalk.gray(`${label}...`));
 		//TODO: add some color
 		return () => {
-			console.log(`${label}   ✓ ${Date.now() - time}ms`);
+			console.log(`${label}     ${chalk.green('✓')} ${Date.now() - time}ms`);
 		}
 	},
 
@@ -26,7 +26,7 @@ module.exports = {
 	},
 
 	watch : (label) => {
-		console.log(`${label}   `);
+		console.log(chalk.magenta(`${label}   `));
 	},
 
 	checkProduction : (label) => {

@@ -1,17 +1,14 @@
-//const _ = require('lodash');
+const _ = require('lodash');
 const path = require('path');
-
 const fse = require('fs-extra');
 const browserify = require('browserify');
 const babelify = require('babelify');
 const uglify = require("uglify-js");
 
-//const Bundler = require('../utils/bundler.js');
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
 
 const isProd = process.env.NODE_ENV === 'production';
-
 
 const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 	let jsxDeps = [];
@@ -33,8 +30,8 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 				jsxDeps.push(file.id);
 			}
 			if(file.id.indexOf('node_modules') !== -1){
-				warnings.push(path.dirname(file.id.substring(file.id.indexOf('node_modules') + 13)));
-				//warnings.push(file.id.substring(file.id.indexOf('node_modules') + 13));
+				const moduleName = path.dirname(file.id.substring(file.id.indexOf('node_modules') + 13))
+				warnings.push(moduleName);
 			}
 		});
 
@@ -71,10 +68,6 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 		rawBundler : bundler
 	};
 };
-
-
-
-
 
 const runJSX = (name, entryPoint, libs, shared)=>{
 	return makeBundler(name, entryPoint, libs, shared).run();
