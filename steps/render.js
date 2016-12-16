@@ -2,7 +2,7 @@ const ReactDOMServer = require('react-dom/server');
 const React = require('react');
 const path = require('path');
 
-const HeadTags = require('./head/headtags.js');
+const HeadTags = require('./utils/headtags.gen.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -29,8 +29,8 @@ const getJS = (name, props) => {
 const runtime = (name, props)=>{
 	return `
 	(function(){
-		var root = document.getElementById('react');
-		if(!root) throw "Vitreum: Could not find element with id 'react' to mount into";
+		var root = document.getElementById('reactRoot');
+		if(!root) throw "Vitreum: Could not find element with id 'reactRoot' to mount into";
 		var element = require('react').createElement(${name}, ${JSON.stringify(props)});
 		require('react-dom').render(element, root);
 	})();

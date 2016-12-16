@@ -8,7 +8,7 @@ const fs = require('fs');
 
 //const storage = require('./utils/storage.js');
 const log = require('./utils/log.js');
-const addPartial = require('./utils/addPartial.js');
+const addPartial = require('./utils/partialfn.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 

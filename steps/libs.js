@@ -1,5 +1,5 @@
 const log = require('./utils/timeLog.js');
-const addPartial = require('./utils/addPartial.js');
+const addPartial = require('./utils/partialfn.js');
 
 const fs = require('fs');
 const browserify = require('browserify');

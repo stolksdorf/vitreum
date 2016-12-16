@@ -4,7 +4,7 @@ const path = require('path');
 
 
 const log = require('./utils/log.js');
-const addPartial = require('./utils/addPartial.js');
+const addPartial = require('./utils/partialfn.js');
 
 
 const watchServer = (serverPath, watchFolders=[])=>{

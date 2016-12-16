@@ -6,7 +6,7 @@ const path  = require('path');
 
 //const Bundler = require('./utils/bundler.js');
 const log = require('./utils/log.js');
-const addPartial = require('./utils/addPartial.js');
+const addPartial = require('./utils/partialfn.js');
 const storage = require('./utils/storage.js');
 
 const jsx = require('./jsx.js');

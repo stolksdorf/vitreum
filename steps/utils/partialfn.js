@@ -1,5 +1,5 @@
 module.exports = (fn)=>{
-	fn.partial = (...args)=>{
+	fn.partial = function(...args){
 		return fn.bind(this, ...args);
 	};
 	return fn;
