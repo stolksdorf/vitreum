@@ -29,7 +29,7 @@ const scanFolder = (globs, folder) => {
 
 const runAssets = (globs, folders) => {
 	const endLog = log.time('assets');
-	return Promise.all(_.map(_.flatten(folders), (folder)=>{
+	return Promise.all(_.map(folders, (folder)=>{
 		return scanFolder(globs, folder);
 	})).then(endLog);
 };

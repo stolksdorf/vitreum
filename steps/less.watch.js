@@ -11,7 +11,7 @@ const lesswatch = (name, shared=[]) => {
 	const rootPath = storage.entryDir(name);
 	return LessStep(name, shared, storage.deps(name))
 		.then(() => {
-			chokidar.watch(`${rootPath}/**/*.less`)
+			chokidar.watch(`${rootPath}/**/*.less`, {ignoreInitial : true})
 				.on('change', ()=>{
 					LessStep(name, shared, storage.deps(name))
 						.catch((err) => {
@@ -22,4 +22,4 @@ const lesswatch = (name, shared=[]) => {
 		});
 };
 
-module.exports = lesswatch;
+module.exports = addPartial(lesswatch);

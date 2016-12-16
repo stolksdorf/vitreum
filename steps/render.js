@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const ReactDOMServer = require('react-dom/server');
 const React = require('react');
 const path = require('path');
@@ -6,11 +7,9 @@ const HeadTags = require('../utils/headtags.gen.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-
-var requireUncache = function(filePath){
+const requireUncache = (filePath) => {
 	delete require.cache[filePath];
-}
-
+};
 
 const getHead = (name) => {
 	return `
@@ -44,22 +43,21 @@ const getBody = (name, props) => {
 	return ReactDOMServer.renderToString(React.createElement(Element, props));
 };
 
-const render = (name, props={}, templateFn) => {
+const render = (name, templateFn, props={}, additionalParameters) => {
+	if(!_.isFunction(templateFn)) throw 'No template function provided';
 
-
-
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		const body = getBody(name, props); //body has to render first for head tags
-
 		try{
 			const page = templateFn({
 				head : getHead(name),
 				body : body,
 				js   : getJS(name, props)
-			});
+			}, additionalParameters);
 			return resolve(page)
 		}catch(err){
 			console.log('CAUGHT ERR', err);
+			return reject(err);
 		}
 	});
 };

@@ -14,7 +14,6 @@ module.exports = {
 	time : (label) => {
 		const time = Date.now();
 		console.log(chalk.gray(`${label}...`));
-		//TODO: add some color
 		return () => {
 			console.log(`${label} \t ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
 		}
@@ -26,13 +25,14 @@ module.exports = {
 	},
 
 	watch : (label) => {
-		console.log(chalk.magenta(`   ${label}`));
+		console.log(chalk.magenta(`  ${label}`));
 	},
 
 	checkProduction : (label) => {
 		const isProd = process.env.NODE_ENV === 'production';
 		if(isProd){
-			console.log(`${chalk.red('Warning: ')} You are using the step '${label}' in production mode. This step will not work on a production install of Vitreum.`);
+			console.log(`${chalk.red('Warning:')} You are using the dev step '${label}' in production mode.`);
+			console.log(`         This step will fail with a production install of Vitreum.`);
 		}
 	},
 
