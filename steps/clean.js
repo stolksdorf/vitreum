@@ -1,10 +1,10 @@
-const log = require('./utils/timeLog.js');
 const fse = require('fs-extra');
 
+const log = require('../utils/log.js');
+const addPartial = require('../utils/partialfn.js');
 
-const clean = (yo, b) => {
-	console.log(yo, b);
-	const endLog = log('clean');
+const clean = () => {
+	const endLog = log.time('clean');
 	return new Promise((resolve, reject) => {
 		fse.emptydir('./build', (err)=>{
 			if(err) return reject(err);
@@ -14,8 +14,5 @@ const clean = (yo, b) => {
 	});
 };
 
-clean.partial = (...args) => {
-	return clean.bind(this, ...args)
-}
 
-module.exports = clean;
+module.exports = addPartial(clean);

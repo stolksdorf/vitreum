@@ -2,7 +2,7 @@ const ReactDOMServer = require('react-dom/server');
 const React = require('react');
 const path = require('path');
 
-const HeadTags = require('./utils/headtags.gen.js');
+const HeadTags = require('../utils/headtags.gen.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 

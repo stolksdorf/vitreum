@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 
-
 module.exports = {
 
 	libWarnings : (bundledLibs) => {
@@ -21,12 +20,6 @@ module.exports = {
 		}
 	},
 
-	/*
-	watch : (type, name) => {
-		console.log(`Enabling ${type} for ${name}   ✓`);
-	},
-	*/
-
 	noDeps : (label) => {
 		console.log(`${chalk.red('Warning: ')} No dependacy list provided for ${label} less step.`);
 		console.log(chalk.green('  Try running the jsx step first.'));
@@ -42,11 +35,5 @@ module.exports = {
 			console.log(`${chalk.red('Warning: ')} You are using the step '${label}' in production mode. This step will not work on a production install of Vitreum.`);
 		}
 	}
-
-	/*
-	noDeps : (name) => {
-		return `Dependacies for '${name}' not set. Try running the js build first.`
-	}
-	*/
 
 };

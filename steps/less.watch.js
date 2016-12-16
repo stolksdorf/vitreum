@@ -1,7 +1,7 @@
 //const _ = require('lodash');
 
-const storage = require('./utils/storage.js');
-//const log = require('./utils/timeLog.js');
+const storage = require('../utils/storage.js');
+//const log = require('../utils/timeLog.js');
 
 //const isProd = process.env.NODE_ENV === 'production';
 
@@ -10,8 +10,8 @@ const storage = require('./utils/storage.js');
 
 
 
-const log = require('./utils/log.js');
-const addPartial = require('./utils/partialfn.js');
+const log = require('../utils/log.js');
+const addPartial = require('../utils/partialfn.js');
 
 const chokidar  = require('chokidar');
 

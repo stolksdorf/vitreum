@@ -1,17 +1,16 @@
-const log = require('./utils/timeLog.js');
-const addPartial = require('./utils/partialfn.js');
-
 const fs = require('fs');
 const browserify = require('browserify');
 const uglify = require("uglify-js");
 
+const log = require('../utils/log.js');
+const addPartial = require('../utils/partialfn.js');
+
 const isProd = process.env.NODE_ENV === 'production';
 
-
-const runLibs = (libs=[], addPaths=[]) => {
-	const logEnd = log('libs');
+const runLibs = (libs=[], shared=[]) => {
+	const logEnd = log.time('libs');
 	return new Promise((resolve, reject) => {
-		const bundle = browserify({ paths: addPaths })
+		const bundle = browserify({ paths: shared })
 			.require(libs)
 			.bundle((err, buf) => {
 				if(err) return reject(err);

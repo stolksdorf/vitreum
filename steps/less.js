@@ -6,9 +6,9 @@ const fs = require('fs');
 //Add getRootDir(name)
 //Add get deps
 
-//const storage = require('./utils/storage.js');
-const log = require('./utils/log.js');
-const addPartial = require('./utils/partialfn.js');
+//const storage = require('../utils/storage.js');
+const log = require('../utils/log.js');
+const addPartial = require('../utils/partialfn.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 

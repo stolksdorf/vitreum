@@ -6,9 +6,9 @@ const browserify = require('browserify');
 const babelify = require('babelify');
 const uglify = require("uglify-js");
 
-//const Bundler = require('./utils/bundler.js');
-const log = require('./utils/log.js');
-const addPartial = require('./utils/partialfn.js');
+//const Bundler = require('../utils/bundler.js');
+const log = require('../utils/log.js');
+const addPartial = require('../utils/partialfn.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 

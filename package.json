@@ -13,6 +13,8 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
+    "babel-preset-env": "^1.1.1",
+    "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",
     "chalk": "^1.1.3",

@@ -1,7 +1,7 @@
 const livereload = require('livereload');
 
 
-const log = require('./utils/log.js');
+const log = require('../utils/log.js');
 
 let lr_server;
 

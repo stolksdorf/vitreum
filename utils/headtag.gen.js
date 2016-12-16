@@ -2,7 +2,7 @@ const _ = require('lodash');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
-const Storage = require('../utils/storage.js');
+const Storage = require('./storage.js');
 
 const renderTags = ()=>{
 	const headTags = _.map(Storage.meta(), (metaProps) => {

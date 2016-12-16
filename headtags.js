@@ -1,5 +1,5 @@
 const React = require('react');
-const Storage = require('../utils/storage.js');
+const Storage = require('./utils/storage.js');
 
 module.exports = {
 	title : React.createClass({

@@ -1,4 +1,4 @@
-const log = require('./utils/log.js');
+const log = require('../utils/log.js');
 
 const AssetsStep = require('./assets.js');
 
