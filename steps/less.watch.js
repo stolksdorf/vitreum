@@ -17,7 +17,7 @@ const lesswatch = (name, shared=[]) => {
 						.catch((err) => {
 							console.error(err.toString());
 						});
-				})
+				});
 			log.watch(`Enabling less-watch for ${name}`);
 		});
 };

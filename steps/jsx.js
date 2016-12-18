@@ -30,13 +30,13 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 				jsxDeps.push(file.id);
 			}
 			if(file.id.indexOf('node_modules') !== -1){
-				const moduleName = path.dirname(file.id.substring(file.id.indexOf('node_modules') + 13))
+				const moduleName = path.dirname(file.id.substring(file.id.indexOf('node_modules') + 13));
 				warnings.push(moduleName);
 			}
 		});
 
 	const run = ()=>{
-		const logEnd = log.time(`${name}[js]`)
+		const logEnd = log.time(`${name}[js]`);
 		return new Promise((resolve, reject) => {
 			jsxDeps = [];
 			warnings = [];
@@ -59,7 +59,7 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 					logEnd();
 					return resolve(jsxDeps);
 				});
-			})
+			});
 		});
 	};
 

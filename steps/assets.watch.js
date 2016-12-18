@@ -23,7 +23,7 @@ const assetwatch = (globs, folders) => {
 				.on('unlink', assets.partial(globs, folders));
 
 			log.watch(`Enabling asset-watch`);
-		})
+		});
 };
 
 module.exports = addPartial(assetwatch);

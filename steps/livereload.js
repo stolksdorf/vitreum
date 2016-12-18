@@ -7,4 +7,4 @@ module.exports = () => {
 	log.watch('live reoad running');
 	if(!lr_server) lr_server = livereload.createServer();
 	return lr_server.watch(`build`);
-}
+};

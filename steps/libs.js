@@ -23,7 +23,7 @@ const runLibs = (libs=[], shared=[]) => {
 					logEnd();
 					return resolve();
 				});
-			})
+			});
 	});
 };
 

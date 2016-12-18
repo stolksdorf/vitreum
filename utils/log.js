@@ -16,7 +16,7 @@ module.exports = {
 		console.log(chalk.gray(`${label}...`));
 		return () => {
 			console.log(`${label} \t ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
-		}
+		};
 	},
 
 	noDeps : (label) => {

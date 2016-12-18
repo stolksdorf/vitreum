@@ -10,7 +10,7 @@ const clean = () => {
 			if(err) return reject(err);
 			endLog();
 			return resolve();
-		})
+		});
 	});
 };
 

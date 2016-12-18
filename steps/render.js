@@ -43,7 +43,7 @@ const getBody = (name, props) => {
 	return ReactDOMServer.renderToString(React.createElement(Element, props));
 };
 
-const render = (name, templateFn, props={}, fields) => {
+const render = (name, templateFn, props, fields) => {
 	if(!_.isFunction(templateFn)) throw 'No template function provided';
 
 	return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ const render = (name, templateFn, props={}, fields) => {
 				body : body,
 				js   : getJS(name, props)
 			}, fields);
-			return resolve(page)
+			return resolve(page);
 		}catch(err){
 			console.log('CAUGHT ERR', err);
 			return reject(err);

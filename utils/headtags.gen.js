@@ -11,7 +11,7 @@ const renderTags = ()=>{
 		);
 	});
 
-	const title = Storage.title()
+	const title = Storage.title();
 	if(title){
 		headTags.push(ReactDOMServer.renderToStaticMarkup(
 			React.createElement("title", null, title)
