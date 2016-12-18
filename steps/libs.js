@@ -1,6 +1,4 @@
 const fs = require('fs');
-const browserify = require('browserify');
-const uglify = require("uglify-js");
 
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
@@ -9,6 +7,10 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const runLibs = (libs=[], shared=[]) => {
 	const logEnd = log.time('libs');
+
+	const browserify = require('browserify');
+	const uglify = require("uglify-js");
+
 	return new Promise((resolve, reject) => {
 		const bundle = browserify({ paths: shared })
 			.require(libs)

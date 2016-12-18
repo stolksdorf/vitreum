@@ -15,7 +15,7 @@ module.exports = {
 		const time = Date.now();
 		console.log(chalk.gray(`${label}...`));
 		return () => {
-			console.log(`${label} \t ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
+			console.log(`${_.padEnd(label, 16)} ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
 		};
 	},
 

@@ -1,9 +1,6 @@
 const _ = require('lodash');
 const path = require('path');
-const fse = require('fs-extra');
-const browserify = require('browserify');
-const babelify = require('babelify');
-const uglify = require("uglify-js");
+
 
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
@@ -11,6 +8,11 @@ const addPartial = require('../utils/partialfn.js');
 const isProd = process.env.NODE_ENV === 'production';
 
 const makeBundler = function(name, entryPoint, libs=[], shared=[]){
+	const fse = require('fs-extra');
+	const browserify = require('browserify');
+	const babelify = require('babelify');
+	const uglify = require("uglify-js");
+
 	let jsxDeps = [];
 	let warnings = [];
 
@@ -36,7 +38,7 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 		});
 
 	const run = ()=>{
-		const logEnd = log.time(`${name}[js]`);
+		const logEnd = log.time(`jsx[${name}]`);
 		return new Promise((resolve, reject) => {
 			jsxDeps = [];
 			warnings = [];

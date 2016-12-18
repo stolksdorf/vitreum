@@ -1,13 +1,14 @@
 const _ = require('lodash');
-const fse = require('fs-extra');
 const path = require('path');
-const minimatch = require('minimatch');
 
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
 
 
 const scanFolder = (globs, folder) => {
+	const minimatch = require('minimatch');
+	const fse = require('fs-extra');
+
 	return new Promise((resolve, reject) => {
 		let items = [];
 		fse.walk(folder)

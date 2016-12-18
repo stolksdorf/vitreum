@@ -1,4 +1,4 @@
-const chokidar  = require('chokidar');
+
 
 const storage = require('../utils/storage.js');
 const log = require('../utils/log.js');
@@ -8,6 +8,9 @@ const LessStep = require('./less.js');
 
 const lesswatch = (name, shared=[]) => {
 	log.checkProduction('less-watch');
+
+	const chokidar  = require('chokidar');
+
 	const rootPath = storage.entryDir(name);
 	return LessStep(name, shared, storage.deps(name))
 		.then(() => {

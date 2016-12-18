@@ -1,13 +1,16 @@
 const _ = require('lodash');
-const chokidar  = require('chokidar');
+
 
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
 
-const assets = require('./assets.js');
+
 
 const assetwatch = (globs, folders) => {
 	log.checkProduction('assets-watch');
+
+	const chokidar  = require('chokidar');
+	const assets = require('./assets.js');
 
 	const allPaths = _.reduce(folders, (r, folder) => {
 		return _.concat(r, _.map(globs, (glob) => {

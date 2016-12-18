@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const less = require('less');
 const fs = require('fs');
 const path = require('path');
 
@@ -23,13 +22,13 @@ const getLessImports = (deps) => {
 
 
 const runStyle = (name, shared, deps) => {
-	const logEnd = log.time(`${name}[less]`);
+	const logEnd = log.time(`less[${name}]`);
+
+	const less = require('less');
+
 	return new Promise((resolve, reject) => {
 		if(!shared && !deps) deps = shared;
 		if(!deps) return reject(log.noDeps(name));
-
-		//Possibly remove
-		if(_.isString(shared)) shared = [shared];
 
 		less.render(getLessImports(deps), {
 				//TODO: auto add node_modules?

@@ -1,8 +1,5 @@
-require('source-map-support').install();
-
 const _ = require('lodash');
-const watchify = require('watchify');
-const chokidar  = require('chokidar');
+
 const path  = require('path');
 
 const log = require('../utils/log.js');
@@ -14,6 +11,11 @@ const jsx = require('./jsx.js');
 
 const jsxwatch = (name, entryPoint, libs, shared)=>{
 	log.checkProduction('jsx-watch');
+
+	require('source-map-support').install();
+	const watchify = require('watchify');
+	const chokidar  = require('chokidar');
+
 
 	const entryDir = path.dirname(entryPoint);
 	storage.entryDir(name, entryDir);

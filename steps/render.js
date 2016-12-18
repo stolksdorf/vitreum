@@ -1,6 +1,4 @@
 const _ = require('lodash');
-const ReactDOMServer = require('react-dom/server');
-const React = require('react');
 const path = require('path');
 
 const HeadTags = require('../utils/headtags.gen.js');
@@ -37,6 +35,9 @@ const runtime = (name, props)=>{
 };
 
 const getBody = (name, props) => {
+	const ReactDOMServer = require('react-dom/server');
+	const React = require('react');
+
 	const bundlePath = path.resolve(`./build/${name}/bundle.js`);
 	if(!isProd) requireUncache(bundlePath);
 	const Element = require(bundlePath);
