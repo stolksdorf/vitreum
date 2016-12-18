@@ -1,0 +1,43 @@
+const _ = require('lodash');
+const chalk = require('chalk');
+
+module.exports = {
+
+	libWarnings : (bundledLibs) => {
+		if(!bundledLibs.length) return;
+		const libs = _.uniq(bundledLibs);
+		console.log(chalk.red("Warning: ") + "The following node modules are in your js bundle.");
+		console.log('    ' + chalk.yellow(libs.join('\n    ')));
+		console.log(chalk.green('  Consider adding these to the `libs` parameter on your jsx step\n'));
+	},
+
+	time : (label) => {
+		const time = Date.now();
+		console.log(chalk.gray(`${label}...`));
+		return () => {
+			console.log(`${label} \t ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
+		}
+	},
+
+	noDeps : (label) => {
+		console.log(`${chalk.red('Warning: ')} No dependacy list provided for ${label} less step.`);
+		console.log(chalk.green('  Try running the jsx step first.'));
+	},
+
+	watch : (label) => {
+		console.log(chalk.magenta(`  ${label}`));
+	},
+
+	checkProduction : (label) => {
+		const isProd = process.env.NODE_ENV === 'production';
+		if(isProd){
+			console.log(`${chalk.red('Warning:')} You are using the dev step '${label}' in production mode.`);
+			console.log(`         This step will fail with a production install of Vitreum.`);
+		}
+	},
+
+	updateCache : (label) => {
+		console.log(chalk.gray(`  ${label}, updating bundle cache...`));
+	}
+
+};
