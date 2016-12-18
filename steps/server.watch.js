@@ -18,6 +18,7 @@ const watchServer = (serverPath, watchFolders=[])=>{
 	});
 	nodemon
 		.on('restart', (files) => {
+			//TODO: make pretty
 			console.log('Server restart');
 		});
 

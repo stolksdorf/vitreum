@@ -1,3 +1,11 @@
+### Friday, 16/12/2016
+- [ ] Move external dependacies in each step into the function. This will remove the long "boot-up" time for vitreum.
+- [ ] Add `flux` to the vitreum-cli
+- [ ] Update `pico-flux` to use composition and not mixins, eg. `store.createSmartComponent({ ... })`
+- [ ] Update the project bootstrap in the `vitreum-cli`
+  - Should use `nconf` and make some config files
+  - Print out several lines of `npm installs` to run after the bootstrap
+
 
 ### Wednesday, 07/12/2016
 - [x] Assets only takes two parameters
@@ -7,12 +15,12 @@
 - [x] rename log to `time`
 - [x] Add a watch log to `log.js`
 - [x] Add bundle warnings to `log.js`
-- [ ] Add messages when file add/remove is detected
+- [x] Add messages when file add/remove is detected
 - [ ] Add a `examples.md` outlining good examples for each file
 - [x] Make sure live reload works on just build folder
-- [ ] Get headtags working, make sure to merge into template head
-- [ ] Render should take a fourth parameter to merge with the original config
-- [ ] Asset should use a glob match for specific file names, `face.tracking.js`;
+- [x] Get headtags working, make sure to merge into template head
+- [x] Render should take a fourth parameter to merge with the original config
+- [x] Asset should use a glob match for specific file names, `face.tracking.js`;
 - [ ] Make an `how_to.md`
   - How to add a client-side config
   - How to add client-only libs/scripts
@@ -20,8 +28,8 @@
   - How to avoid using `render` in prod. Make templates (for handlebars) using the render fn
 - [ ] Allow build folder to be set, maybe via storage?
 - [x] move logging into the bundler
-- [ ] Make sure that everything works with `.babelrc` (Can this be set actually within vitreum?)
-- Make sure you can import less directly from node_modules (eg. Palette)
+- [x] Make sure that everything works with `.babelrc` (Can this be set actually within vitreum?)
+- [ ] Make sure you can import less directly from node_modules (eg. Palette)
 
 
 ## v4 Ideas
