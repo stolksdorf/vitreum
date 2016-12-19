@@ -45,8 +45,7 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 
 			bundler.bundle((err, buf) => {
 				if(err) {
-					console.log('BUNDLE ERR');
-					console.log(err.toString());
+					log.jsxError(err);
 					return reject(err.toString());
 				}
 				log.libWarnings(warnings);

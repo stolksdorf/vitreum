@@ -38,7 +38,10 @@ const runStyle = (name, shared, deps) => {
 				sourceMap: {sourceMapFileInline: !isProd}
 			},
 			(err, res) => {
-				if(err) return reject(err);
+				if(err){
+					log.lessError(err);
+					return reject(err);
+				}
 				fs.writeFile(`build/${name}/bundle.css`, res.css, (err)=>{
 					if(err) return reject(err);
 					logEnd();

@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const chalk = require('chalk');
 
+const path =require('path');
+
 module.exports = {
 
 	libWarnings : (bundledLibs) => {
@@ -31,13 +33,34 @@ module.exports = {
 	checkProduction : (label) => {
 		const isProd = process.env.NODE_ENV === 'production';
 		if(isProd){
-			console.log(`${chalk.red('Warning:')} You are using the dev step '${label}' in production mode.`);
+			console.log(`${chalk.yellow('Warning:')} You are using the dev step '${label}' in production mode.`);
 			console.log(`         This step will fail with a production install of Vitreum.`);
 		}
 	},
 
 	updateCache : (label) => {
 		console.log(chalk.gray(`  ${label}, updating bundle cache...`));
+	},
+
+	jsxError : (err) => {
+		const relativeName = err.filename.replace(process.cwd() + path.sep, '');
+
+		let message = err.message.substring(err.message.indexOf(': ') + 2);
+			message = message.substring(0, message.indexOf(err.loc.line) - 2)
+
+		console.log();
+		console.log(chalk.red('ERR: ') + message);
+		console.log('  ' + chalk.cyan(relativeName) + chalk.yellow(` (${err.loc.line}:${err.loc.column})`));
+		console.log(err.codeFrame);
+		console.log();
+	},
+
+	lessError : (err) => {
+		const relativeName = err.filename.replace(process.cwd() + path.sep, '');
+		console.log();
+		console.log(chalk.red('ERR: ') + err.message);
+		console.log('  ' + chalk.cyan(relativeName) + chalk.yellow(` (${err.line}:${err.column})`));
+		console.log();
 	}
 
 };

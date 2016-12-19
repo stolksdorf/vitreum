@@ -17,9 +17,6 @@ const lesswatch = (name, shared=[]) => {
 			chokidar.watch(`${rootPath}/**/*.less`, {ignoreInitial : true})
 				.on('change', ()=>{
 					LessStep(name, shared, storage.deps(name))
-						.catch((err) => {
-							console.error(err.toString());
-						});
 				});
 			log.watch(`Enabling less-watch for ${name}`);
 		});

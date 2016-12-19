@@ -32,9 +32,6 @@ const jsxwatch = (name, entryPoint, libs, shared)=>{
 				const newDeps = _.keys(bundler.rawBundler._options.cache);
 				storage.deps(name, newDeps);
 			})
-			.catch((err) => {
-				console.error(err.toString());
-			});
 	};
 	const rebuild = (label) => {
 		log.updateCache(label);
