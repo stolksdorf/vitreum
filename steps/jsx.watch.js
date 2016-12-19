@@ -16,14 +16,15 @@ const jsxwatch = (name, entryPoint, libs, shared)=>{
 	const watchify = require('watchify');
 	const chokidar  = require('chokidar');
 
-
 	const entryDir = path.dirname(entryPoint);
 	storage.entryDir(name, entryDir);
 
 	let bundler;
 	const remakeBundler = ()=>{
+		if(bundler) bundler.rawBundler.close();
 		bundler = jsx.makeBundler(name, entryPoint, libs, shared);
 		bundler.rawBundler.plugin(watchify);
+		bundler.rawBundler.on('update', rebundle);
 	};
 	const rebundle = ()=>{
 		return bundler.run()
@@ -45,8 +46,6 @@ const jsxwatch = (name, entryPoint, libs, shared)=>{
 	return bundler.run()
 		.then((deps) => {
 			storage.deps(name, deps);
-
-			watchify(bundler.rawBundler).on('update', rebundle);
 
 			chokidar.watch([`${entryDir}/**/*.jsx`, `${entryDir}/**/*.js`], {ignoreInitial : true})
 				.on('add', ()=>{
