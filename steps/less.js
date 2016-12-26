@@ -31,8 +31,7 @@ const runStyle = (name, shared, deps) => {
 		if(!deps) return reject(log.noDeps(name));
 
 		less.render(getLessImports(deps), {
-				//TODO: auto add node_modules?
-				paths: shared,
+				paths: _.concat(['./node_modules'], shared),
 				filename: `${name}.less`,
 				compress: isProd,
 				sourceMap: {sourceMapFileInline: !isProd}
