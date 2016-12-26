@@ -43,6 +43,12 @@ module.exports = {
 	},
 
 	jsxError : (err) => {
+		const err = _.defaults(error,{
+			filename : '',
+			message : '',
+			codeFrame : '',
+			loc : {}
+		});
 		const relativeName = err.filename.replace(process.cwd() + path.sep, '');
 
 		let message = err.message.substring(err.message.indexOf(': ') + 2);
