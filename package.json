@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "description": "Web app build system using Browserify, React, and Less",
   "repository": {
     "type": "git",

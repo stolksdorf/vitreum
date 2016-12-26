@@ -42,7 +42,7 @@ module.exports = {
 		console.log(chalk.gray(`  ${label}, updating bundle cache...`));
 	},
 
-	jsxError : (err) => {
+	jsxError : (error) => {
 		const err = _.defaults(error,{
 			filename : '',
 			message : '',
