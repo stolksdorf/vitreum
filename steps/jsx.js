@@ -23,7 +23,10 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 			paths : shared
 		})
 		.require(entryPoint)
-		.transform({global: true}, babelify)
+		.transform('babelify', {
+			presets: ['latest', 'react'],
+			global : true
+		})
 		.external(libs);
 
 	bundler.pipeline.get('deps')

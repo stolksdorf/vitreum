@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "4.0.8",
+  "version": "4.0.9",
   "description": "Web app build system using Browserify, React, and Less",
   "repository": {
     "type": "git",
@@ -13,7 +13,7 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
-    "babel-preset-env": "^1.1.1",
+    "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "babelify": "^7.3.0",
     "browserify": "^13.1.1",

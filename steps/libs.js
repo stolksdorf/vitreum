@@ -9,7 +9,7 @@ const runLibs = (libs=[], shared=[]) => {
 	const logEnd = log.time('libs');
 
 	const browserify = require('browserify');
-	const uglify = require("uglify-js");
+	const uglify = require('uglify-js');
 
 	return new Promise((resolve, reject) => {
 		const bundle = browserify({ paths: shared })
