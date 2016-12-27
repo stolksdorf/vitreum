@@ -55,7 +55,11 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 
 				let code = buf.toString();
 				if(isProd){
-					code = uglify.minify(buf.toString(), {fromString: true}).code;
+					try{
+						code = uglify.minify(buf.toString(), {fromString: true}).code;
+					}catch(e){
+						reject(e);
+					}
 				}
 
 				fse.outputFile(`build/${name}/bundle.js`, code, (err)=>{
