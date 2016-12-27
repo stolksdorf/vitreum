@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const path = require('path');
 
+const log = require('../utils/log.js');
 const HeadTags = require('../utils/headtags.gen.js');
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -46,10 +47,11 @@ const getBody = (name, props) => {
 
 const render = (name, templateFn, props, fields) => {
 	if(!_.isFunction(templateFn)) throw 'No template function provided';
+	if(!isProd) require('source-map-support').install();
 
 	return new Promise((resolve, reject) => {
-		const body = getBody(name, props); //body has to render first for head tags
 		try{
+			const body = getBody(name, props); //body has to render first for head tags
 			const page = templateFn({
 				head : getHead(name),
 				body : body,
@@ -57,8 +59,8 @@ const render = (name, templateFn, props, fields) => {
 			}, fields);
 			return resolve(page);
 		}catch(err){
-			console.log('CAUGHT ERR', err);
-			return reject(err);
+			log.renderError(err, path.resolve(`./build/${name}`));
+			return reject(err.toString);
 		}
 	});
 };

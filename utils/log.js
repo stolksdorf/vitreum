@@ -67,6 +67,21 @@ module.exports = {
 		console.log(chalk.red('ERR: ') + err.message);
 		console.log('  ' + chalk.cyan(relativeName) + chalk.yellow(` (${err.line}:${err.column})`));
 		console.log();
+	},
+
+	renderError : (error, rootPath) => {
+		const keyLine = error.stack.split('\n')[1];
+		const filename = keyLine.substring(keyLine.indexOf('(')+1, keyLine.length -1);
+		const fields = filename.replace(rootPath + path.sep, '').split(':');
+
+		const relativeName = fields[0];
+		const line = fields[1];
+		const column = fields[2];
+
+		console.log();
+		console.log(chalk.red(error.name + ': ') + error.message);
+		console.log('  ' + chalk.cyan(relativeName) + chalk.yellow(` (${line}:${column})`));
+		console.log();
 	}
 
 };

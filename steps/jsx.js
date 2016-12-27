@@ -46,6 +46,8 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 			jsxDeps = [];
 			warnings = [];
 
+			if(!isProd) require('source-map-support').install();
+
 			bundler.bundle((err, buf) => {
 				if(err) {
 					log.jsxError(err);
