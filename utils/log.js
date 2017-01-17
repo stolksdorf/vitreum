@@ -49,14 +49,21 @@ module.exports = {
 			codeFrame : '',
 			loc : {}
 		});
-		const relativeName = err.filename.replace(process.cwd() + path.sep, '');
+		err.type = error.toString().substring(0, error.toString().indexOf(':'));
 
-		let message = err.message.substring(err.message.indexOf(': ') + 2);
-			message = message.substring(0, message.indexOf(err.loc.line) - 2)
+		//Require Error
+		if(err.message.indexOf('Cannot find module') !== -1){
+
+		}else{
+			err.filename = err.filename.replace(process.cwd() + path.sep, '');
+			err.message = err.message.substring(err.message.indexOf(': ') + 2);
+			err.message = err.message.substring(0, err.message.indexOf(err.loc.line) - 2);
+		}
 
 		console.log();
-		console.log(chalk.red('ERR: ') + message);
-		console.log('  ' + chalk.cyan(relativeName) + chalk.yellow(` (${err.loc.line}:${err.loc.column})`));
+		console.log(chalk.red('ERR: ') + err.message);
+		if(!_.isEmpty(err.loc))
+			console.log('  ' + chalk.cyan(err.filename) + chalk.yellow(` (${err.loc.line}:${err.loc.column})`));
 		console.log(err.codeFrame);
 		console.log();
 	},
