@@ -8,6 +8,7 @@ const addPartial = require('../utils/partialfn.js');
 const isProd = process.env.NODE_ENV === 'production';
 
 const makeBundler = function(name, entryPoint, libs=[], shared=[]){
+	if(!_.isArray(shared)) shared = [shared];
 	const fse = require('fs-extra');
 	const browserify = require('browserify');
 	const babelify = require('babelify');

@@ -6,6 +6,7 @@ const addPartial = require('../utils/partialfn.js');
 const LessStep = require('./less.js');
 
 const lesswatch = (name, shared=[]) => {
+	if(!_.isArray(shared)) shared = [shared];
 	log.checkProduction('less-watch');
 	const chokidar  = require('chokidar');
 

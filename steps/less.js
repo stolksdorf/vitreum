@@ -22,6 +22,7 @@ const getLessImports = (deps) => {
 
 
 const runStyle = (name, shared, deps) => {
+	if(!_.isArray(shared)) shared = [shared];
 	const logEnd = log.time(`less[${name}]`);
 
 	const less = require('less');
