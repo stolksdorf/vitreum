@@ -1,15 +1,15 @@
-const fs = require('fs');
-
+const path = require('path');
 const log = require('../utils/log.js');
 const addPartial = require('../utils/partialfn.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 
-const runLibs = (libs=[], shared=[]) => {
+const runLibs = (libs=[], shared=[], filename='libs.js') => {
 	const logEnd = log.time('libs');
 
 	const browserify = require('browserify');
 	const uglify = require('uglify-js');
+	const fse = require('fs-extra');
 
 	return new Promise((resolve, reject) => {
 		const bundle = browserify({ paths: shared })
@@ -24,7 +24,7 @@ const runLibs = (libs=[], shared=[]) => {
 						reject(e);
 					}
 				}
-				fs.writeFile(`build/libs.js`, code, (err)=>{
+				fse.outputFile(path.resolve(`./build`, filename), code, (err)=>{
 					if(err) return reject(err);
 					logEnd();
 					return resolve();

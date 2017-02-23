@@ -43,7 +43,7 @@ clean()
 	.catch(console.error)
 ```
 
-#### `libs(modulenames : array)`
+#### `libs(modulenames : array, [shared : array], [filepath : 'libs.js'])`
 Creates a standalone bundle at `/build/libs.js` that contains Browserified versions of all the module names passed in. This step is used to isolate very large common libraries from slowing down builds. This file can also be cached in a CDN as it shouldn't need to be ran often (can take up to 10s to run!).
 
 ```javascript
