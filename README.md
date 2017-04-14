@@ -89,10 +89,13 @@ assets(['*.png', '*.otf', 'myClientLib.js'], ['./client', './shared'])
 	.catch(console.error)
 ```
 
-#### `render(bundleName : string, templateFn : function, props : object, [fields])`
+#### `render(bundleName : string, templateFn : function, props : object, [fields], [opts])`
 Takes a compiled bundled from the `jsx` step and a template function to render a HTML string. This string can be used to pipe to the client using express, or can be saved to a file for static HTML rendering.
 
 `props` are passed to the entrypoint component when rendering it. The `fields` parameter is passed as a second parameter in the template function. This is useful for passing in things like a Google Analytics snippet, or other data. Check out the [examples.md](examples.md).
+
+`opts` is an object of additional options
+- `.useStatic` Toggles between using `ReactDOMServer.renderToString` and `ReactDOMServer.renderToStaticMarkup`. [Reference here](https://facebook.github.io/react/docs/react-dom-server.html)
 
 ```javascript
 const render = require('vitreum/steps/render');

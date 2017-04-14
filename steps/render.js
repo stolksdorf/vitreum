@@ -35,23 +35,26 @@ const runtime = (name, props)=>{
 `;
 };
 
-const getBody = (name, props) => {
+const getBody = (name, props, useStatic) => {
 	const ReactDOMServer = require('react-dom/server');
 	const React = require('react');
 
 	const bundlePath = path.resolve(`./build/${name}/bundle.js`);
 	if(!isProd) requireUncache(bundlePath);
 	const Element = require(bundlePath);
+
+	if(useStatic) return ReactDOMServer.renderToStaticMarkup(React.createElement(Element, props));
 	return ReactDOMServer.renderToString(React.createElement(Element, props));
 };
 
-const render = (name, templateFn, props, fields) => {
+const render = (name, templateFn, props, fields, opts) => {
 	if(!_.isFunction(templateFn)) throw 'No template function provided';
 	if(!isProd) require('source-map-support').install();
+	opts = _.defaults(opts, { useStatic : false });
 
 	return new Promise((resolve, reject) => {
 		try{
-			const body = getBody(name, props); //body has to render first for head tags
+			const body = getBody(name, props, opts.useStatic); //body has to render first for head tags
 			const page = templateFn({
 				head : getHead(name),
 				body : body,
