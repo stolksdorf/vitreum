@@ -1,4 +1,4 @@
-#vitreum
+# vitreum
 [![bitHound Overall Score](https://www.bithound.io/github/stolksdorf/vitreum/badges/score.svg)](https://www.bithound.io/github/stolksdorf/vitreum)
 
 `vitreum` is a build library for front-end projects. Built for projects using React, Less, and Node. `vitreum` focuses on incredibly fast build times and tooling for tightly active development. It's composed of several independant steps that you can configure to meet exactly what your project needs.
