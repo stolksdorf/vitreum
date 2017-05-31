@@ -12,7 +12,7 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 	const fse = require('fs-extra');
 	const browserify = require('browserify');
 	const babelify = require('babelify');
-	const uglify = require("uglify-js");
+	const uglify = require("uglify-es");
 
 	let jsxDeps = [];
 	let warnings = [];

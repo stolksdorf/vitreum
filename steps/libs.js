@@ -8,7 +8,7 @@ const runLibs = (libs=[], shared=[], filename='libs.js') => {
 	const logEnd = log.time('libs');
 
 	const browserify = require('browserify');
-	const uglify = require('uglify-js');
+	const uglify = require('uglify-es');
 	const fse = require('fs-extra');
 
 	return new Promise((resolve, reject) => {
