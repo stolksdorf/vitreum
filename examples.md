@@ -31,7 +31,7 @@ To run these:
 
 
 #### build scripts
-It's best to build two scripts `dev.js` and `build.js`. Dev is for active development and includes liverelaoding and filesystem watching.
+It's best to build two scripts `dev.js` and `build.js`. Dev is for active development and includes livereloading and filesystem watching, where `build` bundles together your libs which can time-consuming.
 
 
 `build.js`
@@ -39,55 +39,35 @@ It's best to build two scripts `dev.js` and `build.js`. Dev is for active develo
 const label = 'build';
 console.time(label);
 
-const clean = require('vitreum/steps/clean.js');
-const jsx   = require('vitreum/steps/jsx.js').partial;
-const lib   = require('vitreum/steps/libs.js').partial;
-const less  = require('vitreum/steps/less.js').partial;
-const asset = require('vitreum/steps/assets.js').partial;
-
+const steps = require('vitreum/steps');
 const Proj = require('./project.json');
 
-clean()
-	.then(lib(Proj.libs))
-	.then(jsx('main', './client/main/main.jsx', Proj.libs, ['./shared']))
-	.then(less('main', ['./shared']))
-	.then(asset(Proj.assets, ['./shared', './client']))
-	.then(console.timeEnd.bind(console, label))
-	.catch(console.error);
-
+Promise.resolve()
+	.then(()=>steps.clean())
+	.then(()=>steps.lib(Proj.libs))
+	.then(()=>steps.jsx('main', './client/main/main.jsx', Proj.libs))
+	.then((deps)=>steps.less('main', [], deps))
+	.then(()=>steps.asset(Proj.assets, ['./client']))
+	.then(()=>console.timeEnd(label))
+	.catch((err)=>console.error(err));
 ```
 
-`dev.js`
+#### `dev.js`
 ```javascript
 const label = 'dev';
 console.time(label);
-
-const jsx = require('vitreum/steps/jsx.watch.js');
-const less = require('vitreum/steps/less.watch.js');
-const assets = require('vitreum/steps/assets.watch.js');
-const server = require('vitreum/steps/server.watch.js');
-const livereload = require('vitreum/steps/livereload.js');
+const steps = require('vitreum/steps');
 
 const Proj = require('./project.json');
 
 Promise.resolve()
-	.then(()=>{
-		return jsx('main', './client/main/main.jsx', Proj.libs, ['shared'])
-	})
-	.then((deps)=>{
-		return less('main', './shared', deps);
-	})
-	.then(()=>{
-		return assets(Proj.assets, ['./shared', './client']);
-	})
-	.then(()=>{
-		return livereload('main');
-	})
-	.then(()=>{
-		return server('./server.js', ['server']);
-	})
-	.then(()=> { console.timeEnd(label) })
-	.catch(console.error)
+	.then(()=>steps.jsxWatch('main', './client/main/main.jsx', Proj.libs))
+	.then((deps)=>steps.lessWatch('main', [], deps))
+	.then(()=>steps.assetsWatch(Proj.assets, ['./client']))
+	.then(()=>steps.livereload())
+	.then(()=>steps.serverWatch('./server.js', ['server']))
+	.then(()=>console.timeEnd(label))
+	.catch((err)=>console.error(err));
 ```
 
 
@@ -106,9 +86,7 @@ app.get('*', (req, res) => {
 			url : req.url,
 			data : coolProps
 		})
-		.then((page) => {
-			return res.send(page);
-		})
+		.then((page) => res.send(page))
 		.catch((err) => {
 			console.log(err);
 		});

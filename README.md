@@ -6,7 +6,7 @@
 ## install
 
 ```
-npm install --save vitreum
+npm install vitreum
 ```
 
 ### quickstart
@@ -30,6 +30,8 @@ Vitreum uses a folder-based component system, where each JSX component has it's 
 
 ## steps
 Vitreum exposes a series of steps you can use to create build and development scripts for your project. Each step is a `promise`, so they can be easily chained. Youd should use these within `npm scripts` which you define in your `package.json`. See the [examples.md](examples.md) for some best practices.
+
+You can access all steps via an object by requiring `require('vitreum/steps')`. See the examples at the bottom.
 
 ### build steps
 
@@ -65,7 +67,7 @@ jsx('main', './client/main/main.jsx', Proj.libs, ['./shared'])
 
 `deps` will be an array of dependacy paths that the entrypoint require'd. This is used be the `less` step to search for the appropriate `less` files.
 
-### `less(bundleName : string, shared : array, deps : array)`
+#### `less(bundleName : string, shared : array, deps : array)`
 Creates a named css bundle at `./build/${bundleName}/bundle.css` using the `deps`. This step will look at each dependacy provided and see if there is a related `less` file at that location, if so it will automatically included it within the bundle. The `shared` parameter lets the `less` step know where to look for additional require paths.
 
 ```javascript
@@ -73,9 +75,7 @@ const jsx = require('vitreum/steps/jsx');
 const less = require('vitreum/steps/less');
 
 jsx('main', './client/main/main.jsx', Proj.libs, ['./shared'])
-	.then((deps) => {
-		return less('main', Proj.shared, deps);
-	})
+	.then((deps) => less('main', Proj.shared, deps))
 	.catch(console.error)
 ```
 
@@ -106,7 +106,7 @@ render('main', templateFn, {})
 ```
 
 **template function**
-The template function is a simple function that will be given an object with three properties and is expected to return a string of HTML. You can use whatever templating technique you like: DoT, Handlebars, Jade, native template strings. The three properties are `head`, `body`,a nd `js`
+The template function is a simple function that will be given an object with three properties and is expected to return a string of HTML. You can use whatever templating technique you like: DoT, Handlebars, Jade, native template strings. The three properties are `head`, `body`, and `js`
 
 ```javascript
 module.exports = (vitreum) => {
@@ -225,26 +225,7 @@ If you have more than one build script, it's useful to stored shared project inf
 ```
 
 
-### partials
-a `partial` is a [bind](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_objects/Function/bind) without needed to set the scope. They are very useful for making clean promise chains. Each step function in vitreum has the partial property added.
+### example scripts
 
-```javascript
-const label = 'build';
-console.time(label);
+See the [examples.md](examples.md) for some best practices.
 
-const cleanStep = require('../../steps/clean.js');
-const jsxStep = require('../../steps/jsx.js').partial;
-const libStep = require('../../steps/libs.js').partial;
-const lessStep = require('../../steps/less.js').partial;
-const assetStep = require('../../steps/assets.js').partial;
-
-const Proj = require('./project.json');
-
-cleanStep()
-	.then(libStep(Proj.libs))
-	.then(jsxStep('main', './client/main/main.jsx', Proj.libs, ['./shared']))
-	.then(lessStep('main', Proj.shared))
-	.then(assetStep(Proj.assets, ['./shared', './client']))
-	.then(console.timeEnd.bind(console, label))
-	.catch(console.error);
-```
