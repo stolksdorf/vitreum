@@ -1,10 +1,5 @@
 const _ = require('lodash');
-
-
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
-
-
 
 const assetwatch = (globs, folders) => {
 	log.checkProduction('assets-watch');
@@ -21,12 +16,12 @@ const assetwatch = (globs, folders) => {
 	return assets(globs, folders)
 		.then(() => {
 			chokidar.watch(allPaths, {ignoreInitial : true})
-				.on('add', assets.partial(globs, folders))
-				.on('change', assets.partial(globs, folders))
-				.on('unlink', assets.partial(globs, folders));
+				.on('add', ()=>assets(globs, folders))
+				.on('change', ()=>assets(globs, folders))
+				.on('unlink', ()=>assets(globs, folders));
 
 			log.watch(`Enabling asset-watch`);
 		});
 };
 
-module.exports = addPartial(assetwatch);
+module.exports = assetwatch;

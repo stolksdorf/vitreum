@@ -2,8 +2,6 @@ const _ = require('lodash');
 const path = require('path');
 
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
-
 
 const scanFolder = (globs, folder) => {
 	const minimatch = require('minimatch');
@@ -35,4 +33,4 @@ const runAssets = (globs, folders) => {
 	})).then(endLog);
 };
 
-module.exports = addPartial(runAssets);
+module.exports = runAssets;

@@ -1,7 +1,6 @@
 const path = require('path');
-const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
 
+const log = require('../utils/log.js');
 const isProd = process.env.NODE_ENV === 'production';
 
 const runLibs = (libs=[], shared=[], filename='libs.js') => {
@@ -35,4 +34,4 @@ const runLibs = (libs=[], shared=[], filename='libs.js') => {
 	});
 };
 
-module.exports = addPartial(runLibs);
+module.exports = runLibs;

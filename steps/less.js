@@ -3,10 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
-
 const isProd = process.env.NODE_ENV === 'production';
-
 
 const getLessImports = (deps) => {
 	return _.reduce(deps, (r, depFilename)=>{
@@ -19,7 +16,6 @@ const getLessImports = (deps) => {
 		return r;
 	},[]).join('\n');
 };
-
 
 const runStyle = (name, shared, deps) => {
 	if(!_.isArray(shared)) shared = [shared];
@@ -51,4 +47,4 @@ const runStyle = (name, shared, deps) => {
 	});
 };
 
-module.exports = addPartial(runStyle);
+module.exports = runStyle;

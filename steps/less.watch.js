@@ -1,7 +1,6 @@
 const _ = require('lodash');
 const storage = require('../utils/storage.js');
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
 
 const LessStep = require('./less.js');
 
@@ -25,4 +24,4 @@ const lesswatch = (name, shared=[]) => {
 		});
 };
 
-module.exports = addPartial(lesswatch);
+module.exports = lesswatch;

@@ -1,5 +1,4 @@
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
 
 const clean = () => {
 	const endLog = log.time('clean');
@@ -15,4 +14,4 @@ const clean = () => {
 };
 
 
-module.exports = addPartial(clean);
+module.exports = clean;

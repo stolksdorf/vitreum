@@ -1,10 +1,7 @@
 const _ = require('lodash');
 const path = require('path');
 
-
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
-
 const isProd = process.env.NODE_ENV === 'production';
 
 const makeBundler = function(name, entryPoint, libs=[], shared=[]){
@@ -88,4 +85,4 @@ const runJSX = (name, entryPoint, libs, shared)=>{
 
 runJSX.makeBundler = makeBundler;
 
-module.exports = addPartial(runJSX);
+module.exports = runJSX;

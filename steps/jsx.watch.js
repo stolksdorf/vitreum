@@ -3,11 +3,8 @@ const _ = require('lodash');
 const path  = require('path');
 
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
 const storage = require('../utils/storage.js');
-
 const jsx = require('./jsx.js');
-
 
 const jsxwatch = (name, entryPoint, libs, shared)=>{
 	log.checkProduction('jsx-watch');
@@ -57,4 +54,4 @@ const jsxwatch = (name, entryPoint, libs, shared)=>{
 		});
 };
 
-module.exports = addPartial(jsxwatch);
+module.exports = jsxwatch;

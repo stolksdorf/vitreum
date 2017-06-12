@@ -1,6 +1,4 @@
-
 const log = require('../utils/log.js');
-const addPartial = require('../utils/partialfn.js');
 
 let lr_server;
 const runLivereload = () => {
@@ -11,4 +9,4 @@ const runLivereload = () => {
 	return lr_server.watch(`build`);
 };
 
-module.exports = addPartial(runLivereload);
+module.exports = runLivereload;
