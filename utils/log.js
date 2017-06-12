@@ -77,6 +77,7 @@ module.exports = {
 	},
 
 	renderError : (error, rootPath) => {
+		console.log(typeof error);
 		const keyLine = error.stack.split('\n')[1];
 		const filename = keyLine.substring(keyLine.indexOf('(')+1, keyLine.length -1);
 		const fields = filename.replace(rootPath + path.sep, '').split(':');

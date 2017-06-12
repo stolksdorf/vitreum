@@ -59,7 +59,9 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 				let code = buf.toString();
 				if(isProd){
 					try{
-						code = uglify.minify(buf.toString(), {fromString: true}).code;
+						const minified = uglify.minify(buf.toString());
+						if(minified.error) return reject(minified.error);
+						code = minified.code;
 					}catch(e){
 						reject(e);
 					}
