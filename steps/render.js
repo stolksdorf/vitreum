@@ -64,7 +64,7 @@ const render = (name, templateFn, props, fields, opts) => {
 			return resolve(page);
 		}catch(err){
 			log.renderError(err, path.resolve(`./build/${name}`));
-			return reject(err.toString);
+			return reject(err);
 		}
 	});
 };
