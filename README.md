@@ -45,7 +45,7 @@ clean()
 	.catch(console.error)
 ```
 
-#### `libs(modulenames : array, opts : object)`
+#### `libs(modulenames : array, [opts : object])`
 Creates a standalone bundle at `/build/libs.js` that contains Browserified versions of all the module names passed in. This step is used to isolate very large common libraries from slowing down builds. This file can also be cached in a CDN as it shouldn't need to be ran often (can take up to 10s to run!).
 
 ```javascript
@@ -63,7 +63,7 @@ opts = {
 ```
 
 
-#### `jsx(bundleName : string, entryPoint : string, opts : object) -> deps : array`
+#### `jsx(bundleName : string, entryPoint : string, [opts : object]) -> deps : array`
 Creates a named js bundle at `./build/${bundleName}/bundle.js` using the component specified at `entryPoint`. Any modules listed in `libs` will not be included in the bundle and will be expected to be loaded extenerally. Any paths listed in `shared` will be used as additional require paths.
 
 ```javascript
