@@ -6,7 +6,6 @@ const isProd = process.env.NODE_ENV === 'production';
 
 const makeBundler = function(name, entryPoint, opts={}){
 	if(!_.isPlainObject(opts)) throw 'opts must be an object';
-
 	opts = _.defaults(opts, {
 		filename : 'bundle.js',
 		libs : [],
@@ -18,7 +17,6 @@ const makeBundler = function(name, entryPoint, opts={}){
 		global : true
 	});
 	if(opts.presets == '.babelrc') opts.presets = null;
-
 	if(!_.isArray(opts.shared)) throw 'opts.shared ust be an array';
 	if(!_.isArray(opts.libs)) throw 'opts.libs ust be an array';
 

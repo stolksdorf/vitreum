@@ -1,17 +1,25 @@
 const path = require('path');
+const _ = require('lodash');
 
 const log = require('../utils/log.js');
 const isProd = process.env.NODE_ENV === 'production';
 
-const runLibs = (libs=[], shared=[], filename='libs.js') => {
+const runLibs = (libs=[], opts={}) => {
 	const logEnd = log.time('libs');
+
+	if(!_.isPlainObject(opts)) throw 'opts must be an object';
+	opts = _.defaults(opts, {
+		filename : 'libs.js',
+		shared : [],
+	});
+	if(!_.isArray(opts.shared)) throw 'opts.shared ust be an array';
 
 	const browserify = require('browserify');
 	const uglify = require('uglify-es');
 	const fse = require('fs-extra');
 
 	return new Promise((resolve, reject) => {
-		const bundle = browserify({ paths: shared })
+		const bundle = browserify({ paths: opts.shared })
 			.require(libs)
 			.bundle((err, buf) => {
 				if(err) return reject(err);
@@ -25,7 +33,7 @@ const runLibs = (libs=[], shared=[], filename='libs.js') => {
 						reject(e);
 					}
 				}
-				fse.outputFile(path.resolve(`./build`, filename), code, (err)=>{
+				fse.outputFile(path.resolve(`./build`, opts.filename), code, (err)=>{
 					if(err) return reject(err);
 					logEnd();
 					return resolve();

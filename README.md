@@ -59,7 +59,6 @@ libs(['react', 'classnames', 'lodash'])
 opts = {
 	filename : 'libs.js', // File name of resulting bundle
 	shared : [],          // List of paths to treat as require paths
-	presets : false,      // List of bable presets for transform
 }
 ```
 
