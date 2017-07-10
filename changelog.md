@@ -1,5 +1,10 @@
 # changelog
 
+### v4.5.1 - Monday, 10/07/2017
+- Updated `browserify` to v14
+- Updated `fs-extra` to v3
+- Added `klaw` (functionality removed from `fs-extra v1`)
+
 ### v4.5.0 - Monday, 10/07/2017
 **Warning** : This version changes step function signature, so your build scripts will need to be updated
 

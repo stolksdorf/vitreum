@@ -6,10 +6,11 @@ const log = require('../utils/log.js');
 const scanFolder = (globs, folder) => {
 	const minimatch = require('minimatch');
 	const fse = require('fs-extra');
+	const walk = require('klaw');
 
 	return new Promise((resolve, reject) => {
 		let items = [];
-		fse.walk(folder)
+		walk(folder)
 			.on('data', (item) => {
 				const matched = _.find(globs, (glob) => {
 					return minimatch(item.path, glob, {matchBase : true});
