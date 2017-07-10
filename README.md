@@ -45,7 +45,7 @@ clean()
 	.catch(console.error)
 ```
 
-#### `libs(modulenames : array, [shared : array], [filepath : 'libs.js'])`
+#### `libs(modulenames : array, opts : object)`
 Creates a standalone bundle at `/build/libs.js` that contains Browserified versions of all the module names passed in. This step is used to isolate very large common libraries from slowing down builds. This file can also be cached in a CDN as it shouldn't need to be ran often (can take up to 10s to run!).
 
 ```javascript
@@ -55,28 +55,58 @@ libs(['react', 'classnames', 'lodash'])
 	.catch(console.error)
 ```
 
-#### `jsx(bundleName : string, entryPoint : string, libs : array, shared : array) -> deps : array`
+```javascript
+opts = {
+	filename : 'libs.js', // File name of resulting bundle
+	shared : [],          // List of paths to treat as require paths
+	presets : false,      // List of bable presets for transform
+}
+```
+
+
+#### `jsx(bundleName : string, entryPoint : string, opts : object) -> deps : array`
 Creates a named js bundle at `./build/${bundleName}/bundle.js` using the component specified at `entryPoint`. Any modules listed in `libs` will not be included in the bundle and will be expected to be loaded extenerally. Any paths listed in `shared` will be used as additional require paths.
 
 ```javascript
 const jsx = require('vitreum/steps/jsx');
-jsx('main', './client/main/main.jsx', Proj.libs, ['./shared'])
+jsx('main', './client/main/main.jsx', { libs : Proj.libs, shared : ['./shared'] })
 	.then((deps) => {})
 	.catch(console.error)
 ```
 
+```javascript
+opts = {
+	filename : 'bundle.js', // File name of resulting bundle
+	libs : [],              // List of module names that were built in the libs task
+	shared : [],            // List of paths to treat as require paths
+	global : true           // Apply the babelify transform globally
+	presets : [             // List of bable presets for babelify transform
+		'latest',
+		'react'
+	],
+	presets : '.babelrc'    //Use .bablerc file instead of set presets
+}
+```
+
 `deps` will be an array of dependacy paths that the entrypoint `require`d. This can be used be the `less` step to search for the appropriate `less` files.
 
-#### `less(bundleName : string, shared : array, deps : array)`
+#### `less(bundleName : string, opts : object, deps : array)`
 Creates a named css bundle at `./build/${bundleName}/bundle.css` using the `deps`. This step will look at each dependacy provided and see if there is a related `less` file at that location, if so it will automatically included it within the bundle. The `shared` parameter lets the `less` step know where to look for additional require paths.
 
 ```javascript
 const jsx = require('vitreum/steps/jsx');
 const less = require('vitreum/steps/less');
 
-jsx('main', './client/main/main.jsx', Proj.libs, ['./shared'])
-	.then((deps) => less('main', Proj.shared, deps))
+jsx('main', './client/main/main.jsx', { libs : Proj.libs, shared : ['./shared'] })
+	.then((deps) => less('main', {shared : Proj.shared}, deps))
 	.catch(console.error)
+```
+
+```javascript
+opts = {
+	filename : 'bundle.css', // File name of resulting bundle
+	shared : [],             // List of paths to treat as require paths
+}
 ```
 
 #### `assets(patterns : array, folders : array)`

@@ -4,8 +4,24 @@ const path = require('path');
 const log = require('../utils/log.js');
 const isProd = process.env.NODE_ENV === 'production';
 
-const makeBundler = function(name, entryPoint, libs=[], shared=[]){
-	if(!_.isArray(shared)) shared = [shared];
+const makeBundler = function(name, entryPoint, opts={}){
+	if(!_.isPlainObject(opts)) throw 'opts must be an object';
+
+	opts = _.defaults(opts, {
+		filename : 'bundle.js',
+		libs : [],
+		shared : [],
+		presets : [
+			'latest',
+			'react'
+		],
+		global : true
+	});
+	if(opts.presets == '.babelrc') opts.presets = null;
+
+	if(!_.isArray(opts.shared)) throw 'opts.shared ust be an array';
+	if(!_.isArray(opts.libs)) throw 'opts.libs ust be an array';
+
 	const fse = require('fs-extra');
 	const browserify = require('browserify');
 	const babelify = require('babelify');
@@ -18,14 +34,14 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 			cache: {}, packageCache: {},
 			debug: !isProd,
 			standalone : name,
-			paths : shared
+			paths : opts.shared
 		})
 		.require(entryPoint)
 		.transform('babelify', {
-			presets: ['latest', 'react'],
-			global : true
+			presets: opts.presets,
+			global : opts.global
 		})
-		.external(libs);
+		.external(opts.libs);
 
 	bundler.pipeline.get('deps')
 		.on('data', (file) => {
@@ -64,7 +80,7 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 					}
 				}
 
-				fse.outputFile(`build/${name}/bundle.js`, code, (err)=>{
+				fse.outputFile(`build/${name}/${opts.filename}`, code, (err)=>{
 					if(err) return reject(err);
 					logEnd();
 					return resolve(jsxDeps);
@@ -79,8 +95,8 @@ const makeBundler = function(name, entryPoint, libs=[], shared=[]){
 	};
 };
 
-const runJSX = (name, entryPoint, libs, shared)=>{
-	return makeBundler(name, entryPoint, libs, shared).run();
+const runJSX = (name, entryPoint, opts)=>{
+	return makeBundler(name, entryPoint, opts).run();
 };
 
 runJSX.makeBundler = makeBundler;

@@ -6,10 +6,10 @@ const log = require('../utils/log.js');
 const storage = require('../utils/storage.js');
 const jsx = require('./jsx.js');
 
-const jsxwatch = (name, entryPoint, libs, shared)=>{
+const jsxwatch = (name, entryPoint, opts)=>{
 	log.checkProduction('jsx-watch');
-
 	require('source-map-support').install();
+
 	const watchify = require('watchify');
 	const chokidar  = require('chokidar');
 
@@ -19,16 +19,13 @@ const jsxwatch = (name, entryPoint, libs, shared)=>{
 	let bundler;
 	const remakeBundler = ()=>{
 		if(bundler) bundler.rawBundler.close();
-		bundler = jsx.makeBundler(name, entryPoint, libs, shared);
+		bundler = jsx.makeBundler(name, entryPoint, opts);
 		bundler.rawBundler.plugin(watchify);
 		bundler.rawBundler.on('update', rebundle);
 	};
 	const rebundle = ()=>{
 		return bundler.run()
-			.then(() => {
-				const newDeps = _.keys(bundler.rawBundler._options.cache);
-				storage.deps(name, newDeps);
-			})
+			.then(()=>storage.deps(name, _.keys(bundler.rawBundler._options.cache)))
 			.catch((err)=>{});
 	};
 	const rebuild = (label) => {
@@ -41,14 +38,9 @@ const jsxwatch = (name, entryPoint, libs, shared)=>{
 	return bundler.run()
 		.then((deps) => {
 			storage.deps(name, deps);
-
 			chokidar.watch([`${entryDir}/**/*.jsx`, `${entryDir}/**/*.js`], {ignoreInitial : true})
-				.on('add', ()=>{
-					rebuild('file added');
-				})
-				.on('unlink', ()=>{
-					rebuild('file removed');
-				});
+				.on('add', ()=>{ rebuild('file added'); })
+				.on('unlink', ()=>{ rebuild('file removed'); });
 
 			log.watch(`Enabling js-watch for ${name}`);
 		});
