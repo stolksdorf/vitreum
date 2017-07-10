@@ -1,8 +1,7 @@
 # examples
-While vitreum is a build _library_ and you can use each part of it however you like, the following are some best practices to get you going and tweak from there.
+Vitreum is a set of build tools, so you can use each part of it however you like. The following are some best practices to get you going and tweak from there.
 
-#### `package.json`
-Having a `npm run prod` script is useful for forcing the prod environment to see how a prod build of your project looks like.
+#### `package.json` scripts
 
 ```javascript
 {
@@ -25,8 +24,8 @@ Having a `npm run prod` script is useful for forcing the prod environment to see
 
 To run these:
 
-- `npm run build` - Will create a fresh build. Always best to do this first.
-- `npm run prod`  - Runs the build script in production mode. Everything should be compressed and sourcemapping removed. This may take much longer than a regular build step.
+- `npm run build` - Will create a fresh build including build `libs`. Always best to do this first.
+- `npm run prod`  - Runs the build script in production mode. Everything should be compressed and sourcemapping removed. This may take much longer than a regular build step. Useful for testing how a prod build would look like in production.
 - `npm run dev`   - Will start development mode with file watching and livereloading.
 
 
@@ -44,10 +43,10 @@ const Proj = require('./project.json');
 
 Promise.resolve()
 	.then(()=>steps.clean())
-	.then(()=>steps.lib(Proj.libs))
+	.then(()=>steps.libs(Proj.libs))
 	.then(()=>steps.jsx('main', './client/main/main.jsx', Proj.libs))
 	.then((deps)=>steps.less('main', [], deps))
-	.then(()=>steps.asset(Proj.assets, ['./client']))
+	.then(()=>steps.assets(Proj.assets, ['./client']))
 	.then(()=>console.timeEnd(label))
 	.catch((err)=>console.error(err));
 ```
@@ -71,8 +70,6 @@ Promise.resolve()
 ```
 
 
-
-
 #### isomorphic server rendering
 The `render` simply takes a created bundled and makes it into a ready-to-ship HTML string, so this can either be used for static rendering, or isomorphic rendering on the server first.
 
@@ -93,6 +90,30 @@ app.get('*', (req, res) => {
 });
 ```
 
+
+#### static rendering
+Vitreum makes it very easy to take advantage of isomorphic rendering, however it's `render` step can be used within a script to statically render HTML to serve.
+
+```javascript
+const label = 'static';
+console.time(label);
+
+const fs = require('fs');
+const steps = require('vitreum/steps');
+const templateFn = require('./client/template.js');
+const Proj = require('./project.json');
+
+Promise.resolve()
+	.then(()=>steps.clean())
+	.then(()=>steps.libs(Proj.libs))
+	.then(()=>steps.jsx('main', './client/main/main.jsx', Proj.libs))
+	.then((deps)=>steps.less('main', [], deps))
+	.then(()=>steps.assets(Proj.assets, ['./client']))
+	.then(()=>render('main', templateFn))
+	.then((renderedPage)=>fs.writeFileSync('./build/main.html', renderedPage))
+	.then(()=>console.timeEnd(label))
+	.catch((err)=>console.error(err));
+```
 
 
 

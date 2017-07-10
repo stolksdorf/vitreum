@@ -1,7 +1,7 @@
 # vitreum
 [![bitHound Overall Score](https://www.bithound.io/github/stolksdorf/vitreum/badges/score.svg)](https://www.bithound.io/github/stolksdorf/vitreum)
 
-`vitreum` is a build library for front-end projects. Built for projects using React, Less, and Node. `vitreum` focuses on incredibly fast build times and tooling for tightly active development. It's composed of several independant steps that you can configure to meet exactly what your project needs.
+`vitreum` is a collection of front-end build tasks using common build tools; React, Browserify, LESS, LiveReload, etc. `vitreum` focuses on incredibly fast build times and tooling for tightly active development. It's composed of several independant steps that you can configure to meet exactly what your project needs.
 
 ## install
 
@@ -15,7 +15,7 @@ To really get going quickly, I've made a [separate project for common commandlin
 
 
 ### components
-Vitreum uses a folder-based component system, where each JSX component has it's own folder and an associated style file with it. Any assets or sub-components it needs should be located within it's own folder.
+Vitreum uses a folder-based component system, where each JSX component has it's own folder and an associated style file with it. Any assets or sub-components it needs should be located within it's own folder. If the `.jsx` file is required within your build, it's `.less` file also be automatically included in the LESS compile step.
 
 ```
 /page
@@ -65,7 +65,7 @@ jsx('main', './client/main/main.jsx', Proj.libs, ['./shared'])
 	.catch(console.error)
 ```
 
-`deps` will be an array of dependacy paths that the entrypoint require'd. This is used be the `less` step to search for the appropriate `less` files.
+`deps` will be an array of dependacy paths that the entrypoint `require`d. This can be used be the `less` step to search for the appropriate `less` files.
 
 #### `less(bundleName : string, shared : array, deps : array)`
 Creates a named css bundle at `./build/${bundleName}/bundle.css` using the `deps`. This step will look at each dependacy provided and see if there is a related `less` file at that location, if so it will automatically included it within the bundle. The `shared` parameter lets the `less` step know where to look for additional require paths.
@@ -129,7 +129,7 @@ module.exports = (vitreum) => {
 **Note**: These steps are only available when `vitreum` is installed in non-production envirnoments. Don't use them in production build steps!
 
 #### `jsxWatch(bundleName : string, entryPoint : string, libs : array, shared : array)`
-Creates a [watchified](https://github.com/substack/watchify) bundler and runs it. Each time a file is updated, `watchify` will rebundle only what's changed resulting in up to a 10x increase in bundle speeds. This step also watches the file system for created or deleted files to updated the bundler's cache.
+Creates a [watchified](https://github.com/substack/watchify) bundler and runs it. Each time a file in your project is updated, `watchify` will rebundle only what's changed resulting in up to a 10x increase in bundle speeds. This step also watches the file system for created or deleted files to updated the bundler's cache.
 
 The deps created with this step will be shared with the less-watch step using global variables.
 
@@ -183,7 +183,7 @@ serverWatch('./server.js', ['server'])
 
 
 ## Headtags
-Sometimes you'll want your components to be able to modify what's in your HTML `head`, such for `title` tags or `meta descriptions`. This can be pretty tricky to pull off, so this functionality comes built into Vitreum.
+Sometimes you'll want your components to be able to modify what's in your HTML `head`, such for `title` tags or `meta` descriptions. This can be pretty tricky to pull off, so this functionality comes built into Vitreum.
 
 ```javascript
 const Headtags = require('vitreum/headtags');
@@ -200,7 +200,7 @@ const Main = React.createClass({
 });
 ```
 
-`vitreum/headtags.js` provides a `title` and a `meta` tag which behave exactly like their regular HTML counterparts. When you use the vitreum `render` step, it will render the headtags into the `head` property. This means these tags will be scrapable by robots, even if isomorphic rendering.
+`vitreum/headtags.js` provides a `title` and a `meta` tag which behave exactly like their regular HTML counterparts. When you use the vitreum `render` step, it will render the headtags into the `head` property. This means these tags will be scrapable by robots, even if you are using isomorphic rendering.
 
 
 
