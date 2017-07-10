@@ -5,7 +5,7 @@ const log = require('../utils/log.js');
 const isProd = process.env.NODE_ENV === 'production';
 
 const makeBundler = function(name, entryPoint, opts={}){
-	if(!_.isPlainObject(opts)) throw 'opts must be an object';
+	if(!_.isPlainObject(opts)) throw 'JSX step: opts must be an object';
 	opts = _.defaults(opts, {
 		filename : 'bundle.js',
 		libs : [],
@@ -17,8 +17,8 @@ const makeBundler = function(name, entryPoint, opts={}){
 		global : true
 	});
 	if(opts.presets == '.babelrc') opts.presets = null;
-	if(!_.isArray(opts.shared)) throw 'opts.shared ust be an array';
-	if(!_.isArray(opts.libs)) throw 'opts.libs ust be an array';
+	if(!_.isArray(opts.shared)) throw 'JSX step: opts.shared must be an array';
+	if(!_.isArray(opts.libs)) throw 'JSX step: opts.libs must be an array';
 
 	const fse = require('fs-extra');
 	const browserify = require('browserify');
@@ -78,7 +78,7 @@ const makeBundler = function(name, entryPoint, opts={}){
 					}
 				}
 
-				fse.outputFile(`build/${name}/${opts.filename}`, code, (err)=>{
+				fse.outputFile(path.resolve(`./build`, name, opts.filename), code, (err)=>{
 					if(err) return reject(err);
 					logEnd();
 					return resolve(jsxDeps);

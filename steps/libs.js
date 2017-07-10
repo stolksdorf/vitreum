@@ -7,12 +7,12 @@ const isProd = process.env.NODE_ENV === 'production';
 const runLibs = (libs=[], opts={}) => {
 	const logEnd = log.time('libs');
 
-	if(!_.isPlainObject(opts)) throw 'opts must be an object';
+	if(!_.isPlainObject(opts)) throw 'Libs step: opts must be an object';
 	opts = _.defaults(opts, {
 		filename : 'libs.js',
 		shared : [],
 	});
-	if(!_.isArray(opts.shared)) throw 'opts.shared ust be an array';
+	if(!_.isArray(opts.shared)) throw 'Libs step: opts.shared must be an array';
 
 	const browserify = require('browserify');
 	const uglify = require('uglify-es');
