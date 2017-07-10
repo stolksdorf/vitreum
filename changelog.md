@@ -1,6 +1,8 @@
 # changelog
 
 ### v4.5.0 - Monday, 10/07/2017
+**Warning** : This version changes step function signature, so your build scripts will need to be updated
+
 - `libs`, `jsx` and `less` steps (and associated `*Watch` steps) now take a generic `opts` argument, instead of various arguments. This will allow me to add more features and expand functionality in the future without changing step function signature
 - `jsx` and `less` steps now resolve file paths instead of constructing them.
 - Added option to `libs`, `jsx` and `less` steps to change filename of resulting bundle
