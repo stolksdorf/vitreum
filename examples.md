@@ -29,6 +29,25 @@ To run these:
 - `npm run dev`   - Will start development mode with file watching and livereloading.
 
 
+#### `project.json`
+If you have more than one build script, it's useful to stored shared project info in a `project.json` in your `./scripts` folder that your scripts can pull from. Things like `libs` or assets paths.
+
+```
+{
+	"entryPoints" : {
+		"main" : "./client/main/main.jsx"
+	},
+	"assets" : ["*.txt", "cool_lib.js", "fancy.*"],
+	"libs" : [
+		"react",
+		"react-dom",
+		"lodash",
+		"classnames"
+	]
+}
+```
+
+
 #### build scripts
 It's best to build two scripts `dev.js` and `build.js`. Dev is for active development and includes livereloading and filesystem watching, where `build` bundles together your libs which can time-consuming.
 
