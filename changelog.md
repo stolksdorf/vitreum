@@ -7,6 +7,7 @@
 - `jsx` and `less` steps now resolve file paths instead of constructing them.
 - Added option to `libs`, `jsx` and `less` steps to change filename of resulting bundle
 - Added option to change the babel presets on the `jsx` step
+- Added option to use a project's `.babelrc` file
 - Added option to disable the global transform on `babelify` (not recommended)
 - Updated examples and readme to reflect the above changes
 
