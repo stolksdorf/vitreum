@@ -11,11 +11,7 @@ const watchServer = (serverPath, watchFolders=[])=>{
 		script: serverPath,
 		watch: _.map(_.concat(watchFolders, serverPath), (watch)=>path.normalize(watch))
 	});
-	nodemon
-		.on('restart', (files) => {
-			//TODO: make pretty
-			console.log('Server restart');
-		});
+	nodemon.on('restart', (files)=>console.log('Server restart'));
 
 	log.watch(`Enabled server watching`);
 	return Promise.resolve();

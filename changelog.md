@@ -2,6 +2,8 @@
 
 ### v4.5.2 - Wednesday, 12/07/2017
 - Improved check to allow top-level function component entry points.
+- Removing classnames as a dep (unused)
+- Updated chalk to v2
 
 ### v4.5.1 - Monday, 10/07/2017
 - Updated `browserify` to v14
