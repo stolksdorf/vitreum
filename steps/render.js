@@ -42,8 +42,7 @@ const getBody = (name, props, useStatic) => {
 	const bundlePath = path.resolve(`./build/${name}/bundle.js`);
 	if(!isProd) requireUncache(bundlePath);
 	const Element = require(bundlePath);
-	if(!Element || _.isEmpty(Element)) throw new Error('Component was improperly built. Check the /build folder.');
-
+	if(_.isEmpty(Element) && !_.isFunction(Element)) throw new Error('Component was improperly built. Check the /build folder.');
 	if(useStatic) return ReactDOMServer.renderToStaticMarkup(React.createElement(Element, props));
 	return ReactDOMServer.renderToString(React.createElement(Element, props));
 };

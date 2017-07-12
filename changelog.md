@@ -1,5 +1,8 @@
 # changelog
 
+### v4.5.2 - Wednesday, 12/07/2017
+- Improved check to allow top-level function component entry points.
+
 ### v4.5.1 - Monday, 10/07/2017
 - Updated `browserify` to v14
 - Updated `fs-extra` to v3
