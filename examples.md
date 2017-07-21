@@ -13,7 +13,6 @@ Vitreum is a set of build tools, so you can use each part of it however you like
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
     "prod" : "set NODE_ENV=production&& npm run build",
-
     "postinstall": "npm run build",
     "start" : "node server/server.js"
   },
@@ -34,15 +33,18 @@ If you have more than one build script, it's useful to stored shared project inf
 
 ```
 {
-	"entryPoints" : {
-		"main" : "./client/main/main.jsx"
+	"apps" : {
+		"main" : "./client/main/main.jsx",
+		"admin" : "./client/admin/admin.jsx"
 	},
-	"assets" : ["*.txt", "cool_lib.js", "fancy.*"],
+	"assets" : ["*.png", "*.otf", "*.woff", "*.woff2", "*.ico", "*.ttf", "client_lib.js"],
+	"shared" : ["./shared"],
 	"libs" : [
 		"react",
 		"react-dom",
 		"lodash",
-		"classnames"
+		"classnames",
+		"create-react-class"
 	]
 }
 ```
@@ -57,14 +59,17 @@ It's best to build two scripts `dev.js` and `build.js`. Dev is for active develo
 const label = 'build';
 console.time(label);
 
+const _     = require('lodash');
 const steps = require('vitreum/steps');
-const Proj = require('./project.json');
+const Proj  = require('./project.json');
 
 Promise.resolve()
 	.then(()=>steps.clean())
 	.then(()=>steps.libs(Proj.libs))
-	.then(()=>steps.jsx('main', './client/main/main.jsx', {libs : Proj.libs}))
-	.then((deps)=>steps.less('main', {}, deps))
+	.then(()=>Promise.all(_.map(Proj.apps, (path, name)=>
+		steps.jsx(name, path, {libs : Proj.libs, shared : Proj.shared})
+			.then((deps)=>steps.less(name, {shared : Proj.shared}, deps))
+	)))
 	.then(()=>steps.assets(Proj.assets, ['./client']))
 	.then(()=>console.timeEnd(label))
 	.catch((err)=>console.error(err));
@@ -74,13 +79,16 @@ Promise.resolve()
 ```javascript
 const label = 'dev';
 console.time(label);
-const steps = require('vitreum/steps');
 
-const Proj = require('./project.json');
+const _     = require('lodash');
+const steps = require('vitreum/steps');
+const Proj  = require('./project.json');
 
 Promise.resolve()
-	.then(()=>steps.jsxWatch('main', './client/main/main.jsx', {libs : Proj.libs}))
-	.then((deps)=>steps.lessWatch('main', {}, deps))
+	.then(()=>Promise.all(_.map(Proj.apps, (path, name)=>
+		steps.jsxWatch(name, path, {libs : Proj.libs, shared : Proj.shared})
+			.then((deps)=>steps.lessWatch(name, {shared : Proj.shared}, deps))
+	)))
 	.then(()=>steps.assetsWatch(Proj.assets, ['./client']))
 	.then(()=>steps.livereload())
 	.then(()=>steps.serverWatch('./server.js', ['server']))
@@ -88,6 +96,29 @@ Promise.resolve()
 	.catch((err)=>console.error(err));
 ```
 
+#### template function
+This template function comes loaded with Open Sans and Font Awesome.
+```javascript
+module.exports = function(vitreum){
+	return `
+<!DOCTYPE html>
+<html>
+	<head>
+		<link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+		<link href="//fonts.googleapis.com/css?family=Open+Sans:400,300,600,700" rel="stylesheet" type="text/css" />
+		<link rel="icon" href="/assets/homebrew/favicon.ico" type="image/x-icon" />
+
+		<title>The Homebrewery - NaturalCrit</title>
+		${vitreum.head}
+	</head>
+	<body>
+		<main id="reactRoot">${vitreum.body}</main>
+	</body>
+	${vitreum.js}
+</html>
+`;
+}
+```
 
 #### isomorphic server rendering
 The `render` simply takes a created bundled and makes it into a ready-to-ship HTML string, so this can either be used for static rendering, or isomorphic rendering on the server first.
@@ -95,17 +126,15 @@ The `render` simply takes a created bundled and makes it into a ready-to-ship HT
 `server.js`
 
 ```javascript
+const render = require('vitreum/steps/render');
 const templateFn = require('./client/template.js');
 app.get('*', (req, res) => {
-	//Load some data or state in here
 	render('main', templateFn, {
 			url : req.url,
 			data : coolProps
 		})
 		.then((page) => res.send(page))
-		.catch((err) => {
-			console.log(err);
-		});
+		.catch((err) => console.log(err));
 });
 ```
 
