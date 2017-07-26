@@ -126,6 +126,10 @@ The `render` simply takes a created bundled and makes it into a ready-to-ship HT
 `server.js`
 
 ```javascript
+const express = require('express');
+const app = express();
+app.use(express.static('./build'));
+
 const render = require('vitreum/steps/render');
 const templateFn = require('./client/template.js');
 app.get('*', (req, res) => {
@@ -135,6 +139,11 @@ app.get('*', (req, res) => {
 		})
 		.then((page) => res.send(page))
 		.catch((err) => console.log(err));
+});
+
+const PORT = process.env.PORT;
+app.listen(PORT, () => {
+	console.log(`server on port:${PORT}`);
 });
 ```
 
