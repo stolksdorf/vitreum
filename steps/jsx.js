@@ -14,11 +14,13 @@ const makeBundler = function(name, entryPoint, opts={}){
 			'latest',
 			'react'
 		],
+		transforms : [],
 		global : true
 	});
 	if(opts.presets == '.babelrc') opts.presets = null;
 	if(!_.isArray(opts.shared)) throw 'JSX step: opts.shared must be an array';
 	if(!_.isArray(opts.libs)) throw 'JSX step: opts.libs must be an array';
+	if(!_.isArray(opts.transforms)) throw 'JSX step: opts.transforms must be an array';
 
 	const fse = require('fs-extra');
 	const browserify = require('browserify');
@@ -28,7 +30,7 @@ const makeBundler = function(name, entryPoint, opts={}){
 	let jsxDeps = [];
 	let warnings = [];
 
-	const bundler = browserify({
+	let bundler = browserify({
 			cache: {}, packageCache: {},
 			debug: !isProd,
 			standalone : name,
@@ -40,6 +42,8 @@ const makeBundler = function(name, entryPoint, opts={}){
 			global : opts.global
 		})
 		.external(opts.libs);
+
+	_.each(opts.transforms, (plugin)=>bundler = bundler.transform(plugin));
 
 	bundler.pipeline.get('deps')
 		.on('data', (file) => {

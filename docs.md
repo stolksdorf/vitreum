@@ -55,6 +55,7 @@ opts = {
 		'latest',
 		'react'
 	],
+	transforms : [],        //An array of Browserify transforms you'd like to be applied
 	presets : '.babelrc'    //Use .bablerc file instead of set presets
 }
 ```
