@@ -53,12 +53,11 @@ module.exports = {
 
 		if(err.message.indexOf('Cannot find module') !== -1){
 			//Require Error
-		}else if(err.type == 'ReferenceError'){
-			//Babel error
 		}else{
 			err.filename = err.filename.replace(process.cwd() + path.sep, '');
-			err.message = err.message.substring(err.message.indexOf(': ') + 2);
-			err.message = err.message.substring(0, err.message.indexOf(err.loc.line) - 2);
+			let message = err.message.substring(err.message.indexOf(': ') + 2);
+			message = message.substring(0, message.indexOf(err.loc.line) - 2);
+			if(message) err.message = message;
 		}
 
 		console.log();
