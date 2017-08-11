@@ -184,17 +184,18 @@ serverWatch('./server.js', ['server'])
 ```
 
 
-## Headtags
+## Meta Tags
 Sometimes you'll want your components to be able to modify what's in your HTML `head`, such for `title` tags or `meta` descriptions. This can be pretty tricky to pull off, so this functionality comes built into Vitreum.
 
 ```javascript
-const Headtags = require('vitreum/headtags');
+const Meta = require('vitreum/meta');
 
 const Main = React.createClass({
 	render: function(){
 		return <div className='main'>
-			<Headtags.title>My Fancy Page</Headtags.title>
-			<Headtags.meta name="description" content="This is a really fancy page." />
+			<Meta title="My Fancy Page" />
+			<Meta name="description" content="This is a really fancy page." />
+			<Meta bulk={{author:"Scott", keywords:"Super, Cool"}} />
 
 			Hello World!
 		</div>;
@@ -202,4 +203,8 @@ const Main = React.createClass({
 });
 ```
 
-`vitreum/headtags.js` provides a `title` and a `meta` tag which behave exactly like their regular HTML counterparts. When you use the vitreum `render` step, it will render the headtags into the `head` property. This means these tags will be scrapable by robots, even if you are using isomorphic rendering.
+The `bulk` prop accepts an object, where fors each key-value pair vitreum will produce a `<meta>` tag with corresponding `name` and `content` props.
+
+The `title` prop will instead produce a `title` tag which it will inject into the head. If a `Meta` tag with a `title` prop is rendered onto an existing page, it will update the document's title dynamically.
+
+`vitreum/meta.js` provides a react component which will render into the head. When you use the vitreum `render` step, it will render the metatags into the `head` property. This means these tags will be scrapable by robots, even if you are using isomorphic rendering.

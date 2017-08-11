@@ -1,15 +1,10 @@
 global.vitreum = {
-	title : null,
 	meta : [],
 	deps : {},
 	entryDir : {}
 };
 
 module.exports = {
-	title : (val=false) => {
-		if(val !== false) global.vitreum.title = val;
-		return global.vitreum.title;
-	},
 	meta : (val) => {
 		if(val === false) global.vitreum.meta = [];
 		if(val) global.vitreum.meta.push(val);

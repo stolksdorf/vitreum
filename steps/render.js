@@ -2,7 +2,7 @@ const _ = require('lodash');
 const path = require('path');
 
 const log = require('../utils/log.js');
-const HeadTags = require('../utils/headtags.gen.js');
+const MetaGen = require('../utils/meta.gen.js');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -13,7 +13,7 @@ const requireUncache = (filePath) => {
 const getHead = (name) => {
 	return `
 <link rel="stylesheet" type="text/css" href="/${name}/bundle.css" />
-${HeadTags()}
+${MetaGen()}
 `;
 };
 

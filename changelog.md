@@ -1,5 +1,11 @@
 # changelog
 
+### v4.7.0 - Friday, 11/08/2017
+- Replaced headtags with a generalized `meta` tag
+
+### v4.6.0 - Friday, 11/08/2017
+- Adding in custom transforms to babelify
+
 ### v4.5.2 - Wednesday, 12/07/2017
 - Improved check to allow top-level function component entry points.
 - Removing classnames as a dep (unused)
