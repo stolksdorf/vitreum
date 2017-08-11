@@ -51,9 +51,10 @@ module.exports = {
 		});
 		err.type = error.toString().substring(0, error.toString().indexOf(':'));
 
-		//Require Error
 		if(err.message.indexOf('Cannot find module') !== -1){
-
+			//Require Error
+		}else if(err.type == 'ReferenceError'){
+			//Babel error
 		}else{
 			err.filename = err.filename.replace(process.cwd() + path.sep, '');
 			err.message = err.message.substring(err.message.indexOf(': ') + 2);
