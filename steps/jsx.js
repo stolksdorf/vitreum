@@ -67,7 +67,7 @@ const makeBundler = function(name, entryPoint, opts={}){
 			bundler.bundle((err, buf) => {
 				if(err) {
 					log.jsxError(err);
-					return reject(err.toString());
+					return reject(err);
 				}
 				log.libWarnings(warnings);
 
