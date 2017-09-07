@@ -117,7 +117,7 @@ module.exports = (vitreum) => {
 			${vitreum.head}
 		</head>
 		<body>
-			<main id="reactRoot">${vitreum.body}</main>
+			<main id='reactRoot'>${vitreum.body}</main>
 		</body>
 		${vitreum.js}
 	</html>`;
@@ -193,9 +193,10 @@ const Meta = require('vitreum/meta');
 const Main = React.createClass({
 	render: function(){
 		return <div className='main'>
-			<Meta title="My Fancy Page" />
-			<Meta name="description" content="This is a really fancy page." />
-			<Meta bulk={{author:"Scott", keywords:"Super, Cool"}} />
+			<Meta title='My Fancy Page' />
+			<Meta name='description' content='This is a really fancy page.' />
+			<Meta bulk={{author:'Scott', keywords:'Super, Cool'}} />
+			<Meta structuredData={{type:'Organization', logo:'cool.biz/logo.png'}}
 
 			Hello World!
 		</div>;
@@ -206,5 +207,8 @@ const Main = React.createClass({
 The `bulk` prop accepts an object, where fors each key-value pair vitreum will produce a `<meta>` tag with corresponding `name` and `content` props.
 
 The `title` prop will instead produce a `title` tag which it will inject into the head. If a `Meta` tag with a `title` prop is rendered onto an existing page, it will update the document's title dynamically.
+
+The `structuredData` prop will produce a script tag formatted as [Structured Data](https://developers.google.com/search/docs/guides/intro-structured-data). It will automatically add `"@context": "http://schema.org"` and will convert any `type` keys to `@type`.
+
 
 `vitreum/meta.js` provides a react component which will render into the head. When you use the vitreum `render` step, it will render the metatags into the `head` property. This means these tags will be scrapable by robots, even if you are using isomorphic rendering.
