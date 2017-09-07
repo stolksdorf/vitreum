@@ -16,13 +16,9 @@ const renderTag = (props)=>{
 		let data = _.deep(props.structuredData, (obj)=>{
 			return _.mapKeys(obj, (val, key)=>(key == 'type'?'@type':key));
 		});
-		data['@context'] = 'http://schema.org';
-		return ReactDOMServer.renderToStaticMarkup(
-			React.createElement('script',
-				{type:'application/ld+json'},
-				JSON.stringify(data, null, '  ');
-			);
-		);
+		data['@context'] = data['@context'] || data['context'] || 'http://schema.org';
+		delete data['context'];
+		return `<script type='application/ld+json'>${JSON.stringify(data, null, '  ')}</script>`;
 	}
 	if(props.title){
 		return ReactDOMServer.renderToStaticMarkup(
