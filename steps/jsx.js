@@ -11,7 +11,7 @@ const makeBundler = function(name, entryPoint, opts={}){
 		libs : [],
 		shared : [],
 		presets : [
-			'latest',
+			'env',
 			'react'
 		],
 		transforms : [],
