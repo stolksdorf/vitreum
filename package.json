@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "4.8.2",
+  "version": "4.9.0",
   "description": "Web app build system using Browserify, React, and Less",
   "repository": {
     "type": "git",
@@ -13,25 +13,26 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
-    "babel-preset-env": "^1.6.0",
-    "babel-preset-react": "^6.24.1",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
     "chalk": "^2.0.1",
     "chokidar": "^1.6.1",
-    "create-react-class": "^15.6.0",
     "fs-extra": "^3.0.1",
     "klaw": "^2.0.0",
     "less": "^2.7.1",
     "livereload": "^0.6.0",
-    "lodash": "^4.17.2",
     "minimatch": "^3.0.3",
     "nodemon": "^1.11.0",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
     "source-map-support": "^0.4.6",
     "uglify-es": "^3.0.14",
     "watchify": "^3.8.0"
+  },
+  "peerDependencies": {
+    "babel-preset-react": "^6.24.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "lodash": "^4.17.2",
+    "create-react-class": "^15.6.2"
   },
   "keywords": [
     "browserify",

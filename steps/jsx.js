@@ -10,14 +10,9 @@ const makeBundler = function(name, entryPoint, opts={}){
 		filename : 'bundle.js',
 		libs : [],
 		shared : [],
-		presets : [
-			'env',
-			'react'
-		],
 		transforms : [],
 		global : true
 	});
-	if(opts.presets == '.babelrc') opts.presets = null;
 	if(!_.isArray(opts.shared)) throw 'JSX step: opts.shared must be an array';
 	if(!_.isArray(opts.libs)) throw 'JSX step: opts.libs must be an array';
 	if(!_.isArray(opts.transforms)) throw 'JSX step: opts.transforms must be an array';

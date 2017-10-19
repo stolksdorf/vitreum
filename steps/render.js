@@ -30,7 +30,7 @@ const runtime = (name, props)=>{
 		var root = document.getElementById('reactRoot');
 		if(!root) throw "Vitreum: Could not find element with id 'reactRoot' to mount into";
 		var element = require('react').createElement(${name}, ${JSON.stringify(props)});
-		require('react-dom').render(element, root);
+		require('react-dom').hydrate(element, root);
 	})();
 `;
 };
