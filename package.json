@@ -21,7 +21,6 @@
     "klaw": "^2.0.0",
     "less": "^2.7.1",
     "livereload": "^0.6.0",
-    "lodash": "^4.17.2",
     "minimatch": "^3.0.3",
     "nodemon": "^1.11.0",
     "source-map-support": "^0.4.6",
@@ -32,6 +31,7 @@
     "babel-preset-react": "^6.24.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "lodash": "^4.17.2",
     "create-react-class": "^15.6.2"
   },
   "keywords": [
