@@ -1,5 +1,11 @@
 # changelog
 
+### v4.9.0 - Tuesday, 19/10/2017
+- Updated to React v16
+- Now using [`reactDom.hydrate` ](https://reactjs.org/docs/react-dom.html#hydrate) in the render step
+- `babel-preset-react`, `react`, `react-dom`, `lodash`, `create-react-class` are now listed as peer-deps for faster installs
+- Vitreum now uses the project's [babel config](https://babeljs.io/docs/usage/babelrc/) so it must be configured or your project won't build
+
 ### v4.7.0 - Friday, 11/08/2017
 - Replaced headtags with a generalized `meta` tag
 
