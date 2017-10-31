@@ -9,6 +9,27 @@
 npm install vitreum
 ```
 
+Vitreum will use your project's [babel config](https://babeljs.io/docs/usage/babelrc/), so it's a good idea to have at least [`babel-react-preset`](https://babeljs.io/docs/plugins/preset-react/) configured to be able to build react components. 
+
+`package.json`
+```json
+{
+  "babel": {
+    "only": [
+      "*.jsx"
+    ],
+    "presets": [
+      "react"
+    ]
+  },
+}
+```
+
+#### peer deps
+
+`babel-preset-react`, `react`, `react-dom`, `lodash`, `create-react-class` are listed as peer dependacies, so make sure those are installed. 
+
+
 ### quickstart
 
 To really get going quickly, I've made a [separate project for common commandline tools](https://github.com/stolksdorf/vitreum-cli) for vitreum, including a complete project bootstrap.
