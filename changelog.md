@@ -1,5 +1,8 @@
 # changelog
 
+### v4.9.1 - Thursday, 02/11/2017
+- Adding ability to pass through options to nodemon
+
 ### v4.9.0 - Tuesday, 19/10/2017
 - Updated to React v16
 - Now using [`reactDom.hydrate` ](https://reactjs.org/docs/react-dom.html#hydrate) in the render step
