@@ -24,7 +24,8 @@ const runLibs = (libs=[], opts={}) => {
 			.bundle((err, buf) => {
 				if(err) return reject(err);
 				let code = buf.toString();
-				if(isProd){
+				const shouldMinify = _.has(opts, 'minify') ? opts.minify : isProd;
+				if(shouldMinify){
 					try{
 						const minified = uglify.minify(buf.toString());
 						if(minified.error) return reject(minified.error);
