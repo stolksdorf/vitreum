@@ -17,10 +17,10 @@ module.exports = {
 	},
 
 	time : (label) => {
-		if(isSilent) return;
 		const time = Date.now();
-		console.log(chalk.gray(`${label}...`));
+		if(!isSilent) console.log(chalk.gray(`${label}...`));
 		return () => {
+			if(isSilent) return;
 			console.log(`${_.padEnd(label, 16)} ${chalk.green('✓')} ${chalk.yellow(Date.now() - time + 'ms')}`);
 		};
 	},

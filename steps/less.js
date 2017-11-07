@@ -18,6 +18,7 @@ const getLessImports = (deps) => {
 };
 
 const runStyle = (name, opts={}, deps) => {
+	log.setSilent(opts.silent);
 	const logEnd = log.time(`less[${name}]`);
 
 	if(!_.isPlainObject(opts)) throw 'Less step: opts must be an object';
@@ -26,7 +27,6 @@ const runStyle = (name, opts={}, deps) => {
 		shared : [],
 	});
 	if(!_.isArray(opts.shared)) throw 'Less step: opts.shared must be an array';
-	log.setSilent(opts.silent);
 
 	const less = require('less');
 
