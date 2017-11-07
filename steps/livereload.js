@@ -1,7 +1,8 @@
 const log = require('../utils/log.js');
 
 let lr_server;
-const runLivereload = () => {
+const runLivereload = (opts={}) => {
+	log.setSilent(opts.silent);
 	log.checkProduction('livereload');
 	const livereload = require('livereload');
 	log.watch('livereload running');

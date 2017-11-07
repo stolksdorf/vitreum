@@ -18,6 +18,7 @@ const getLessImports = (deps) => {
 };
 
 const runStyle = (name, opts={}, deps) => {
+	log.setSilent(opts.silent);
 	const logEnd = log.time(`less[${name}]`);
 
 	if(!_.isPlainObject(opts)) throw 'Less step: opts must be an object';

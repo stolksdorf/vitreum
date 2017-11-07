@@ -4,6 +4,7 @@ const path = require('path');
 const log = require('../utils/log.js');
 
 const watchServer = (serverPath, watchFolders=[], opts={args : []})=>{
+	log.setSilent(opts.silent);
 	log.checkProduction('server-watch');
 
 	const nodemon = require('nodemon');
