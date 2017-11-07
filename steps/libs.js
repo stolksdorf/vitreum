@@ -5,6 +5,7 @@ const log = require('../utils/log.js');
 const isProd = process.env.NODE_ENV === 'production';
 
 const runLibs = (libs=[], opts={}) => {
+	log.setSilent(opts.silent);
 	const logEnd = log.time('libs');
 
 	if(!_.isPlainObject(opts)) throw 'Libs step: opts must be an object';

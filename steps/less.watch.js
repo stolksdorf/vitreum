@@ -5,6 +5,7 @@ const log = require('../utils/log.js');
 const LessStep = require('./less.js');
 
 const lesswatch = (name, opts={}) => {
+	log.setSilent(opts.silent);
 	log.checkProduction('less-watch');
 	const chokidar  = require('chokidar');
 

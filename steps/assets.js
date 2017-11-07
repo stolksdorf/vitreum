@@ -27,7 +27,8 @@ const scanFolder = (globs, folder) => {
 		});
 };
 
-const runAssets = (globs, folders) => {
+const runAssets = (globs, folders, opts={}) => {
+	log.setSilent(opts.silent);
 	const endLog = log.time('assets');
 	return Promise.all(_.map(folders, (folder)=>{
 		return scanFolder(globs, folder);

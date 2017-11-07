@@ -1,5 +1,8 @@
 # changelog
 
+### v4.9.3 - Tuesday, 07/11/2017
+- Allow the `silent` option on steps to not produce console output
+
 ### v4.9.1 - Thursday, 02/11/2017
 - Adding ability to pass through options to nodemon
 

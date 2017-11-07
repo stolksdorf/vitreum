@@ -26,6 +26,7 @@ const runStyle = (name, opts={}, deps) => {
 		shared : [],
 	});
 	if(!_.isArray(opts.shared)) throw 'Less step: opts.shared must be an array';
+	log.setSilent(opts.silent);
 
 	const less = require('less');
 

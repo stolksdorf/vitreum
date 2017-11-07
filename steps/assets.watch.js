@@ -1,7 +1,8 @@
 const _ = require('lodash');
 const log = require('../utils/log.js');
 
-const assetwatch = (globs, folders) => {
+const assetwatch = (globs, folders, opts={}) => {
+	log.setSilent(opts.silent);
 	log.checkProduction('assets-watch');
 
 	const chokidar  = require('chokidar');

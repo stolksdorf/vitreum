@@ -1,11 +1,14 @@
-const _ = require('lodash');
+const _     = require('lodash');
 const chalk = require('chalk');
+const path  = require('path');
 
-const path =require('path');
+let isSilent = false;
 
 module.exports = {
+	setSilent : (state)=>isSilent=!!state,
 
 	libWarnings : (bundledLibs) => {
+		if(isSilent) return;
 		if(!bundledLibs.length) return;
 		const libs = _.uniq(bundledLibs);
 		console.log(chalk.red("Warning: ") + "The following node modules are in your js bundle.");
@@ -14,6 +17,7 @@ module.exports = {
 	},
 
 	time : (label) => {
+		if(isSilent) return;
 		const time = Date.now();
 		console.log(chalk.gray(`${label}...`));
 		return () => {
@@ -22,15 +26,18 @@ module.exports = {
 	},
 
 	noDeps : (label) => {
+		if(isSilent) return;
 		console.log(`${chalk.red('Warning: ')} No dependacy list provided for ${label} less step.`);
 		console.log(chalk.green('  Try running the jsx step first.'));
 	},
 
 	watch : (label) => {
+		if(isSilent) return;
 		console.log(chalk.magenta(`  ${label}`));
 	},
 
 	checkProduction : (label) => {
+		if(isSilent) return;
 		const isProd = process.env.NODE_ENV === 'production';
 		if(isProd){
 			console.log(`${chalk.yellow('Warning:')} You are using the dev step '${label}' in production mode.`);
@@ -39,6 +46,7 @@ module.exports = {
 	},
 
 	updateCache : (label) => {
+		if(isSilent) return;
 		console.log(chalk.gray(`  ${label}, updating bundle cache...`));
 	},
 

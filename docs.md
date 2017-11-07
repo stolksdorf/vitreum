@@ -10,7 +10,7 @@ You can access all steps via an object by requiring `require('vitreum/steps')`. 
 #### `clean()`
 Ensures the `/build` folder exists and removes all files from it.
 
-```javascript
+```js
 const clean = require('vitreum/steps/clean');
 clean()
 	.then(() => {})
@@ -20,17 +20,18 @@ clean()
 #### `libs(modulenames : array, [opts : object])`
 Creates a standalone bundle at `/build/libs.js` that contains Browserified versions of all the module names passed in. This step is used to isolate very large common libraries from slowing down builds. This file can also be cached in a CDN as it shouldn't need to be ran often (can take up to 10s to run!).
 
-```javascript
+```js
 const libs = require('vitreum/steps/libs');
 libs(['react', 'classnames', 'lodash'])
 	.then(() => {})
 	.catch(console.error)
 ```
 
-```javascript
+```js
 opts = {
 	filename : 'libs.js', // File name of resulting bundle
 	shared : [],          // List of paths to treat as require paths
+	silent : false        // Silence any console output
 }
 ```
 
@@ -38,25 +39,21 @@ opts = {
 #### `jsx(bundleName : string, entryPoint : string, [opts : object]) -> deps : array`
 Creates a named js bundle at `./build/${bundleName}/bundle.js` using the component specified at `entryPoint`. Any modules listed in `libs` will not be included in the bundle and will be expected to be loaded extenerally. Any paths listed in `shared` will be used as additional require paths.
 
-```javascript
+```js
 const jsx = require('vitreum/steps/jsx');
 jsx('main', './client/main/main.jsx', { libs : Proj.libs, shared : ['./shared'] })
 	.then((deps) => {})
 	.catch(console.error)
 ```
 
-```javascript
+```js
 opts = {
 	filename : 'bundle.js', // File name of resulting bundle
 	libs : [],              // List of module names that were built in the libs task
 	shared : [],            // List of paths to treat as require paths
 	global : true           // Apply the babelify transform globally
-	presets : [             // List of bable presets for babelify transform
-		'latest',
-		'react'
-	],
-	transforms : [],        //An array of Browserify transforms you'd like to be applied
-	presets : '.babelrc'    //Use .bablerc file instead of set presets
+	transforms : [],        // An array of Browserify transforms you'd like to be applied
+	silent : false          // Silence any console output
 }
 ```
 
@@ -65,7 +62,7 @@ opts = {
 #### `less(bundleName : string, opts : object, deps : array)`
 Creates a named css bundle at `./build/${bundleName}/bundle.css` using the `deps`. This step will look at each dependacy provided and see if there is a related `less` file at that location, if so it will automatically included it within the bundle. The `shared` parameter lets the `less` step know where to look for additional require paths.
 
-```javascript
+```js
 const jsx = require('vitreum/steps/jsx');
 const less = require('vitreum/steps/less');
 
@@ -74,17 +71,18 @@ jsx('main', './client/main/main.jsx', { libs : Proj.libs, shared : ['./shared'] 
 	.catch(console.error)
 ```
 
-```javascript
+```js
 opts = {
 	filename : 'bundle.css', // File name of resulting bundle
 	shared : [],             // List of paths to treat as require paths
+	silent : false           // Silence any console output
 }
 ```
 
 #### `assets(patterns : array, folders : array)`
 Searches for all files in the array of `folders` that match any of the `patterns`. Copies each file, maintaining it's folder pathing, into `/build/assets/`, eg. `/build/assets/main/widget/imgs/user.png`.
 
-```javascript
+```js
 const assets = require('vitreum/steps/assets');
 assets(['*.png', '*.otf', 'myClientLib.js'], ['./client', './shared'])
 	.then(() => {})
@@ -99,7 +97,7 @@ Takes a compiled bundled from the `jsx` step and a template function to render a
 `opts` is an object of additional options
 - `.useStatic` Toggles between using `ReactDOMServer.renderToString` and `ReactDOMServer.renderToStaticMarkup`. [Reference here](https://facebook.github.io/react/docs/react-dom-server.html)
 
-```javascript
+```js
 const render = require('vitreum/steps/render');
 const templateFn = require('./client/template.js');
 render('main', templateFn, {})
@@ -110,7 +108,7 @@ render('main', templateFn, {})
 **template function**
 The template function is a simple function that will be given an object with three properties and is expected to return a string of HTML. You can use whatever templating technique you like: DoT, Handlebars, Jade, native template strings. The three properties are `head`, `body`, and `js`
 
-```javascript
+```js
 module.exports = (vitreum) => {
 	return `<html>
 		<head>
@@ -135,7 +133,7 @@ Creates a [watchified](https://github.com/substack/watchify) bundler and runs it
 
 The deps created with this step will be shared with the less-watch step using global variables.
 
-```javascript
+```js
 const jsxWatch = require('vitreum/steps/jsx.watch');
 jsxWatch('main', './client/main/main.jsx', Proj.libs, ['./shared'])
 	.then(() => {})
@@ -145,7 +143,7 @@ jsxWatch('main', './client/main/main.jsx', Proj.libs, ['./shared'])
 #### `lessWatch(bundleName : string, shared : array)`
 Watches the file system for changes in `.less` files and will re-run the `less` step.
 
-```javascript
+```js
 const lessWatch = require('vitreum/steps/less.watch');
 lessWatch('main', ['./shared'])
 	.then(() => {})
@@ -155,7 +153,7 @@ lessWatch('main', ['./shared'])
 #### `assetsWatch(patterns : array, folders : array)`
 Watches the file system for changes in provided `patterns` and will re-run the `asset` step.
 
-```javascript
+```js
 const assetWatch = require('vitreum/steps/assets.watch');
 assetWatch(['*.png', '*.otf', 'myClientLib.js'], ['./client', './shared'])
 	.then(() => {})
@@ -165,7 +163,7 @@ assetWatch(['*.png', '*.otf', 'myClientLib.js'], ['./client', './shared'])
 #### `livereload()`
 Sets up a [livereload](http://livereload.com/) server that watches for changes in the `./build` folder. By installing and using the [LiveReload extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) your browser will instantly switch up javscript and styles when they change. I *strongly* suggest using this, greatly speeds up development.
 
-```javascript
+```js
 const livereload = require('vitreum/steps/livereload');
 livereload()
 	.then(() => {})
@@ -176,7 +174,7 @@ livereload()
 #### `serverWatch(serverFile : string, serverDirs : array)`
 Runs the provided `serverFile` and sets it up to automatically restart using [nodemon](https://github.com/remy/nodemon) when it detects changes in the file or any files within the `serverDirs`.
 
-```javascript
+```js
 const serverWatch = require('vitreum/steps/server.watch');
 serverWatch('./server.js', ['server'])
 	.then(() => {})
@@ -187,7 +185,7 @@ serverWatch('./server.js', ['server'])
 ## Meta Tags
 Sometimes you'll want your components to be able to modify what's in your HTML `head`, such for `title` tags or `meta` descriptions. This can be pretty tricky to pull off, so this functionality comes built into Vitreum.
 
-```javascript
+```js
 const Meta = require('vitreum/meta');
 
 const Main = React.createClass({

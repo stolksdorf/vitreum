@@ -17,6 +17,8 @@ const makeBundler = function(name, entryPoint, opts={}){
 	if(!_.isArray(opts.libs)) throw 'JSX step: opts.libs must be an array';
 	if(!_.isArray(opts.transforms)) throw 'JSX step: opts.transforms must be an array';
 
+	log.setSilent(opts.silent);
+
 	const fse = require('fs-extra');
 	const browserify = require('browserify');
 	const babelify = require('babelify');
