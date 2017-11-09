@@ -12,6 +12,7 @@ const runLibs = (libs=[], opts={}) => {
 	opts = _.defaults(opts, {
 		filename : 'libs.js',
 		shared : [],
+		babelify: false,
 	});
 	if(!_.isArray(opts.shared)) throw 'Libs step: opts.shared must be an array';
 
@@ -20,27 +21,36 @@ const runLibs = (libs=[], opts={}) => {
 	const fse = require('fs-extra');
 
 	return new Promise((resolve, reject) => {
-		const bundle = browserify({ paths: opts.shared })
-			.require(libs)
-			.bundle((err, buf) => {
-				if(err) return reject(err);
-				let code = buf.toString();
-				const shouldMinify = _.has(opts, 'minify') ? opts.minify : isProd;
-				if(shouldMinify){
-					try{
-						const minified = uglify.minify(buf.toString());
-						if(minified.error) return reject(minified.error);
-						code = minified.code;
-					}catch(e){
-						reject(e);
-					}
-				}
-				fse.outputFile(path.resolve(`./build`, opts.filename), code, (err)=>{
-					if(err) return reject(err);
-					logEnd();
-					return resolve();
-				});
+		let bundler = browserify({ paths: opts.shared })
+			.require(libs);
+
+		if(opts.babelify) {
+			const babelify = require('babelify');
+			bundler = bundler.transform('babelify', {
+				presets: opts.presets,
+				global: true,
 			});
+		}
+
+		const bundle = bundler.bundle((err, buf) => {
+			if(err) return reject(err);
+			let code = buf.toString();
+			const shouldMinify = _.has(opts, 'minify') ? opts.minify : isProd;
+			if(shouldMinify){
+				try{
+					const minified = uglify.minify(buf.toString());
+					if(minified.error) return reject(minified.error);
+					code = minified.code;
+				}catch(e){
+					reject(e);
+				}
+			}
+			fse.outputFile(path.resolve(`./build`, opts.filename), code, (err)=>{
+				if(err) return reject(err);
+				logEnd();
+				return resolve();
+			});
+		});
 	});
 };
 
