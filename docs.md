@@ -31,6 +31,7 @@ libs(['react', 'classnames', 'lodash'])
 opts = {
 	filename : 'libs.js', // File name of resulting bundle
 	shared : [],          // List of paths to treat as require paths
+	babel  : false        // If true, applies babel transform to all libs
 	silent : false        // Silence any console output
 }
 ```

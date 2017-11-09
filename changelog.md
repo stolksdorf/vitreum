@@ -1,7 +1,7 @@
 # changelog
 
 ### v4.10.0 - Thursday, 09/11/2017
-- Add babelify option to libs step
+- Add babel option to libs step
 
 ### v4.9.3 - Tuesday, 07/11/2017
 - Allow the `silent` option on steps to not produce console output

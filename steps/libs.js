@@ -11,25 +11,21 @@ const runLibs = (libs=[], opts={}) => {
 	if(!_.isPlainObject(opts)) throw 'Libs step: opts must be an object';
 	opts = _.defaults(opts, {
 		filename : 'libs.js',
-		shared : [],
-		babelify: false,
+		shared   : [],
+		babel    : false,
 	});
 	if(!_.isArray(opts.shared)) throw 'Libs step: opts.shared must be an array';
 
 	const browserify = require('browserify');
-	const uglify = require('uglify-es');
-	const fse = require('fs-extra');
+	const uglify     = require('uglify-es');
+	const fse        = require('fs-extra');
 
 	return new Promise((resolve, reject) => {
-		let bundler = browserify({ paths: opts.shared })
-			.require(libs);
+		let bundler = browserify({ paths: opts.shared }).require(libs);
 
 		if(opts.babelify) {
 			const babelify = require('babelify');
-			bundler = bundler.transform('babelify', {
-				presets: opts.presets,
-				global: true,
-			});
+			bundler = bundler.transform('babelify', { global: true });
 		}
 
 		const bundle = bundler.bundle((err, buf) => {

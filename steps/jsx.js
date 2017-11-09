@@ -7,11 +7,11 @@ const isProd = process.env.NODE_ENV === 'production';
 const makeBundler = function(name, entryPoint, opts={}){
 	if(!_.isPlainObject(opts)) throw 'JSX step: opts must be an object';
 	opts = _.defaults(opts, {
-		filename : 'bundle.js',
-		libs : [],
-		shared : [],
+		filename   : 'bundle.js',
+		libs       : [],
+		shared     : [],
 		transforms : [],
-		global : true
+		global     : true
 	});
 	if(!_.isArray(opts.shared)) throw 'JSX step: opts.shared must be an array';
 	if(!_.isArray(opts.libs)) throw 'JSX step: opts.libs must be an array';
@@ -19,25 +19,23 @@ const makeBundler = function(name, entryPoint, opts={}){
 
 	log.setSilent(opts.silent);
 
-	const fse = require('fs-extra');
+
 	const browserify = require('browserify');
-	const babelify = require('babelify');
-	const uglify = require("uglify-es");
+	const babelify   = require('babelify');
+	const uglify     = require("uglify-es");
+	const fse        = require('fs-extra');
 
 	let jsxDeps = [];
 	let warnings = [];
 
 	let bundler = browserify({
-			cache: {}, packageCache: {},
-			debug: !isProd,
+			cache      : {}, packageCache: {},
+			debug      : !isProd,
 			standalone : name,
-			paths : opts.shared
+			paths      : opts.shared
 		})
 		.require(entryPoint)
-		.transform('babelify', {
-			presets: opts.presets,
-			global : opts.global
-		})
+		.transform('babelify', { global : opts.global })
 		.external(opts.libs);
 
 	_.each(opts.transforms, (plugin)=>bundler = bundler.transform(plugin));
@@ -56,7 +54,7 @@ const makeBundler = function(name, entryPoint, opts={}){
 	const run = ()=>{
 		const logEnd = log.time(`jsx[${name}]`);
 		return new Promise((resolve, reject) => {
-			jsxDeps = [];
+			jsxDeps  = [];
 			warnings = [];
 
 			if(!isProd) require('source-map-support').install();
