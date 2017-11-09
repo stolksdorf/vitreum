@@ -23,7 +23,7 @@ const runLibs = (libs=[], opts={}) => {
 	return new Promise((resolve, reject) => {
 		let bundler = browserify({ paths: opts.shared }).require(libs);
 
-		if(opts.babelify) {
+		if(opts.babel) {
 			const babelify = require('babelify');
 			bundler = bundler.transform('babelify', { global: true });
 		}
