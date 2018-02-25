@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "4.10.2",
+  "version": "5.0.0",
   "description": "Web app build system using Browserify, React, and Less",
   "repository": {
     "type": "git",
@@ -21,9 +21,11 @@
     "klaw": "^2.0.0",
     "less": "^2.7.1",
     "livereload": "^0.6.0",
+    "lodash": "^4.17.5",
     "minimatch": "^3.0.3",
     "nodemon": "^1.11.0",
     "source-map-support": "^0.4.6",
+    "through2": "^2.0.3",
     "uglify-es": "^3.0.14",
     "watchify": "^3.8.0"
   },
