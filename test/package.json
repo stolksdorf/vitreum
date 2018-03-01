@@ -1,0 +1,50 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "tape tests/**/*.test.js | tap-spec",
+    "lint": "eslint --fix **/*.{js,jsx}",
+    "lint:dry": "eslint **/*.{js,jsx}",
+    "test:dev": "tape-watch tests/**/*.test.js | tap-spec",
+    "dev": "node scripts/dev.script.js",
+    "build": "node scripts/build.script.js",
+    "prod": "cross-env NODE_ENV=production && npm run build && npm run start",
+    "postinstall": "npm run build",
+    "start": "node app.js",
+    "todo": "fixme -i build/** -i node_modules/** **/*.{js,jsx,less}"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "eslintIgnore": [
+    "build"
+  ],
+  "babel": {
+    "only": [
+      "*.jsx"
+    ],
+    "presets": [
+      "stage-3",
+      "react"
+    ]
+  },
+  "engines": {
+    "node": "^6.3.0",
+    "npm": "^5.3.0"
+  },
+  "dependencies": {
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "classnames": "^2.2.5",
+    "create-react-class": "^15.6.2",
+    "express": "^4.16.2",
+    "lodash": "^4.17.4",
+    "nconf": "^0.8.5",
+    "pico-router": "^2.0.0",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "vitreum": "^4.8.2"
+  }
+}

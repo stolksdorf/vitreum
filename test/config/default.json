@@ -1,0 +1,6 @@
+{
+  "port": 8000,
+  "client": {
+    "api_route": ""
+  }
+}
