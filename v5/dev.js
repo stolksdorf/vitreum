@@ -12,8 +12,15 @@ const watchify = require('watchify');
 const sourceMaps = require('source-map-support');
 const less       = require('less');
 
+const livereload = require('livereload');
 
+const nodemon = require('nodemon');
 const transform = require('./transforms/transforms.js');
+
+
+let lr_server;
+
+
 
 const buildPath ='./build';
 
@@ -24,9 +31,29 @@ const getDeps = ()=>{
 }
 
 
-const runServer = ()=>{
+const runServerByDeps = ()=>{
+	let deps = [];
+	const app = browserify(appPath)
+	app.pipeline.get('deps').on('data', (file) => deps.push(file.id))
+	app.bundle((err)=>{
+		nodemon({ script : appPath, watch  : deps })
+			.on('restart', (files)=>{
+				//TODO: Style this and make this way prettier,
+				// message what changed
+				console.log('Server restart')
 
-}
+			});
+	})
+};
+
+
+// const runServerByIgnore = (entryDir)=>{
+// 	nodemon({
+// 		script : appPath,
+// 		ignore : ['./build', entryDir]
+// 	})
+// 	.on('restart', (files)=>console.log('Server restart'));
+// }
 
 
 module.exports = (entryPoint, opts)=>{
@@ -47,6 +74,7 @@ module.exports = (entryPoint, opts)=>{
 
 
 	const bundle = ()=>{
+		//TODO: de cache /build/[entry]/bundle.js here
 		return new Promise((resolve, reject)=>{
 			sourceMaps.install();
 
@@ -88,6 +116,13 @@ module.exports = (entryPoint, opts)=>{
 			bundler._external.push(libName);
 		})
 		.on('update', bundle);
+
+	runServerByDeps();
+	//runServerByIgnore(cxt.entry.dir);
+
+	//Live reload
+	if(!lr_server) lr_server = livereload.createServer();
+	lr_server.watch(buildPath);
 
 	return bundle()
 };

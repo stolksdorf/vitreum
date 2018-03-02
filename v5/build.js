@@ -35,6 +35,7 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 					if(filepath.indexOf('node_modules') !== -1){
 						cxt.libs[filepath] = libName;
 						//TODO: try excluding to ignoring, https://github.com/browserify/browserify-handbook#ignoring-and-excluding
+						//TODO: Look into noParse ?
 						bundler._external.push(libName);
 					}
 				});

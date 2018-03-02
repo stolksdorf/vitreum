@@ -20,6 +20,12 @@ const transforms = [
 		test  : (name, cxt)=>!!cxt.libs[name],
 		apply : (name, contents)=>{},
 	},
+	//TODO: Apply bebl-core here, ensure it loads the config from package
+	{
+		name : 'JS',
+		test  : (name)=>['.js', '.jsx', '.ts', '.tsx'].includes(path.extname(name)),
+		apply : (name, contents)=>contents,
+	},
 	{
 		name : 'YAML',
 		test  : (name)=>['.yaml', '.yml'].includes(path.extname(name)),
@@ -35,7 +41,7 @@ const transforms = [
 	},
 	{
 		name : 'Assets',
-		test  : (name)=>path.extname(name) == '.txt',
+		test  : (name)=>true,
 		apply : async (name, contents, cxt)=>{
 			const assetPath = `/assets/${cxt.entry.name}/${path.relative(cxt.entry.dir, name)}`;
 			await fse.ensureDir(path.dirname(`${cxt.build}${assetPath}`));
@@ -47,8 +53,7 @@ const transforms = [
 
 
 module.exports = (cxt, filename)=>{
-	console.log('___________________');
-	console.log('handling', filename);
+	console.log('  - parsing', path.basename(filename));
 
 	const transform = transforms.find((trans)=>trans.test(filename, cxt));
 
