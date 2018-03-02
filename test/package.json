@@ -2,7 +2,7 @@
   "name": "test",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "app.js",
   "scripts": {
     "test": "tape tests/**/*.test.js | tap-spec",
     "lint": "eslint --fix **/*.{js,jsx}",

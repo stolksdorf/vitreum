@@ -53,20 +53,21 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		return new Promise((resolve, reject)=>{
 			less.render(cxt.less, {
 				//paths: _.concat(['./node_modules'], opts.shared),
-				//filename: `${name}.less`,
+				//filename: `${name}.less`, Probably not needed
 				compress: true,
 			}, (err, res) => {
 				if(err) reject(err);
 				resolve(res.css);
 			});
 		})
-		.then((renderedCSS)=>fse.writeFileSync(`${buildPath}/${cxt.entry.name}/bundle.css`, renderedCSS))
+		.then((renderedCSS)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.css`, renderedCSS))
 	};
 
 	const renderer = ()=>{
 		// if(opts.static)
 	}
 
+	//TODO: Maybe make this be a promise.all?
 	return fse.ensureDir(`${buildPath}/${cxt.entry.name}`)
 		.then(bundle)
 		//.then(minify)

@@ -64,11 +64,14 @@ module.exports = (cxt, filename)=>{
 			try{
 				const res = await transform.apply(filename, contents, cxt);
 				if(res) this.push(res);
-				done();
+
 			}catch(err){
 				//TODO: Maybe throw here?
 				console.log('Err', transform.name, err);
+				this.emit('error', err);
+				return;
 			}
+			done();
 		}
 	)
 };
