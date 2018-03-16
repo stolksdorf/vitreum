@@ -1,7 +1,7 @@
 const React       = require('react');
 const createClass = require('create-react-class');
 const _           = require('lodash/core');
-const config      = require('shared/config');
+//const config      = require('shared/config');
 const PicoRouter  = require('pico-router');
 
 const Pages = {
@@ -16,7 +16,7 @@ const Main = createClass({
 		};
 	},
 	componentWillMount : function(){
-		config.set(this.props.config);
+		//config.set(this.props.config);
 		this.Router = PicoRouter.createRouter({
 			'/' : <Pages.Home />,
 			'*' : <div>Not Found</div>
@@ -28,5 +28,7 @@ const Main = createClass({
 		</div>;
 	}
 });
+
+
 
 module.exports = Main;

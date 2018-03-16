@@ -71,17 +71,13 @@ module.exports = (entryPoint, opts)=>{
 		}
 	};
 
+	sourceMaps.install();
 
 
 	const bundle = ()=>{
 		//TODO: de cache /build/[entry]/bundle.js here
 		return new Promise((resolve, reject)=>{
-			sourceMaps.install();
-
-			bundler.bundle((err, buf) => {
-				if(err) return reject(err);
-				return resolve(buf.toString());
-			});
+			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 		})
 		.then((code)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.js`, code))
 		.then(()=>{
@@ -121,8 +117,9 @@ module.exports = (entryPoint, opts)=>{
 	//runServerByIgnore(cxt.entry.dir);
 
 	//Live reload
-	if(!lr_server) lr_server = livereload.createServer();
-	lr_server.watch(buildPath);
+	//if(!lr_server) lr_server = livereload.createServer();
+	//lr_server.watch(buildPath);
+	livereload.createServer().watch(buildPath);
 
 	return bundle()
 };

@@ -22,11 +22,17 @@
 // 	.catch((err) => console.error(err));
 
 
-//const entryPoint = 'client/main/main.jsx';
-const entryPoint = './client/example/a.js';
+const entryPoint = './client/main/main.jsx';
+//const entryPoint = './client/example/a.js';
 const build = require('../../v5/build.js');
 
-build([entryPoint, './client/example/d.js'], {})
+// build([entryPoint, './client/example/d.js'], {})
+// 	.then(()=>{
+// 		console.log('done');
+// 	})
+
+
+build(entryPoint, {})
 	.then(()=>{
 		console.log('done');
 	})

@@ -24,21 +24,14 @@
     "build"
   ],
   "babel": {
-    "only": [
-      "*.jsx"
-    ],
     "presets": [
-      "stage-3",
-      "react"
+      "@babel/preset-stage-3",
+      "@babel/preset-react"
     ]
   },
-  "engines": {
-    "node": "^6.3.0",
-    "npm": "^5.3.0"
-  },
   "dependencies": {
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-3": "^6.24.1",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "@babel/preset-stage-3": "^7.0.0-beta.40",
     "classnames": "^2.2.5",
     "create-react-class": "^15.6.2",
     "express": "^4.16.2",

@@ -26,7 +26,8 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		return new Promise((resolve, reject)=>{
 			let bundler = browserify({
 					standalone : cxt.entry.name,
-					//paths      : opts.shared
+					//paths      : opts.shared,
+					noParse : []
 				})
 				.require(entryPoint)
 				.transform((file)=>transform(cxt, file), {global : true})
@@ -36,13 +37,14 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 						cxt.libs[filepath] = libName;
 						//TODO: try excluding to ignoring, https://github.com/browserify/browserify-handbook#ignoring-and-excluding
 						//TODO: Look into noParse ?
+						bundler._options.noParse.push(libName);
 						bundler._external.push(libName);
 					}
+					//TODO: possibly dynamically add a no parse for assets?
+					// Pull in the list of transforms,
+					// Test against a super large image file
 				});
-			bundler.bundle((err, buf) => {
-				if(err) return reject(err);
-				return resolve(buf.toString());
-			});
+			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 		});
 	};
 	const minify = (code)=>{
@@ -81,15 +83,13 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 };
 
 const bundleLibs = (opts)=>{
-	console.log('Building Libs');
+	//TODO: Should list out the libs you are building in logs
+	console.log('Building Libs', Object.values(Libs));
 	return new Promise((resolve, reject)=>{
 		browserify({ /*paths: opts.shared */ }).require(Object.values(Libs))
-			.bundle((err, buf) => {
-				if(err) return reject(err);
-				return resolve(buf.toString());
-			});
+			.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 	})
-	// TODO: Minifiying is really slow, try doing it as a transform
+	//TODO: Minifiying is really slow, try doing it as a transform
 	// .then((code)=>{
 	// 	const mini = uglify.minify(code);
 	// 	if(mini.error) throw mini.error;
@@ -99,11 +99,12 @@ const bundleLibs = (opts)=>{
 }
 
 module.exports = (entryPoints, opts)=>{
+	if(!Array.isArray(entryPoints)) entryPoints = [entryPoints];
 	return fse.emptyDir(buildPath)
 		.then(()=>Promise.all(entryPoints.map(bundleEntryPoint)))
 		.then(bundleLibs)
 		.catch((err)=>{
-			console.log(err);
+			console.log(err.message);
 		})
 };
 
