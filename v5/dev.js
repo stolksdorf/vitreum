@@ -8,7 +8,7 @@ const browserify = require('browserify');
 const fse        = require('fs-extra');
 const path       = require('path');
 
-const watchify = require('watchify');
+const watchify   = require('watchify');
 const sourceMaps = require('source-map-support');
 const less       = require('less');
 
@@ -31,16 +31,18 @@ const getDeps = ()=>{
 }
 
 
-const runServerByDeps = ()=>{
+const runServerByDeps = (appPath)=>{
+	console.log('setting watching');
 	let deps = [];
 	const app = browserify(appPath)
 	app.pipeline.get('deps').on('data', (file) => deps.push(file.id))
 	app.bundle((err)=>{
-		nodemon({ script : appPath, watch  : deps })
+		nodemon({ script : appPath, watch  : deps, delay : 2 })
 			.on('restart', (files)=>{
 				//TODO: Style this and make this way prettier,
 				// message what changed
-				console.log('Server restart')
+				// normalize the file paths
+				console.log('Server restart', files)
 
 			});
 	})
@@ -71,23 +73,34 @@ module.exports = (entryPoint, opts)=>{
 		}
 	};
 
+	//Check to make sure the target directory exists
+
+	if(!fse.pathExistsSync(`${buildPath}/${cxt.entry.name}`)){
+		throw 'This entrypoint has not been built, please run a build before you dev';
+	}
+
 	sourceMaps.install();
 
 
 	const bundle = ()=>{
 		//TODO: de cache /build/[entry]/bundle.js here
+		delete require.cache[`${buildPath}/${cxt.entry.name}/bundle.js`];
+
 		return new Promise((resolve, reject)=>{
 			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 		})
 		.then((code)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.js`, code))
 		.then(()=>{
 			return new Promise((resolve, reject)=>{
+				//Possibly bump this out to a util?
 				less.render(cxt.less, {
+					//TODO: Add in shared path
 					//paths: _.concat(['./node_modules'], opts.shared),
-					filename: `${cxt.entry.name}.less`,
-					compress: false,
-					sourceMap: {sourceMapFileInline: true}
+					filename  : `${cxt.entry.name}.less`,
+					compress  : false,
+					sourceMap : {sourceMapFileInline: true}
 				}, (err, res) => {
+					// err ? reject(err) : resolve(res.css)
 					if(err) reject(err);
 					resolve(res.css);
 				});
@@ -113,7 +126,7 @@ module.exports = (entryPoint, opts)=>{
 		})
 		.on('update', bundle);
 
-	runServerByDeps();
+	runServerByDeps(appPath);
 	//runServerByIgnore(cxt.entry.dir);
 
 	//Live reload

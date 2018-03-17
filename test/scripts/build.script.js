@@ -36,3 +36,4 @@ build(entryPoint, {})
 	.then(()=>{
 		console.log('done');
 	})
+

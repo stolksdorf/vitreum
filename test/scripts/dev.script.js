@@ -27,3 +27,6 @@ build(entryPoint, {})
 	.then(()=>{
 		console.log('done');
 	})
+	.catch((err)=>{
+		console.log(err);
+	})

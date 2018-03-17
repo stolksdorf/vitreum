@@ -13,21 +13,13 @@ _.mixin({
 
 const renderTag = (props)=>{
 	if(props.structuredData){
-		let data = _.deep(props.structuredData, (obj)=>{
-			return _.mapKeys(obj, (val, key)=>(key == 'type'?'@type':key));
-		});
+		let data = _.deep(props.structuredData, (obj)=>_.mapKeys(obj, (val, key)=>(key == 'type'?'@type':key)));
 		data['@context'] = data['@context'] || data['context'] || 'http://schema.org';
 		delete data['context'];
 		return `<script type='application/ld+json'>${JSON.stringify(data, null, '  ')}</script>`;
 	}
-	if(props.title){
-		return ReactDOMServer.renderToStaticMarkup(
-			React.createElement('title', null, props.title)
-		);
-	}
-	return ReactDOMServer.renderToStaticMarkup(
-		React.createElement('meta', props)
-	);
+	if(props.title) return ReactDOMServer.renderToStaticMarkup(React.createElement('title', null, props.title));
+	return ReactDOMServer.renderToStaticMarkup(React.createElement('meta', props));
 };
 
 const renderTags = ()=>{

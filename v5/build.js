@@ -5,14 +5,19 @@ const uglify     = require("uglify-es");
 const less       = require('less');
 
 
+const generator = require('./generator.js');
+
 const transform = require('./transforms/transforms.js');
 
 const buildPath ='./build';
 
 
-let Libs = {};
+let Libs = {
+	'react-dom' : 'react-dom',
+	'react'     : 'react'
+};
 const bundleEntryPoint = (entryPoint, opts)=>{
-	let cxt = {
+	let ctx = {
 		libs  : Libs,
 		build : buildPath,
 		less  : '',
@@ -22,19 +27,20 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		}
 	};
 
+
 	const bundle = ()=>{
 		return new Promise((resolve, reject)=>{
 			let bundler = browserify({
-					standalone : cxt.entry.name,
+					standalone : ctx.entry.name,
 					//paths      : opts.shared,
 					noParse : []
 				})
 				.require(entryPoint)
-				.transform((file)=>transform(cxt, file), {global : true})
+				.transform((file)=>transform(ctx, file), {global : true})
 				.on('file', (filepath, libName) => {
 					//TODO: Need to find a way to skip paring the lib file
 					if(filepath.indexOf('node_modules') !== -1){
-						cxt.libs[filepath] = libName;
+						ctx.libs[filepath] = libName;
 						//TODO: try excluding to ignoring, https://github.com/browserify/browserify-handbook#ignoring-and-excluding
 						//TODO: Look into noParse ?
 						bundler._options.noParse.push(libName);
@@ -52,33 +58,27 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		if(mini.error) throw mini.error;
 		return mini.code;
 	};
-	const style = ()=>{
+	const style = async ()=>{
 		return new Promise((resolve, reject)=>{
-			less.render(cxt.less, {
+			less.render(ctx.less, {
+				//TODO: used for shared path
 				//paths: _.concat(['./node_modules'], opts.shared),
 				//filename: `${name}.less`, Probably not needed
 				compress: true,
-			}, (err, res) => {
-				if(err) reject(err);
-				resolve(res.css);
-			});
+			}, (err, res) => err ? reject(err) : resolve(res.css));
 		})
-		.then((renderedCSS)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.css`, renderedCSS))
+		.then((renderedCSS)=>fse.writeFile(`${buildPath}/${ctx.entry.name}/bundle.css`, renderedCSS))
 	};
 
-	const renderer = ()=>{
-		// if(opts.static)
-	}
-
 	//TODO: Maybe make this be a promise.all?
-	return fse.ensureDir(`${buildPath}/${cxt.entry.name}`)
+	return fse.ensureDir(`${buildPath}/${ctx.entry.name}`)
 		.then(bundle)
 		//.then(minify)
-		.then((code)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.js`, code))
+		.then((code)=>fse.writeFile(`${buildPath}/${ctx.entry.name}/bundle.js`, code))
 		.then(style)
-		.then(renderer)
+		.then(()=>generator(ctx))
 		.then(()=>{
-			Libs = Object.assign(Libs, cxt.libs);
+			Libs = Object.assign(Libs, ctx.libs);
 		})
 };
 
@@ -104,7 +104,7 @@ module.exports = (entryPoints, opts)=>{
 		.then(()=>Promise.all(entryPoints.map(bundleEntryPoint)))
 		.then(bundleLibs)
 		.catch((err)=>{
-			console.log(err.message);
+			console.log('ERR', err);
 		})
 };
 
