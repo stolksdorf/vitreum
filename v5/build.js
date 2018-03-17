@@ -13,8 +13,8 @@ const buildPath ='./build';
 
 
 let Libs = {
-	'react-dom' : 'react-dom',
-	'react'     : 'react'
+	//'react-dom' : 'react-dom',
+	//'react'     : 'react'
 };
 const bundleEntryPoint = (entryPoint, opts)=>{
 	let ctx = {
@@ -33,13 +33,17 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 			let bundler = browserify({
 					standalone : ctx.entry.name,
 					//paths      : opts.shared,
-					noParse : []
+					noParse : ['react'],
+					//ignoreMissing : true
+					bundleExternal : false
 				})
 				.require(entryPoint)
 				.transform((file)=>transform(ctx, file), {global : true})
 				.on('file', (filepath, libName) => {
 					//TODO: Need to find a way to skip paring the lib file
+					// toggle off bundleExternal, track
 					if(filepath.indexOf('node_modules') !== -1){
+						console.log('LIB', libName);
 						ctx.libs[filepath] = libName;
 						//TODO: try excluding to ignoring, https://github.com/browserify/browserify-handbook#ignoring-and-excluding
 						//TODO: Look into noParse ?
@@ -85,6 +89,12 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 const bundleLibs = (opts)=>{
 	//TODO: Should list out the libs you are building in logs
 	console.log('Building Libs', Object.values(Libs));
+
+	// Run a browserify to get all node_module deps, but pass in all package.json deps as noParse
+	// Run an actual bundle using that list as a require
+
+
+
 	return new Promise((resolve, reject)=>{
 		browserify({ /*paths: opts.shared */ }).require(Object.values(Libs))
 			.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))

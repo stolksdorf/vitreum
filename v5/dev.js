@@ -21,6 +21,17 @@ const transform = require('./transforms/transforms.js');
 let lr_server;
 
 
+const mdeps = require('module-deps')({
+	filter : (id)=>{
+		console.log(id, id.indexOf('/build/'));
+		return id.indexOf('/build/') == -1;
+	},
+	postFilter : (id, file, pkg)=>{
+
+	}
+});
+
+
 
 const buildPath ='./build';
 
@@ -32,18 +43,30 @@ const getDeps = ()=>{
 
 
 const runServerByDeps = (appPath)=>{
-	console.log('setting watching');
 	let deps = [];
-	const app = browserify(appPath)
-	app.pipeline.get('deps').on('data', (file) => deps.push(file.id))
+
+	//Looks like thi is breaking when you try and require a already bundled resource
+
+	const app = browserify({
+		require : appPath,
+		bundleExternal : false,
+		filter : (id)=>id.indexOf(buildPath) == -1,
+		postFilter : (id, file, pkg)=>{
+			console.log(id, file, pkg);
+			return true
+		}
+	})
+	app.pipeline.get('deps').on('data', (file) => deps.push(file.file || file.id));
 	app.bundle((err)=>{
+		if(err) throw err;
+
+		console.log(deps);
 		nodemon({ script : appPath, watch  : deps, delay : 2 })
 			.on('restart', (files)=>{
 				//TODO: Style this and make this way prettier,
 				// message what changed
 				// normalize the file paths
-				console.log('Server restart', files)
-
+				console.log('Change detected', files.map((file)=>path.resolve(process.cwd(), file)))
 			});
 	})
 };
@@ -76,7 +99,7 @@ module.exports = (entryPoint, opts)=>{
 	//Check to make sure the target directory exists
 
 	if(!fse.pathExistsSync(`${buildPath}/${cxt.entry.name}`)){
-		throw 'This entrypoint has not been built, please run a build before you dev';
+		//throw 'This entrypoint has not been built, please run a build before you dev';
 	}
 
 	sourceMaps.install();
@@ -115,7 +138,8 @@ module.exports = (entryPoint, opts)=>{
 			debug       : true,
 			standalone : cxt.entry.name,
 			//paths      : opts.shared
-			plugin    : [watchify]
+			plugin    : [watchify],
+			//ignoreMissing : true
 		})
 		.require(entryPoint)
 		.transform((file)=>transform(cxt, file), {global : true})
@@ -127,12 +151,16 @@ module.exports = (entryPoint, opts)=>{
 		.on('update', bundle);
 
 	runServerByDeps(appPath);
-	//runServerByIgnore(cxt.entry.dir);
 
-	//Live reload
-	//if(!lr_server) lr_server = livereload.createServer();
-	//lr_server.watch(buildPath);
-	livereload.createServer().watch(buildPath);
 
-	return bundle()
+	// mdeps.write(appPath)
+	// mdeps.end();
+
+
+
+	//livereload.createServer().watch(buildPath);
+
+
+	//return bundle()
+	return Promise.resolve();
 };

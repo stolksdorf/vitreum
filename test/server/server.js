@@ -10,6 +10,4 @@ app.all('*', (req, res) => {
 	res.status(404).send('Oh no.');
 });
 
-
-
 module.exports = app;

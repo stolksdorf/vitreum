@@ -79,7 +79,8 @@ module.exports = (cxt, filename)=>{
 	let contents = '';
 	return through((chunk, enc, next)=>{ contents += chunk.toString(); next(); },
 		async function (done) {
-			console.log('  - parsing', path.basename(filename), contents.length);
+			//console.log('  - parsing', path.basename(filename), contents.length);
+			console.log('  - parsing', filename, contents.length);
 			try{
 				const res = await transform.apply(filename, contents, cxt);
 				if(res) this.push(res);

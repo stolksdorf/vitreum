@@ -20,10 +20,11 @@
 // 	.then(() => console.timeEnd(label))
 // 	.catch((err) => console.error(err));
 
-const entryPoint = './client/example/a.js';
-const build = require('../../v5/dev.js');
+const entryPoint = './client/main/main.jsx';
+//const entryPoint = './client/example/a.js';
+const dev = require('../../v5/dev.js');
 
-build(entryPoint, {})
+dev(entryPoint, {})
 	.then(()=>{
 		console.log('done');
 	})
