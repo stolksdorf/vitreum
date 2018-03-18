@@ -18,76 +18,45 @@ const nodemon = require('nodemon');
 const transform = require('./transforms/transforms.js');
 
 
-let lr_server;
-
-
-const mdeps = require('module-deps')({
-	filter : (id)=>{
-		console.log(id, id.indexOf('/build/'));
-		return id.indexOf('/build/') == -1;
-	},
-	postFilter : (id, file, pkg)=>{
-
-	}
-});
-
-
 
 const buildPath ='./build';
 
 const appPath = '../test/app.js'
 
-const getDeps = ()=>{
 
-}
-
-
-const runServerByDeps = (appPath)=>{
+const watchServer = (appPath, buildPath)=>{
 	let deps = [];
-
-	//Looks like thi is breaking when you try and require a already bundled resource
-
-	const app = browserify({
-		require : appPath,
-		bundleExternal : false,
-		filter : (id)=>id.indexOf(buildPath) == -1,
-		postFilter : (id, file, pkg)=>{
-			console.log(id, file, pkg);
-			return true
+	const app = browserify({ require : appPath, bundleExternal : false,
+		//Ignore all built files from server watching
+		postFilter : (id, filepath)=>{
+			//TODO: use path to do better checking
+			if(id.indexOf(buildPath) !== -1) return false;
+			deps.push(filepath);
+			return true;
 		}
 	})
-	app.pipeline.get('deps').on('data', (file) => deps.push(file.file || file.id));
 	app.bundle((err)=>{
 		if(err) throw err;
 
-		console.log(deps);
-		nodemon({ script : appPath, watch  : deps, delay : 2 })
+		console.log('deps', deps);
+		nodemon({ script : appPath, watch  : deps })
 			.on('restart', (files)=>{
 				//TODO: Style this and make this way prettier,
 				// message what changed
 				// normalize the file paths
-				console.log('Change detected', files.map((file)=>path.resolve(process.cwd(), file)))
+				console.log('Change detected', files.map((file)=>path.relative(process.cwd(), file)));
+				console.log('restarting server');
 			});
 	})
 };
 
 
-// const runServerByIgnore = (entryDir)=>{
-// 	nodemon({
-// 		script : appPath,
-// 		ignore : ['./build', entryDir]
-// 	})
-// 	.on('restart', (files)=>console.log('Server restart'));
-// }
-
 
 module.exports = (entryPoint, opts)=>{
 	//TODO: do a check to make sure it's a single entry point
 
-	//create bundler
 
 	let cxt = {
-		libs  : {},
 		build : buildPath,
 		less  : '',
 		entry : {
@@ -96,8 +65,8 @@ module.exports = (entryPoint, opts)=>{
 		}
 	};
 
-	//Check to make sure the target directory exists
 
+	//TODO: fix the pathing to be absolute
 	if(!fse.pathExistsSync(`${buildPath}/${cxt.entry.name}`)){
 		//throw 'This entrypoint has not been built, please run a build before you dev';
 	}
@@ -105,13 +74,11 @@ module.exports = (entryPoint, opts)=>{
 	sourceMaps.install();
 
 
-	const bundle = ()=>{
-		//TODO: de cache /build/[entry]/bundle.js here
+	const bundleEntryPointDev = ()=>{
 		delete require.cache[`${buildPath}/${cxt.entry.name}/bundle.js`];
 
-		return new Promise((resolve, reject)=>{
-			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
-		})
+
+		return bundle()
 		.then((code)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.js`, code))
 		.then(()=>{
 			return new Promise((resolve, reject)=>{
@@ -122,11 +89,7 @@ module.exports = (entryPoint, opts)=>{
 					filename  : `${cxt.entry.name}.less`,
 					compress  : false,
 					sourceMap : {sourceMapFileInline: true}
-				}, (err, res) => {
-					// err ? reject(err) : resolve(res.css)
-					if(err) reject(err);
-					resolve(res.css);
-				});
+				}, (err, res) => err ? reject(err) : resolve(res.css))
 			})
 			.then((renderedCSS)=>fse.writeFile(`${buildPath}/${cxt.entry.name}/bundle.css`, renderedCSS))
 
@@ -139,28 +102,24 @@ module.exports = (entryPoint, opts)=>{
 			standalone : cxt.entry.name,
 			//paths      : opts.shared
 			plugin    : [watchify],
-			//ignoreMissing : true
+			ignoreMissing : true,
+			postFilter : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1,
 		})
 		.require(entryPoint)
-		.transform((file)=>transform(cxt, file), {global : true})
-		.on('file', (filepath, libName) => {
-			if(filepath.indexOf('node_modules') === -1) return;
-			cxt.libs[filepath] = libName;
-			bundler._external.push(libName);
+		.transform((file)=>transform(cxt, file))
+		.on('update', (files)=>{
+			console.log('Change detected', files.map((file)=>path.relative(process.cwd(), file)));
+			console.log('rebundling', ctx.entry.name);
+			bundleEntryPointDev();
+		});
+
+	const bundle = ()=>{
+		return new Promise((resolve, reject)=>{
+			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 		})
-		.on('update', bundle);
+	};
 
-	runServerByDeps(appPath);
-
-
-	// mdeps.write(appPath)
-	// mdeps.end();
-
-
-
-	//livereload.createServer().watch(buildPath);
-
-
-	//return bundle()
-	return Promise.resolve();
+	watchServer(appPath, buildPath);
+	livereload.createServer().watch(buildPath);
+	return bundleEntryPointDev();
 };

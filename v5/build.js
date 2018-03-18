@@ -12,13 +12,22 @@ const transform = require('./transforms/transforms.js');
 const buildPath ='./build';
 
 
-let Libs = {
-	//'react-dom' : 'react-dom',
-	//'react'     : 'react'
+
+
+const minify = (code)=>{
+	const mini = uglify.minify(code);
+	if(mini.error) throw mini.error;
+	return mini.code;
 };
+
+let Libs = {
+	'react-dom' : '',
+	'react'     : ''
+};
+//let Libs = ['react-dom', 'react'];
 const bundleEntryPoint = (entryPoint, opts)=>{
 	let ctx = {
-		libs  : Libs,
+		//libs  : Libs,
 		build : buildPath,
 		less  : '',
 		entry : {
@@ -27,47 +36,30 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		}
 	};
 
+	const bundler = browserify({
+			standalone : ctx.entry.name,
+			//paths      : opts.shared,
+			ignoreMissing : true,
+			postFilter : (id, filepath, pkg)=>{
+				if(filepath.indexOf('node_modules') == -1) return true;
+				Libs[id] = filepath;
+				return false;
+			}
+		})
+		.require(entryPoint)
+		.transform((file)=>transform(ctx, file), /*{global : true}*/);
 
 	const bundle = ()=>{
 		return new Promise((resolve, reject)=>{
-			let bundler = browserify({
-					standalone : ctx.entry.name,
-					//paths      : opts.shared,
-					noParse : ['react'],
-					//ignoreMissing : true
-					bundleExternal : false
-				})
-				.require(entryPoint)
-				.transform((file)=>transform(ctx, file), {global : true})
-				.on('file', (filepath, libName) => {
-					//TODO: Need to find a way to skip paring the lib file
-					// toggle off bundleExternal, track
-					if(filepath.indexOf('node_modules') !== -1){
-						console.log('LIB', libName);
-						ctx.libs[filepath] = libName;
-						//TODO: try excluding to ignoring, https://github.com/browserify/browserify-handbook#ignoring-and-excluding
-						//TODO: Look into noParse ?
-						bundler._options.noParse.push(libName);
-						bundler._external.push(libName);
-					}
-					//TODO: possibly dynamically add a no parse for assets?
-					// Pull in the list of transforms,
-					// Test against a super large image file
-				});
 			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 		});
 	};
-	const minify = (code)=>{
-		const mini = uglify.minify(code);
-		if(mini.error) throw mini.error;
-		return mini.code;
-	};
+
 	const style = async ()=>{
 		return new Promise((resolve, reject)=>{
 			less.render(ctx.less, {
 				//TODO: used for shared path
 				//paths: _.concat(['./node_modules'], opts.shared),
-				//filename: `${name}.less`, Probably not needed
 				compress: true,
 			}, (err, res) => err ? reject(err) : resolve(res.css));
 		})
@@ -81,30 +73,21 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		.then((code)=>fse.writeFile(`${buildPath}/${ctx.entry.name}/bundle.js`, code))
 		.then(style)
 		.then(()=>generator(ctx))
-		.then(()=>{
-			Libs = Object.assign(Libs, ctx.libs);
-		})
+		// .then(()=>{
+		// 	//Libs = Object.assign(Libs, ctx.libs);
+		// })
 };
 
 const bundleLibs = (opts)=>{
 	//TODO: Should list out the libs you are building in logs
-	console.log('Building Libs', Object.values(Libs));
-
-	// Run a browserify to get all node_module deps, but pass in all package.json deps as noParse
-	// Run an actual bundle using that list as a require
-
-
+	console.log('Building Libs', Object.keys(Libs));
 
 	return new Promise((resolve, reject)=>{
-		browserify({ /*paths: opts.shared */ }).require(Object.values(Libs))
+		browserify({ /*paths: opts.shared */ }).require(Object.keys(Libs))
 			.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
 	})
 	//TODO: Minifiying is really slow, try doing it as a transform
-	// .then((code)=>{
-	// 	const mini = uglify.minify(code);
-	// 	if(mini.error) throw mini.error;
-	// 	return mini.code
-	// })
+	//.then(minify)
 	.then((code)=>fse.writeFile(`${buildPath}/libs.js`, code))
 }
 

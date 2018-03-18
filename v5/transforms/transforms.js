@@ -18,11 +18,11 @@ var babel  = require('@babel/core');
 
 const transforms = [
 	//TODO: svg, md, json
-	{
-		name : 'libs',
-		test  : (name, cxt)=>!!cxt.libs[name],
-		apply : (name, contents)=>{},
-	},
+	// {
+	// 	name : 'libs',
+	// 	test  : (name, cxt)=>!!cxt.libs[name],
+	// 	apply : (name, contents)=>{},
+	// },
 	//TODO: Apply bebl-core here, ensure it loads the config from package
 	{
 		name : 'js',
@@ -53,6 +53,7 @@ const transforms = [
 		name : 'less',
 		test  : (name)=>['.less', '.css'].includes(path.extname(name)),
 		apply : (name, contents, cxt)=>{
+			// find requires and replace them url after moving the files
 			cxt.less = `@import "${name}";\n${cxt.less}`;
 			return;
 		},
@@ -68,7 +69,6 @@ const transforms = [
 		}
 	}
 ]
-
 
 
 module.exports = (cxt, filename)=>{

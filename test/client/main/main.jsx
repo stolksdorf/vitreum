@@ -6,6 +6,8 @@ const PicoRouter  = require('pico-router');
 
 require('./main.less');
 
+
+
 const Pages = {
 	Home : require('./home/home.jsx'),
 };
