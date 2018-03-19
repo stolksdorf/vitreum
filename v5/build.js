@@ -7,7 +7,7 @@ const less       = require('less');
 
 const generator = require('./generator.js');
 
-const transform = require('./transforms/transforms.js');
+const transform = require('./transforms');
 
 const buildPath ='./build';
 
@@ -50,9 +50,7 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		.transform((file)=>transform(ctx, file), /*{global : true}*/);
 
 	const bundle = ()=>{
-		return new Promise((resolve, reject)=>{
-			bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
-		});
+		return new Promise((resolve, reject)=>bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString())));
 	};
 
 	const style = async ()=>{

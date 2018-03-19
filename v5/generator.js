@@ -1,4 +1,5 @@
 const fse = require('fs-extra');
+const path = require('path')
 
 const buildPath ='./build';
 
@@ -20,13 +21,16 @@ const getRenderedTemplate = (template, entryName)=>{
 	return template(head, body, tail);
 };
 
-module.exports = async (ctx, opts)=>{
+
+//TODO: Pass a dev flag that will decache the bundle each time
+module.exports = async (ctx, opts={})=>{
 	const renderedTemplate = getRenderedTemplate(defaultTempate, ctx.entry.name);
 	const code = `const ReactDOMServer = require('react-dom/server');
 const React = require('react');
 const meta = require('vitreum/utils/meta.gen.js');
 
 module.exports = (props)=>{
+	${opts.dev ? `delete require.cache[require.resolve('./bundle.js')];` : ''}
 	const Element = require('./bundle.js');
 	//TODO: check that this is a react component
 	// https://github.com/treyhuffine/is-react/blob/master/index.js
@@ -44,7 +48,12 @@ module.exports = (props)=>{
 	return fse.writeFile(`${buildPath}/${ctx.entry.name}/render.js`, code)
 		.then(()=>{
 			//if(!opts.static) return;
-			const renderer = require(require.resolve(`${buildPath}/${ctx.entry.name}/render.js`, {paths : [process.cwd()]}));
+			console.log(process.cwd());
+			console.log(require.resolve(path.resolve(process.cwd(), `${buildPath}/${ctx.entry.name}/render.js`)));
+			console.log(path.resolve(process.cwd(), `${buildPath}/${ctx.entry.name}/render.js`));
+			//const renderer = require(require.resolve(`${buildPath}/${ctx.entry.name}/render.js`, {paths : [process.cwd()]}));
+
+			const renderer = require(path.resolve(process.cwd(), `${buildPath}/${ctx.entry.name}/render.js`));
 			return fse.writeFile(`${buildPath}/${ctx.entry.name}/static.html`, renderer())
 		})
 };
