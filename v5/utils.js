@@ -15,7 +15,7 @@ const utils = {
 			require('less').render(less, opts, (err, res) => err ? reject(err) : resolve(res.css));
 		});
 	},
-	paths : (entryName, paths)=>{
+	paths : (paths, entryName)=>{
 		return {
 			code   : `${paths.build}/${entryName}/${paths.code}`,
 			style  : `${paths.build}/${entryName}/${paths.style}`,

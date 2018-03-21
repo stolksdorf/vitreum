@@ -8,15 +8,15 @@
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
     "test:dev": "tape-watch tests/**/*.test.js | tap-spec",
-    "dev": "node scripts/dev.script.js",
+    "dev": "vitreum -d",
     "dev:dev": "nodemon --watch ../ --ignore build/ scripts/dev.script.js",
-    "build": "node scripts/build.script.js",
+    "build": "vitreum",
     "build:dev": "nodemon --watch ../ --ignore build/ scripts/build.script.js",
     "prod": "cross-env NODE_ENV=production && npm run build && npm run start",
     "postinstall": "npm run build",
     "start": "node app.js",
     "todo": "fixme -i build/** -i node_modules/** **/*.{js,jsx,less}",
-    "cli": "vitreum -s client/main/main.jsx"
+    "cli": "vitreum -s"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +25,7 @@
     "build"
   ],
   "vitreum":{
+    "targets": ["client/main/main.jsx"],
     "template" : "./simple.template.js",
     "paths" : {
       "code" : "hahah.js"

@@ -12,17 +12,9 @@ const getPckg = (currPath = path.resolve(''))=>{
 const pckg = getPckg();
 const packageOpts = pckg.vitreum || {};
 
-//console.log('packageOpts', packageOpts);
-
-//???
-const applyToOpts = (obj)=>{
-	Object.keys(opts).map((key)=>{
-		if(typeof obj[key] !== 'undefined') opts[key] = obj[key];
-	});
-};
-
 const defaultOpts = {
 	shared : ['./client'],
+	targets : [],
 	app    : pckg.main,
 	dev    : false,
 	embed  : false,
@@ -41,29 +33,23 @@ const defaultOpts = {
 const validate = (opts)=>{
 	if(!opts.targets || !opts.targets.length) throw 'No build targets specified';
 	if(!opts.app) throw 'A app entry point has not been specified';
+	return opts;
 }
 
-module.exports = (opts, targets)=>{
-	//TODO: might need a smarter assign
+module.exports = (opts, targets = [])=>{
 	opts = Object.assign({}, defaultOpts, packageOpts, opts);
 	opts.paths = Object.assign({}, defaultOpts.paths, packageOpts.paths, opts.paths);
 
-	console.log(opts);
+	//console.log('OPPPPPPPTS', opts);
 
-
-	opts.targets = targets || opts.targets;
+	opts.targets = targets.concat(opts.targets);
 	if(typeof opts.targets == 'string') opts.targets = [opts.targets];
 	opts.targets = opts.targets.map((target)=>path.resolve(process.cwd(), target));
-
-	//opts.shared = opts.shared.map((target)=>path.resolve(process.cwd(), target));
-
 
 	if(typeof opts.template == 'string') opts.template = utils.require(opts.template);
 	if(!opts.template) opts.template = require('./default.template.js');
 
-	console.log('OPTS', opts);
+	//console.log('OPTS', opts);
 
-	validate(opts);
-
-	return opts;
+	return validate(opts);
 }

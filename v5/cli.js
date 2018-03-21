@@ -25,10 +25,8 @@ const cliOpts = cli
 
 //if(cliOpts.jsx) return console.log('yo');
 
-cliOpts.targets = cliOpts.args;
+if(cliOpts.args.length) cliOpts.targets = cliOpts.args;
 delete cliOpts.args;
-
-console.log(cliOpts);
 
 
 if(cliOpts.dev) return require('./dev.js')(cliOpts.targets, cliOpts);
