@@ -15,7 +15,8 @@
     "prod": "cross-env NODE_ENV=production && npm run build && npm run start",
     "postinstall": "npm run build",
     "start": "node app.js",
-    "todo": "fixme -i build/** -i node_modules/** **/*.{js,jsx,less}"
+    "todo": "fixme -i build/** -i node_modules/** **/*.{js,jsx,less}",
+    "cli": "vitreum -s client/main/main.jsx"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,12 @@
   "eslintIgnore": [
     "build"
   ],
+  "vitreum":{
+    "template" : "./simple.template.js",
+    "paths" : {
+      "code" : "hahah.js"
+    }
+  },
   "babel": {
     "presets": [
       "@babel/preset-stage-3",

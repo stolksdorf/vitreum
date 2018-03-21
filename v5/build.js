@@ -1,34 +1,39 @@
 const browserify = require('browserify');
 const fse        = require('fs-extra');
 const path       = require('path');
-const uglify     = require("uglify-es");
+//const uglify     = require("uglify-es");
 const less       = require('less');
 
+
+const utils = require('./utils.js');
 
 const generator = require('./generator.js');
 
 const transform = require('./transforms');
 
-const buildPath ='./build';
+const getOpts = require('./default.opts.js');
+
+//const buildPath ='./build';
 
 
 
 
-const minify = (code)=>{
-	const mini = uglify.minify(code);
-	if(mini.error) throw mini.error;
-	return mini.code;
-};
+// const minify = (code)=>{
+// 	const mini = uglify.minify(code);
+// 	if(mini.error) throw mini.error;
+// 	return mini.code;
+// };
 
 let Libs = {
 	'react-dom' : '',
 	'react'     : ''
 };
 //let Libs = ['react-dom', 'react'];
-const bundleEntryPoint = (entryPoint, opts)=>{
+const bundleEntryPoint = async (entryPoint, opts)=>{
 	let ctx = {
 		//libs  : Libs,
-		build : buildPath,
+		//TODO: might not need? because I'm passing down opts
+		build : opts.paths.build,
 		less  : '',
 		entry : {
 			name : path.basename(entryPoint).split('.')[0],
@@ -38,9 +43,10 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 
 	const bundler = browserify({
 			standalone : ctx.entry.name,
-			//paths      : opts.shared,
+			paths      : opts.shared,
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>{
+				if(!filepath) throw 'can not find';
 				if(filepath.indexOf('node_modules') == -1) return true;
 				Libs[id] = filepath;
 				return false;
@@ -48,54 +54,57 @@ const bundleEntryPoint = (entryPoint, opts)=>{
 		})
 		.require(entryPoint)
 		.transform((file)=>transform(ctx, file), /*{global : true}*/);
+		//.transform(uglifyify)
 
-	const bundle = ()=>{
-		return new Promise((resolve, reject)=>bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString())));
-	};
+	//TODO: use utils.bundle
+	// const bundle = ()=>{
+	// 	return new Promise((resolve, reject)=>bundler.bundle((err, buf) => err ? reject(err) : resolve(buf.toString())));
+	// };
 
+	//TODO: use utils.lessRender
 	const style = async ()=>{
 		return new Promise((resolve, reject)=>{
 			less.render(ctx.less, {
 				//TODO: used for shared path
-				//paths: _.concat(['./node_modules'], opts.shared),
+				//paths: ['./node_modules'].concat(opts.shared),
+				paths: opts.shared,
 				compress: true,
 			}, (err, res) => err ? reject(err) : resolve(res.css));
 		})
-		.then((renderedCSS)=>fse.writeFile(`${buildPath}/${ctx.entry.name}/bundle.css`, renderedCSS))
+		.then((renderedCSS)=>fse.writeFile(`${opts.paths.build}/${ctx.entry.name}/${opts.paths.style}`, renderedCSS))
 	};
 
 	//TODO: Maybe make this be a promise.all?
-	return fse.ensureDir(`${buildPath}/${ctx.entry.name}`)
-		.then(bundle)
-		//.then(minify)
-		.then((code)=>fse.writeFile(`${buildPath}/${ctx.entry.name}/bundle.js`, code))
-		.then(style)
-		.then(()=>generator(ctx))
-		// .then(()=>{
-		// 	//Libs = Object.assign(Libs, ctx.libs);
-		// })
+	//TODO: make this into async await
+	await fse.ensureDir(`${opts.paths.build}/${ctx.entry.name}`);
+	await utils.bundle(bundler).then((code)=>fse.writeFile(`${opts.paths.build}/${ctx.entry.name}/${opts.paths.code}`, code));
+	await style();
+	await generator(ctx, opts);
 };
 
-const bundleLibs = (opts)=>{
+const bundleLibs = async (opts)=>{
 	//TODO: Should list out the libs you are building in logs
 	console.log('Building Libs', Object.keys(Libs));
 
-	return new Promise((resolve, reject)=>{
-		browserify({ /*paths: opts.shared */ }).require(Object.keys(Libs))
-			.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
-	})
-	//TODO: Minifiying is really slow, try doing it as a transform
-	//.then(minify)
-	.then((code)=>fse.writeFile(`${buildPath}/libs.js`, code))
+	return utils.bundle(browserify()
+		.require(Object.keys(Libs))
+		//.transform(uglifyify)
+	).then((code)=>fse.writeFile(`${opts.paths.build}/${opts.paths.libs}`, code));
+
+	// return new Promise((resolve, reject)=>{
+	// 	browserify({ /*paths: opts.shared */ }).require(Object.keys(Libs))
+	// 		.bundle((err, buf) => err ? reject(err) : resolve(buf.toString()))
+	// })
+	// //TODO: Minifiying is really slow, try doing it as a transform
+	// //.then(minify)
+	// .then((code)=>fse.writeFile(`${opts.paths.build}/libs.js`, code))
 }
 
-module.exports = (entryPoints, opts)=>{
-	if(!Array.isArray(entryPoints)) entryPoints = [entryPoints];
-	return fse.emptyDir(buildPath)
-		.then(()=>Promise.all(entryPoints.map(bundleEntryPoint)))
-		.then(bundleLibs)
-		.catch((err)=>{
-			console.log('ERR', err);
-		})
+module.exports = async (entryPoints, opts)=>{
+	opts = getOpts(opts, entryPoints);
+
+	await fse.emptyDir(opts.paths.build);
+	await Promise.all(opts.targets.map((ep)=>bundleEntryPoint(ep, opts)));
+	await bundleLibs(opts);
 };
 

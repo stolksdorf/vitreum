@@ -1,10 +1,4 @@
 
-/*
-	it's assumed that a build script has already been ran
-
-
-*/
-
 const utils = require('./utils.js');
 
 
@@ -54,7 +48,7 @@ const watchServer = (appPath, buildPath)=>{
 	const app = browserify({ require : appPath, bundleExternal : false,
 		//Ignore all built files from server watching
 		postFilter : (id, filepath)=>{
-			//TODO: use path to do better checking
+			//TODO: use minimatch to do better matching
 			if(id.indexOf(buildPath) !== -1) return false;
 			deps.push(filepath);
 			return true;
@@ -63,10 +57,9 @@ const watchServer = (appPath, buildPath)=>{
 	app.bundle((err)=>{
 		if(err) throw err;
 		console.log('deps', deps);
-		//FIX: watching specific files doens't seem to work. Test this.
+		//FIXME: watching specific files doens't seem to work. Test this.
 		nodemon({ script : appPath, watch  : deps })
-			.on('restart', (files, temp)=>{
-				console.log(temp);
+			.on('restart', (files)=>{
 				//TODO: Style this and make this way prettier,
 				// message what changed
 				// normalize the file paths
@@ -117,6 +110,8 @@ module.exports = async (entryPoint, opts)=>{
 
 
 
+
+
 		return bundle()
 			.then((code)=>fse.writeFile(`${buildPath}/${ctx.entry.name}/bundle.js`, code))
 			.then(()=>{
@@ -146,7 +141,7 @@ module.exports = async (entryPoint, opts)=>{
 			cache      : {}, packageCache: {},
 			debug       : true,
 			standalone : ctx.entry.name,
-			//paths      : opts.shared
+			paths      : opts.shared,
 			plugin    : [watchify],
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1,
@@ -154,7 +149,7 @@ module.exports = async (entryPoint, opts)=>{
 		.require(entryPoint)
 		.transform((file)=>transform(ctx, file))
 		.on('update', (files)=>{
-			console.log('\n\n\n\n\n');
+			console.log('\n\n');
 			console.log('Client Change detected', files.map((file)=>path.relative(process.cwd(), file)));
 			console.log('rebundling', ctx.entry.name);
 			bundleEntryPointDev();
