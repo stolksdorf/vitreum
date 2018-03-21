@@ -49,6 +49,9 @@ module.exports = (opts, targets = [])=>{
 	if(typeof opts.template == 'string') opts.template = utils.require(opts.template);
 	if(!opts.template) opts.template = require('./default.template.js');
 
+	//TODO: maybe?
+	opts.app = path.resolve(process.cwd(), opts.app);
+
 	//console.log('OPTS', opts);
 
 	return validate(opts);

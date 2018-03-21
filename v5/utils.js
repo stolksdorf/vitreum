@@ -17,12 +17,19 @@ const utils = {
 	},
 	paths : (paths, entryName)=>{
 		return {
+			entry  : `${paths.build}/${entryName}`, //Maybe remove
 			code   : `${paths.build}/${entryName}/${paths.code}`,
 			style  : `${paths.build}/${entryName}/${paths.style}`,
 			render : `${paths.build}/${entryName}/${paths.render}`,
 			static : `${paths.build}/${entryName}/${paths.static}`,
 			libs   : `${paths.build}/${paths.libs}`
 		}
+	},
+
+	isLib : (modPath, opts)=>{
+		//TODO: add flag to exclude some paths from this check.
+
+		return modPath.indexOf('node_modules') == -1
 	}
 };
 

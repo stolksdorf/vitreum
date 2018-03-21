@@ -29,5 +29,6 @@ if(cliOpts.args.length) cliOpts.targets = cliOpts.args;
 delete cliOpts.args;
 
 
-if(cliOpts.dev) return require('./dev.js')(cliOpts.targets, cliOpts);
+if(cliOpts.dev) return require('./dev.js')(cliOpts.targets, cliOpts)
+	.catch((err)=>console.log(err))
 require('./build.js')(cliOpts.targets, cliOpts);
