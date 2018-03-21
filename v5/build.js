@@ -46,7 +46,7 @@ const bundleEntryPoint = async (entryPoint, opts)=>{
 			paths      : opts.shared,
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>{
-				if(!filepath) throw 'can not find';
+				if(!filepath) throw `can not find: ${id}`;
 				if(filepath.indexOf('node_modules') == -1) return true;
 				Libs[id] = filepath;
 				return false;

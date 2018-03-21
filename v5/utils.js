@@ -21,7 +21,7 @@ const utils = {
 			style  : `${paths.build}/${entryName}/${paths.style}`,
 			render : `${paths.build}/${entryName}/${paths.render}`,
 			static : `${paths.build}/${entryName}/${paths.static}`,
-			libs   : `${paths.build}/${paths.libs}`'
+			libs   : `${paths.build}/${paths.libs}`
 		}
 	}
 };

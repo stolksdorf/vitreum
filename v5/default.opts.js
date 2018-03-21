@@ -22,7 +22,7 @@ const applyToOpts = (obj)=>{
 };
 
 const defaultOpts = {
-	shared : ['./client/shared'],
+	shared : ['./client'],
 	app    : pckg.main,
 	dev    : false,
 	embed  : false,
@@ -54,6 +54,8 @@ module.exports = (opts, targets)=>{
 	opts.targets = targets || opts.targets;
 	if(typeof opts.targets == 'string') opts.targets = [opts.targets];
 	opts.targets = opts.targets.map((target)=>path.resolve(process.cwd(), target));
+
+	//opts.shared = opts.shared.map((target)=>path.resolve(process.cwd(), target));
 
 
 	if(typeof opts.template == 'string') opts.template = utils.require(opts.template);
