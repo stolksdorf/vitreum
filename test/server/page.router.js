@@ -1,15 +1,18 @@
-const config = require('nconf');
 const router = require('express').Router();
-const render = require('../../steps/render');
-const pageTemplate = require('./page.template.js');
+const mainRenderer = require('../build/main/render.js');
+
 
 router.get('*', (req, res) => {
-	render('main', pageTemplate, {
-		url    : req.url,
-		config : config.get('client')
-	})
-		.then((page) => res.send(page))
-		.catch((err) => console.log(err));
+	console.log('request hit', req.url);
+
+	//console.log('REMOVING', require.resolve('../build/main/bundle.js'));
+	//delete require.cache[require.resolve('../build/main/bundle.js')]
+
+
+
+	return res.send(mainRenderer({
+		url : req.url
+	}));
 });
 
 module.exports = router;
