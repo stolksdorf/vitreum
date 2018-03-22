@@ -28,6 +28,7 @@ const utils = {
 
 	isLib : (modPath, opts)=>{
 		//TODO: add flag to exclude some paths from this check.
+		// Also exclude already bundles/built files
 
 		return modPath.indexOf('node_modules') == -1
 	}

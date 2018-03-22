@@ -30,7 +30,7 @@ const startApp = async (opts)=>{
 			resolve();
 
 			//FIXME: watching specific files doens't seem to work. Test this.
-			nodemon({ script : opts.app, watch  : deps })
+			nodemon({ script : opts.app, watch  : deps, delay : 2 })
 				.on('restart', (files)=>{
 					//TODO: Style this and make this way prettier,
 					// message what changed
