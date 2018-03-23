@@ -3,8 +3,9 @@ const fse  = require('fs-extra');
 
 module.exports = {
 	name : 'litprog',
-	test  : (filepath)=>['.lp'].includes(path.extname(filepath)),
-	apply : async (filepath, contents, ctx)=>{
+	//TODO: .lp.md won't work
+	test  : (filepath)=>['.lp', '.lp.md'].includes(path.extname(filepath)),
+	apply : async (filepath, contents, opts)=>{
 
 	}
 }

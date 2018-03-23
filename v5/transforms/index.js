@@ -11,8 +11,8 @@ const transforms = [
 	require('./asset.transform.js'),
 ];
 
-module.exports = (ctx, filename)=>{
-	const transform = transforms.find((trans)=>trans.test(filename, ctx));
+module.exports = (filename, opts)=>{
+	const transform = transforms.find((trans)=>trans.test(filename, opts));
 	if(!transform) return through();
 	let contents = '';
 	return through((chunk, enc, next)=>{ contents += chunk.toString(); next(); },
@@ -20,7 +20,7 @@ module.exports = (ctx, filename)=>{
 			//console.log('  - parsing', path.basename(filename), contents.length);
 			console.log('  - parsing', filename, contents.length);
 			try{
-				const res = await transform.apply(filename, contents, ctx);
+				const res = await transform.apply(filename, contents, opts);
 				if(res) this.push(res);
 			}catch(err){
 				console.log('Err', transform.name, err);

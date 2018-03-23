@@ -20,6 +20,7 @@ const defaultOpts = {
 	embed  : false,
 	static : false,
 	template : false,
+	babel: undefined,
 	paths  : {
 		build  : './build',
 		code   : 'bundle.js',
@@ -32,7 +33,7 @@ const defaultOpts = {
 
 const validate = (opts)=>{
 	if(!opts.targets || !opts.targets.length) throw 'No build targets specified';
-	if(!opts.app) throw 'A app entry point has not been specified';
+	if(!opts.app) throw `A app entry point has not been specified. Set 'main' in your package.json`;
 	return opts;
 }
 

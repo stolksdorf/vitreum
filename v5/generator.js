@@ -1,16 +1,16 @@
 const fse = require('fs-extra');
 const path = require('path');
 
-const getRenderedTemplate = (template, entryName, opts)=>{
+const getRenderedTemplate = (template, opts)=>{
 	const paths = opts.paths;
-	const head = `<link rel='stylesheet' type='text/css' href='/${entryName}/${paths.style}' />\n	\${metatags}`;
+	const head = `<link rel='stylesheet' type='text/css' href='/${opts.entry.name}/${paths.style}' />\n	\${metatags}`;
 	const body = `<main id='vitreum-root'>\${component}</main>`;
 	const tail = `<script src='/${paths.libs}'></script>
-	<script src='/${entryName}/${paths.code}'></script>
+	<script src='/${opts.entry.name}/${paths.code}'></script>
 	<script>
 		(function(){
 			require('react-dom').hydrate(
-				require('react').createElement(${entryName}, \${JSON.stringify(props)}),
+				require('react').createElement(${opts.entry.name}, \${JSON.stringify(props)}),
 				document.getElementById('vitreum-root')
 			);
 		})();
@@ -19,10 +19,10 @@ const getRenderedTemplate = (template, entryName, opts)=>{
 };
 
 
-//TODO: replace ctx with just the entry name
-module.exports = async (ctx, opts={})=>{
+//TODO: replace opts with just the entry name
+module.exports = async (opts={})=>{
 	const paths = opts.paths;
-	const renderedTemplate = getRenderedTemplate(opts.template, ctx.entry.name, opts);
+	const renderedTemplate = getRenderedTemplate(opts.template, opts);
 	const code = `const ReactDOMServer = require('react-dom/server');
 const React = require('react');
 const meta = require('vitreum/utils/meta.gen.js');
@@ -33,7 +33,7 @@ module.exports = (props)=>{
 	//TODO: check that this is a react component
 	// https://github.com/treyhuffine/is-react/blob/master/index.js
 	if(!Object.keys(Element).length && typeof Element !== 'function'){
-		throw new Error('${ctx.entry.name} component was improperly built. Check the /build folder.');
+		throw new Error('${opts.entry.name} component was improperly built. Check the /build folder.');
 	}
 	const component = ReactDOMServer.renderToString(React.createElement(Element, props));
 
@@ -43,10 +43,10 @@ module.exports = (props)=>{
 	return \`${renderedTemplate}\`;
 };`;
 
-	await fse.writeFile(`${paths.build}/${ctx.entry.name}/${paths.render}`, code);
+	await fse.writeFile(`${paths.build}/${opts.entry.name}/${paths.render}`, code);
 	if(opts.static){
 		//TODO: use the utils require
-		const renderer = require(path.resolve(process.cwd(), `${paths.build}/${ctx.entry.name}/${paths.render}`));
-		await fse.writeFile(`${paths.build}/${ctx.entry.name}/${paths.static}`, renderer())
+		const renderer = require(path.resolve(process.cwd(), `${paths.build}/${opts.entry.name}/${paths.render}`));
+		await fse.writeFile(`${paths.build}/${opts.entry.name}/${paths.static}`, renderer())
 	}
 };

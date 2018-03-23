@@ -16,7 +16,7 @@ const Home = createClass({
 	},
 	render : function(){
 		return <div className='home page' onClick={this.handleClick} style={require('./home.less')}>
-			Home Page Ready sdfsdfsdf.
+			Home Page Ready HOOLLLA BOI.
 			<Widget />
 		</div>;
 	}

@@ -15,15 +15,14 @@ const getOpts   = require('./default.opts.js');
 const startApp = async (opts)=>{
 	return new Promise((resolve, reject)=>{
 		let deps = [];
-		const app = browserify({ require : opts.app, bundleExternal : false,
+		browserify({ require : opts.app, bundleExternal : false,
 			postFilter : (id, filepath)=>{
 				//TODO: use minimatch to do better matching
 				if(id.indexOf(opts.paths.build) !== -1) return false;
 				deps.push(filepath);
 				return true;
 			}
-		})
-		app.bundle((err)=>{
+		}).bundle((err)=>{
 			if(err) return reject(err);
 			console.log('deps', deps);
 
@@ -42,51 +41,49 @@ const startApp = async (opts)=>{
 	});
 };
 
-const devEntryPoint = async (entryPoint, opts)=>{
-	//IDEA: fold the per- entrypoint ctx into the opts, and pass those around
-		//Replace the opts paths with the utils paths
-	let ctx = {
+const devEntryPoint = async (entryPoint, Opts)=>{
+	let opts = Object.assign({
 		less  : '',
 		entry : {
 			name : path.basename(entryPoint).split('.')[0],
 			dir  : path.dirname(entryPoint)
 		}
-	};
-	const paths = utils.paths(opts.paths, ctx.entry.name);
+	}, Opts);
 
-	if(!fse.pathExistsSync(`${opts.paths.build}/${ctx.entry.name}`)){
+	if(!fse.pathExistsSync(`${opts.paths.build}/${opts.entry.name}`)){
 		//throw 'This entrypoint has not been built, please run a build before you dev';
 	}
 
 	const bundler = browserify({
 			cache      : {}, packageCache: {},
 			debug       : true,
-			standalone : ctx.entry.name,
+			standalone : opts.entry.name,
 			paths      : opts.shared,
 			plugin    : [watchify],
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1,
 		})
 		.require(entryPoint)
-		.transform((file)=>transform(ctx, file))
+		.transform((file)=>transform(file, opts))
 		.on('update', (files)=>{
 			console.log('\n\n');
 			console.log('Client Change detected', files.map((file)=>path.relative(process.cwd(), file)));
-			console.log('rebundling', ctx.entry.name);
-			gogogo();
+			console.log('rebundling', opts.entry.name);
+			bundle();
 		});
 
-	const gogogo = async ()=>{
+	const bundle = async ()=>{
 		await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
-		await utils.lessRender(ctx.less, {
+		await utils.lessRender(opts.less, {
 				paths     : opts.shared,
 				compress  : false,
 				sourceMap : {sourceMapFileInline: true}
 			}).then((css)=>fse.writeFile(paths.style, css))
 	};
 
-	await generator(ctx, Object.assign(opts, {dev : true}));
-	await gogogo();
+	const paths = utils.paths(opts.paths, opts.entry.name);
+	await generator(Object.assign(opts, {dev : true}));
+	await bundle();
 };
 
 module.exports = async (entryPoints, opts)=>{

@@ -11,19 +11,17 @@ let Libs = {
 	'react-dom' : '',
 	'react'     : ''
 };
-const bundleEntryPoint = async (entryPoint, opts)=>{
-	//IDEA: fold the per- entrypoint ctx into the opts, and pass those around
-		//Replace the opts paths with the utils paths
-	let ctx = {
+const bundleEntryPoint = async (entryPoint, Opts)=>{
+	let opts = Object.assign({
 		less  : '',
 		entry : {
 			name : path.basename(entryPoint).split('.')[0],
 			dir  : path.dirname(entryPoint)
 		}
-	};
-	const paths = utils.paths(opts.paths, ctx.entry.name);
+	}, Opts);
+
 	const bundler = browserify({
-			standalone    : ctx.entry.name,
+			standalone    : opts.entry.name,
 			paths         : opts.shared,
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>{
@@ -34,13 +32,14 @@ const bundleEntryPoint = async (entryPoint, opts)=>{
 			}
 		})
 		.require(entryPoint)
-		.transform((file)=>transform(ctx, file))
+		.transform((file)=>transform(file, opts))
 		.transform('uglifyify');
 
-	await fse.ensureDir(`${opts.paths.build}/${ctx.entry.name}`);
+	const paths = utils.paths(opts.paths, opts.entry.name);
+	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
 	await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
-	await utils.lessRender(ctx.less, {paths: opts.shared,compress: true}).then((css)=>fse.writeFile(paths.style, css))
-	await generator(ctx, opts);
+	await utils.lessRender(opts.less, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css))
+	await generator(opts);
 };
 
 const bundleLibs = async (opts)=>{

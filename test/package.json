@@ -29,6 +29,9 @@
     "template" : "./simple.template.js",
     "paths" : {
       "code" : "hahah.js"
+    },
+    "babel": {
+      "presets" : ["@babel/preset-stage-3", "@babel/preset-react"]
     }
   },
   "babel": {
