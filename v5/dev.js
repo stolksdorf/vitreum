@@ -1,16 +1,15 @@
-const utils = require('./utils.js');
 const browserify = require('browserify');
 const fse        = require('fs-extra');
 const path       = require('path');
 const watchify   = require('watchify');
 const sourceMaps = require('source-map-support');
-const less       = require('less');
 const livereload = require('livereload');
-const nodemon = require('nodemon');
+const nodemon    = require('nodemon');
+
+const utils     = require('./utils.js');
 const transform = require('./transforms');
 const generator = require('./generator.js');
 const getOpts   = require('./default.opts.js');
-
 
 const startApp = async (opts)=>{
 	return new Promise((resolve, reject)=>{
@@ -22,23 +21,18 @@ const startApp = async (opts)=>{
 				deps.push(filepath);
 				return true;
 			}
-		}).bundle((err)=>{
-			if(err) return reject(err);
-			console.log('deps', deps);
-
-			resolve();
-
-			//FIXME: watching specific files doens't seem to work. Test this.
-			nodemon({ script : opts.app, watch  : deps, delay : 2 })
-				.on('restart', (files)=>{
-					//TODO: Style this and make this way prettier,
-					// message what changed
-					// normalize the file paths
-					if(files && files.length) console.log('Change detected', files.map((file)=>path.relative(process.cwd(), file)));
-					console.log('restarting server');
-				});
-		});
-	});
+		}).bundle((err)=>err?reject(err):resolve(deps));
+	})
+	.then((appDeps)=>{
+		nodemon({ script:opts.app, watch:appDeps, delay:2 })
+			.on('restart', (files)=>{
+				//TODO: Style this and make this way prettier,
+				// message what changed
+				// normalize the file paths
+				if(files && files.length) console.log('Change detected', files.map((file)=>path.relative(process.cwd(), file)));
+				console.log('restarting server');
+			});
+	})
 };
 
 const devEntryPoint = async (entryPoint, Opts)=>{
@@ -88,9 +82,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 
 module.exports = async (entryPoints, opts)=>{
 	opts = getOpts(opts, entryPoints);
-
 	sourceMaps.install();
-
 	await Promise.all(opts.targets.map((ep)=>devEntryPoint(ep, opts)));
 	await startApp(opts);
 	await livereload.createServer().watch(opts.paths.build);

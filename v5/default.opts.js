@@ -20,7 +20,7 @@ const defaultOpts = {
 	embed  : false,
 	static : false,
 	template : false,
-	babel: undefined,
+	babel    : undefined,
 	paths  : {
 		build  : './build',
 		code   : 'bundle.js',
