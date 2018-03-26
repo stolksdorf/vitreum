@@ -1,35 +1,53 @@
 #!/usr/bin/env node
-const cli = require('commander');
-const rootPckg = require('../package.json');
+const cli = require('yargs').version();
 
-const cliOpts = cli
-	.version(rootPckg.version)
-	.command('vitreum [entrypoints]')
-	.usage('[options] <entrypoints...>')
-	.option('-d --dev', 'run a dev build of the project')
-	.option('-s --static', 'create static renders of the entrypoints')
-	.option('-e --embed', 'embed styling into components')
+//TODO: uses cli.js instead of vitreum in the help
+cli.command('* [targets...]', 'Build your project', {
+	dev : {
+		alias    : 'd',
+		describe : 'Run a dev build of the project',
+	},
+	static : {
+		alias    : 's',
+		describe : 'Create static renders of the entrypoints',
+	},
 
-	.parse(process.argv)
+}, (args)=>{
+	(args.dev
+		? require('./dev.js')
+		: require('./build.js')
+	)(args.targets, args)
+		.catch((err)=>console.log(err))
+})
 
-	// //Bootstrapper options
-	// //TODO: make these into comamnds
-	// // https://www.npmjs.com/package/commander#command-specific-options
-	// .option('-c --jsx', 'create a component')
-	// .option('-p --pure', 'create a pure functional component')
-	// .option('--init', 'bootstrap a vitreum project')
+cli.command('init', 'Bootstrap a vitreum project', {
+	lint : {
+		alias    : 'l',
+		describe : 'Add in eslint config',
+	},
+	tests : {
+		alias    : 't',
+		describe : 'Add in tests',
+	},
+	flux : {
+		alias    : 'f',
+		describe : 'Add in flux stores, actions, and smart component',
+	},
+	all : {
+		alias    : 'y',
+		describe : 'Select everything',
+	},
+}, (args)=>require('../templates/init.js')(args));
 
+cli.command('jsx <component name>', 'Create a jsx component', {
+	pure : {
+		alias    : 'p',
+		describe : 'Create a functional pure component',
+	},
+	smart : {
+		alias    : 's',
+		describe : 'Create a smart component',
+	},
+}, (args)=>require('../templates/jsx.js')(args));
 
-//const cliOpts = cli.parse(process.argv);
-
-
-//if(cliOpts.jsx) return console.log('yo');
-
-if(cliOpts.args.length) cliOpts.targets = cliOpts.args;
-delete cliOpts.args;
-
-(cliOpts.dev
-	? require('./dev.js')
-	: require('./build.js')
-)(cliOpts.targets, cliOpts)
-	.catch((err)=>console.log(err))
+cli.help('help').alias('help', 'h').argv;
