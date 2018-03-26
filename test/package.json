@@ -2,19 +2,19 @@
   "name": "test",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "test": "tape tests/**/*.test.js | tap-spec",
+    "test": "ava -s -v",
     "lint": "eslint --fix **/*.{js,jsx}",
     "lint:dry": "eslint **/*.{js,jsx}",
-    "test:dev": "tape-watch tests/**/*.test.js | tap-spec",
-    "dev": "vitreum -d",
+    "test:dev": "ava -w",
+    "dev": "node scripts/dev.js",
     "dev:dev": "nodemon --watch ../ --ignore build/ scripts/dev.script.js",
-    "build": "vitreum",
+    "build": "node scripts/build.js",
     "build:dev": "nodemon --watch ../ --ignore build/ scripts/build.script.js",
-    "prod": "cross-env NODE_ENV=production && npm run build && npm run start",
+    "prod": "cross-env NODE_ENV=production && npm run build",
     "postinstall": "npm run build",
-    "start": "node app.js",
+    "start": "node server/server.js",
     "todo": "fixme -i build/** -i node_modules/** **/*.{js,jsx,less}",
     "cli": "vitreum -s"
   },
@@ -24,14 +24,19 @@
   "eslintIgnore": [
     "build"
   ],
-  "vitreum":{
-    "targets": ["client/main/main.jsx"],
-    "template" : "./simple.template.js",
-    "paths" : {
-      "code" : "hahah.js"
+  "vitreum": {
+    "targets": [
+      "client/main/main.jsx"
+    ],
+    "template": "./simple.template.js",
+    "paths": {
+      "code": "hahah.js"
     },
     "babel": {
-      "presets" : ["@babel/preset-stage-3", "@babel/preset-react"]
+      "presets": [
+        "@babel/preset-stage-3",
+        "@babel/preset-react"
+      ]
     }
   },
   "babel": {
@@ -51,6 +56,8 @@
     "pico-router": "^2.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "vitreum": "^4.8.2"
+    "vitreum": "^4.8.2",
+    "yargs": "^11.0.0",
+    "pico-conf": "*"
   }
 }

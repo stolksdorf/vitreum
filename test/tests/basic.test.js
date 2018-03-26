@@ -1,8 +1,6 @@
-const test = require('tape');
+const test = require('ava');
 
-test('My first test', (t) => {
-	t.equals(2+2, 4);
-
-	t.end();
+test('My first test', (t)=>{
+	t.pass();
 });
 

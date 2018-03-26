@@ -1,13 +1,19 @@
-const React = require('react');
-const _     = require('lodash/core');
-require('./widget.less');
+const React       = require('react');
+const createClass = require('create-react-class');
+const _           = require('lodash');
 
 
-module.exports = ({
-	className = '',
-	...props
-}) => {
-	return <div className={`widget ${className}`} {...props}>
-		Widget Pure Component Ready.
-	</div>;
-};
+const Widget = createClass({
+	getDefaultProps : function(){
+		return {
+
+		};
+	},
+	render : function(){
+		return <div className='widget'>
+			Widget Component Ready.
+		</div>;
+	}
+});
+
+module.exports = Widget;
