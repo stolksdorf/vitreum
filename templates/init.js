@@ -16,8 +16,15 @@ const done = (msg)=>console.log(`  ${chalk.green('✓')} ${msg}`);
 const addTests = ()=>{
 	pckg.scripts.test = 'pico-check';
 	pckg.scripts['test:dev'] = 'pico-check -v -w';
-	pckg.picocheck={require:'@babel/register'}
+	pckg.picocheck={require:'./tests/test.init.js'};
 	DEV_LIBS = DEV_LIBS.concat(['pico-check', 'react-test-renderer', '@babel/register']);
+	fse.outputFileSync('./tests/test.init.js',
+`require('@babel/register');
+const config = require('pico-conf')
+	.argv()
+	.env({lowercase:true})
+	.add(require(\`../config/\${process.env.NODE_ENV}.js\`))
+	.defaults(require('../config/default.json'));`);
 	fse.outputFileSync('./tests/widget.test.jsx',
 `const React  = require('react');
 const test   = require('pico-check');
@@ -66,18 +73,18 @@ server.listen(PORT, ()=>{
 });`);
 fse.outputFileSync(`./server/server.js`,
 `const express = require('express');
-const app     = express();
+const server  = express();
 
-app.use(express.static('./build'));
-app.enable('trust proxy');
+server.use(express.static('./build'));
+server.enable('trust proxy');
 
-app.use(require('./page.router.js'));
+server.use(require('./page.router.js'));
 
-app.all('*', (req, res) => {
+server.all('*', (req, res) => {
 	res.status(404).send('Oh no.');
 });
 
-module.exports = app;`);
+module.exports = server;`);
 fse.outputFileSync(`./server/page.router.js`,
 `const router = require('express').Router();
 const mainRenderer = require('../build/main/render.js');

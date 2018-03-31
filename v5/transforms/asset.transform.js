@@ -9,6 +9,6 @@ module.exports = {
 
 		await fse.ensureDir(path.dirname(`${opts.build}${assetPath}`));
 		await fse.copy(filepath, `${opts.build}${assetPath}`);
-		return `module.exports='${assetPath}';`
+		return `module.exports='${assetPath}';`;
 	}
 }
