@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
   },
+  "scripts": {
+    "test:init": "npm link && cd ./test/proj && npm init -y && vitreum init -y"
+  },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
   "bugs": {
@@ -24,6 +27,7 @@
     "less": "^2.7.1",
     "livereload": "^0.6.0",
     "lodash": "^4.17.5",
+    "marked": "^0.3.19",
     "minimatch": "^3.0.3",
     "nodemon": "^1.11.0",
     "source-map-support": "^0.4.6",
