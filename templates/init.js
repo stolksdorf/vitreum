@@ -43,6 +43,7 @@ module.exports = test;`);
 const addLint = async ()=>{
 	pckg.scripts.lint = 'eslint --fix **/*.{js,jsx}';
 	pckg.scripts['lint:dry'] = 'eslint **/*.{js,jsx}';
+	pckg.eslintIgnore = ['build/*'],
 	DEV_LIBS = DEV_LIBS.concat(['eslint', 'eslint-plugin-react']);
 	fse.copySync(`${__dirname}/eslintrc.js`, `.eslintrc.js`);
 	done('added lint');

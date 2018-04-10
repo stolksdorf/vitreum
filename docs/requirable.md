@@ -16,6 +16,8 @@ Vitreum can also be used as a requirable library. This can be used to write spec
 
 `static` a boolean indicating if during a build vitreum should also render a static html version of each entry point. _default:_ `false`
 
+`embed` a boolean or array of regexes indicating which assets should be base64 encoding and embedding into the bundle.
+
 `template` a string path to a js file that will be used to create the html renders for each entrypoint. _default:_ `vitreum/src/default.template.js`
 
 `babel` an object of babel settings vitreum will use, incase you want to overwrite the ones defined in your `package.json` or your `.babelrc`. _defaults:_ `undefined`

@@ -8,7 +8,9 @@
     "url": "git://github.com/stolksdorf/vitreum.git"
   },
   "scripts": {
-    "test:init": "npm link && cd ./test/proj && npm init -y && vitreum init -y"
+    "test:init": "npm link && cd ./test/proj && npm init -y && vitreum init -y",
+    "test": "pico-check",
+    "dev": "pico-check -v -w"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
@@ -17,10 +19,14 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
+    "@babel/core": "^7.0.0-beta.42",
+    "@babel/preset-react": "^7.0.0-beta.42",
+    "@babel/preset-stage-3": "^7.0.0-beta.42",
     "babelify": "^7.3.0",
     "browserify": "^14.4.0",
     "chalk": "^2.0.1",
     "chokidar": "^1.6.1",
+    "create-react-class": "^15.6.3",
     "fs-extra": "^3.0.1",
     "js-yaml": "^3.10.0",
     "klaw": "^2.0.0",
@@ -30,6 +36,8 @@
     "marked": "^0.3.19",
     "minimatch": "^3.0.3",
     "nodemon": "^1.11.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
     "source-map-support": "^0.4.6",
     "through2": "^2.0.3",
     "uglify-es": "^3.0.14",
@@ -49,5 +57,8 @@
     "browserify",
     "react",
     "build"
-  ]
+  ],
+  "devDependencies": {
+    "pico-check": "^1.0.3"
+  }
 }
