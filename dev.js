@@ -4,14 +4,17 @@ const path       = require('path');
 const watchify   = require('watchify');
 const sourceMaps = require('source-map-support');
 const livereload = require('livereload');
-const nodemon    = require('nodemon');
 
-const utils     = require('./utils.js');
-const transform = require('./transforms');
-const generator = require('./generator.js');
-const getOpts   = require('./default.opts.js');
+const utils     = require('./lib/utils.js');
+const transform = require('./lib/transforms');
+const renderer = require('./lib/renderer.js');
+const getDefaultOpts   = require('./lib/default.opts.js');
+const log      = require('./lib/utils/log.js');
+const Less = require('./lib/utils/less.js');
 
 const startApp = async (opts)=>{
+	const nodemon    = require('nodemon');
+
 	return new Promise((resolve, reject)=>{
 		let deps = [];
 		browserify({ require : opts.app, bundleExternal : false,
@@ -26,30 +29,33 @@ const startApp = async (opts)=>{
 	.then((appDeps)=>{
 		nodemon({ script:opts.app, watch:appDeps, delay:2 })
 			.on('restart', (files)=>{
+				log.restartServer(opts.app, files);
 				//TODO: Style this and make this way prettier,
 				// message what changed
 				// normalize the file paths
-				if(files && files.length) console.log('Change detected', files.map((file)=>path.relative(process.cwd(), file)));
-				console.log('restarting server');
+				//if(files && files.length) console.log('Change detected', files.map((file)=>path.relative(process.cwd(), file)));
+				//console.log('restarting server');
 			});
 	})
 };
 
 const devEntryPoint = async (entryPoint, Opts)=>{
+	console.log('Buidling', entryPoint);
+
 	let opts = Object.assign({
-		less  : '',
 		entry : {
 			name : path.basename(entryPoint).split('.')[0],
 			dir  : path.dirname(entryPoint)
 		}
 	}, Opts);
 
-	if(!fse.pathExistsSync(`${opts.paths.build}/${opts.entry.name}`)){
-		//throw 'This entrypoint has not been built, please run a build before you dev';
+	if(!fse.pathExistsSync(utils.resolve(`${opts.paths.build}/${opts.entry.name}`))){
+		throw 'This entrypoint has not been built, please run a build before you dev';
 	}
 
 	const bundler = browserify({
-			cache      : {}, packageCache: {},
+			cache      : {},
+			packageCache: {},
 			debug       : true,
 			standalone : opts.entry.name,
 			paths      : opts.shared,
@@ -68,22 +74,30 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 
 	const bundle = async ()=>{
 		await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
-		await utils.lessRender(opts.less, {
-				paths     : opts.shared,
-				compress  : false,
-				sourceMap : {sourceMapFileInline: true}
-			}).then((css)=>fse.writeFile(paths.style, css))
+		await Less.render({
+			paths     : opts.shared,
+			compress  : false,
+			sourceMap : {sourceMapFileInline: true}
+		}).then((css)=>fse.writeFile(paths.style, css));
 	};
 
 	const paths = utils.paths(opts.paths, opts.entry.name);
-	await generator(Object.assign(opts, {dev : true}));
+	await renderer(Object.assign(opts, {dev : true}));
 	await bundle();
+
+	console.log('DONE');
 };
 
 module.exports = async (entryPoints, opts)=>{
-	opts = getOpts(opts, entryPoints);
+	opts = getDefaultOpts(opts, entryPoints);
+
+	log.beginDev();
+
 	sourceMaps.install();
-	await Promise.all(opts.targets.map((ep)=>devEntryPoint(ep, opts)));
+
+	await opts.targets.reduce((flow, ep)=>flow.then(()=>devEntryPoint(ep, opts)), Promise.resolve());
+
+	console.log('starting server...');
 	await startApp(opts);
 	await livereload.createServer().watch(opts.paths.build);
 };

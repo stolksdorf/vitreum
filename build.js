@@ -5,7 +5,9 @@ const path       = require('path');
 const utils     = require('./lib/utils.js');
 const renderer = require('./lib/renderer.js');
 const transform = require('./lib/transforms');
-const getOpts   = require('./lib/default.opts.js');
+const getDefaultOpts   = require('./lib/default.opts.js');
+const log      = require('./lib/utils/log.js');
+const Less = require('./lib/utils/less.js');
 
 let Libs = {
 	'react-dom' : '',
@@ -13,19 +15,23 @@ let Libs = {
 };
 const bundleEntryPoint = async (entryPoint, Opts)=>{
 	let opts = Object.assign({
-		less  : '',
 		entry : {
 			name : path.basename(entryPoint).split('.')[0],
 			dir  : path.dirname(entryPoint)
 		}
 	}, Opts);
 
+	//TODO: make a timepath feature
+	const endLog = log.step('building', entryPoint);
+
+	const paths = utils.paths(opts.paths, opts.entry.name);
+
 	const bundler = browserify({
 			standalone    : opts.entry.name,
 			paths         : opts.shared,
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>{
-				if(!filepath) throw `can not find: ${id}`; //TODO: remove
+				if(!filepath) throw `Error: Can not find: ${id}`; //TODO: remove
 				if(filepath.indexOf('node_modules') == -1) return true;
 				Libs[id] = filepath;
 				return false;
@@ -35,11 +41,12 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 		.transform((file)=>transform(file, opts))
 		.transform('uglifyify');
 
-	const paths = utils.paths(opts.paths, opts.entry.name);
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
 	await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
-	await utils.lessRender(opts.less, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css))
+	await Less.render({paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
+
+	endLog();
 };
 
 const bundleLibs = async (opts)=>{
@@ -51,8 +58,11 @@ const bundleLibs = async (opts)=>{
 };
 
 module.exports = async (entryPoints, opts)=>{
-	opts = getOpts(opts, entryPoints);
+	opts = getDefaultOpts(opts, entryPoints);
+
+	console.log('Starting a build');
+
 	await fse.emptyDir(opts.paths.build);
-	await Promise.all(opts.targets.map((ep)=>bundleEntryPoint(ep, opts)));
+	await opts.targets.reduce((flow, ep)=>flow.then(()=>bundleEntryPoint(ep, opts)), Promise.resolve());
 	await bundleLibs(opts);
 };

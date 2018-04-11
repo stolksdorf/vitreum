@@ -2,7 +2,7 @@
   "name": "vitreum",
   "version": "5.0.0",
   "description": "Web app build system using Browserify, React, and Less",
-  "bin": "v5/cli.js",
+  "bin": "lib/cli.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
@@ -19,6 +19,9 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
+    "@babel/core": "^7.0.0-beta.40",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "@babel/preset-stage-3": "^7.0.0-beta.40",
     "browserify": "^14.4.0",
     "chalk": "^2.0.1",
     "chokidar": "^1.6.1",
