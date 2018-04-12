@@ -1,38 +1,33 @@
+const path = require('path');
+const selfpath = path.join(__dirname, 'require.js');
+const getDefaultOpts   = require('./lib/default.opts.js');
+const fse = require('fs-extra');
+const keyName = '____';
 
-//potentially use: https://nodejs.org/api/child_process.html#child_process_child_process_execsync_command_options
-
-const browserify = require('browserify');
-
-
-const utils = require('./utils.js');
-const transform = require('./transforms');
-const getOpts = require('./default.opts.js');
-
-
-// TODO: use child_process execSync, but use a browserify commandline
-// opts, bundleExternal: false, ignoreMIssing
-
-module.exports = async (modPath)=>{
-
-	const opts = getOpts(opts, [modPath]);
-
-
-	const bundler = browserify({
-			standalone : modPath,
-			paths      : opts.shared,
+if(process.argv[1] != selfpath){
+	const child_process = require('child_process');
+	const vm = require('vm');
+	return module.exports = (targetPath)=>{
+		const fullTargetPath = path.resolve(path.dirname(module.parent.filename), targetPath);
+		const cmd = `node ${__dirname}/require.js ${fullTargetPath}`;
+		const compiledCode = child_process.execSync(cmd).toString();
+		const sandbox = {};
+		vm.runInNewContext(compiledCode, sandbox);
+		return sandbox[keyName];
+	}
+}else{
+	const browserify = require('browserify');
+	const transform = require('./lib/transforms');
+	const targetFile = process.argv[2];
+	const opts = getDefaultOpts({app:''}, targetFile);
+	browserify(targetFile, {
+			standalone    : keyName,
+			paths         : opts.shared,
 			ignoreMissing : true,
-			postFilter : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1
 		})
-		.require(opts.targets[0])
-		.transform((file)=>transform(ctx, file), /*{global : true}*/);
-
-	utils.bundle(bundler)
-		.then((code)=>{
-
-		})
-
-
-
-
-
+		.transform((file)=>transform(file, opts))
+		.bundle((err, buf)=>{
+			if(err) return process.stderr.write(err.toString());
+			process.stdout.write(buf.toString())
+		});
 }

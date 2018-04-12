@@ -1,6 +1,6 @@
 const test = require('pico-check');
 
-const LitProg = require('../../v5/transforms/litprog.transform.js');
+const LitProg = require('../../lib/transforms/litprog.transform.js');
 
 
 test('Can transform multiple blocks', (t)=>{

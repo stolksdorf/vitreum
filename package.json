@@ -9,13 +9,23 @@
   },
   "scripts": {
     "test:init": "npm link && mkdir test_proj && cd ./test_proj && npm init -y && vitreum init -y",
-    "test": "pico-check",
-    "dev": "pico-check -v -w"
+    "test": "pico-check tests/**/*.test.js",
+    "dev": "pico-check -v -w tests/**/*.test.js"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stolksdorf/vitreum/issues"
+  },
+  "vitreum": {
+    "targets": [
+    ],
+    "babel": {
+      "presets": [
+        "@babel/preset-stage-3",
+        "@babel/preset-react"
+      ]
+    }
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
