@@ -18,8 +18,7 @@
     "url": "https://github.com/stolksdorf/vitreum/issues"
   },
   "vitreum": {
-    "targets": [
-    ],
+    "targets": [],
     "babel": {
       "presets": [
         "@babel/preset-stage-3",
@@ -65,6 +64,6 @@
     "build"
   ],
   "devDependencies": {
-    "pico-check": "^1.0.3"
+    "pico-check": "^1.0.4"
   }
 }
