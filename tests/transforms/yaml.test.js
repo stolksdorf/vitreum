@@ -10,15 +10,12 @@ const opts = {
 };
 
 
-
 test.skip()('Loads a standard YAML file', (t)=>{
 	const res = Yaml.apply(null, ``, opts);
-
-
+	console.log(res);
 });
 
 test.skip()('Throws errors if YAML is improperly formatted', (t)=>{
-
 
 });
 
