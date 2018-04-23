@@ -66,6 +66,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 		.require(entryPoint)
 		.transform((file)=>transform(file, opts))
 		.on('update', (files)=>{
+			//TODO: move to log
 			console.log('\n\n');
 			console.log('Client Change detected', files.map((file)=>path.relative(process.cwd(), file)));
 			console.log('rebundling', opts.entry.name);
@@ -84,8 +85,6 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 	const paths = utils.paths(opts.paths, opts.entry.name);
 	await renderer(Object.assign(opts, {dev : true}));
 	await bundle();
-
-	console.log('DONE');
 };
 
 module.exports = async (entryPoints, opts)=>{

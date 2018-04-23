@@ -1,5 +1,5 @@
 const test = require('pico-check');
-const Style = require('../../lib/transforms/markdown.transform.js');
+const Style = require('../../lib/transforms/markdown.js');
 
 const opts = {
 	build:'./tests/build',

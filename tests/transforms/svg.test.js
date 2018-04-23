@@ -1,5 +1,5 @@
 const test = require('pico-check');
-const Svg = require('../../lib/transforms/svg.transform.js');
+const Svg = require('../../lib/transforms/svg.js');
 
 const opts = {
 	build:'./tests/build',

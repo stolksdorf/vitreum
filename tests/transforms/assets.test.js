@@ -1,5 +1,5 @@
 const test = require('pico-check');
-const Style = require('../../lib/transforms/style.transform.js');
+const Style = require('../../lib/transforms/style.js');
 const Less = require('../../lib/utils/less.js');
 
 const opts = {
