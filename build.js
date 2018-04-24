@@ -20,12 +20,9 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 			dir  : path.dirname(entryPoint)
 		}
 	}, Opts);
-
-	//TODO: make a timepath feature
-	const endLog = log.step('building', entryPoint);
+	const endLog = log.buildEntryPoint(opts.entry);
 
 	const paths = utils.paths(opts.paths, opts.entry.name);
-
 	const bundler = browserify({
 			standalone    : opts.entry.name,
 			paths         : opts.shared,
@@ -50,17 +47,18 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 };
 
 const bundleLibs = async (opts)=>{
-	console.log('Building Libs', Object.keys(Libs));
+	const logEnd = log.libs(Libs);
 	return utils.bundle(browserify()
 		.require(Object.keys(Libs))
 		//.transform('uglifyify', {global : true})
-	).then((code)=>fse.writeFile(`${opts.paths.build}/${opts.paths.libs}`, code));
+	)
+	.then((code)=>fse.writeFile(`${opts.paths.build}/${opts.paths.libs}`, code))
+	.then(logEnd);
 };
 
 module.exports = async (entryPoints, opts)=>{
 	opts = getDefaultOpts(opts, entryPoints);
-
-	console.log('Starting a build');
+	log.beginBuild(opts);
 
 	await fse.emptyDir(opts.paths.build);
 	await opts.targets.reduce((flow, ep)=>flow.then(()=>bundleEntryPoint(ep, opts)), Promise.resolve());
