@@ -62,8 +62,12 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			bundle();
 		});
 
+	let lastBundle;
 	const bundle = async ()=>{
-		await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
+		await utils.bundle(bundler).then((code)=>{
+			if(lastBundle != code) fse.writeFileSync(paths.code, code)
+			lastBundle = code;
+		});
 		await Less.render({
 			paths     : opts.shared,
 			compress  : false,
