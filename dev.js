@@ -53,6 +53,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			paths         : opts.shared,
 			plugin        : [watchify],
 			ignoreMissing : true,
+			//FIXME: This filter breaks when no filepath
 			postFilter    : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1,
 		})
 		.require(entryPoint)
