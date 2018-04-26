@@ -40,7 +40,7 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
 	await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
-	await Less.render({paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
+	await Less.render(opts.entry.name, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
 
 	endLog();

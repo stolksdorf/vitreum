@@ -69,7 +69,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			if(lastBundle != code) fse.writeFileSync(paths.code, code)
 			lastBundle = code;
 		});
-		await Less.render({
+		await Less.render(opts.entry.name, {
 			paths     : opts.shared,
 			compress  : false,
 			sourceMap : {sourceMapFileInline: true}
