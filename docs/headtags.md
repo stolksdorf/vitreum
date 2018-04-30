@@ -54,13 +54,13 @@ Adds a [Structured Data](https://developers.google.com/search/docs/guides/intro-
 ```jsx
 	<Structured data={{
 		context: "http://schema.org",
-			type: "Organization",
-			url: "http://www.example.com",
-			name: "Unlimited Ball Bearings Corp.",
-			contactPoint: {
-				type: "ContactPoint",
-				telephone: "+1-401-555-1212",
-				contactType: "Customer service"
+		type: "Organization",
+		url: "http://www.example.com",
+		name: "Unlimited Ball Bearings Corp.",
+		contactPoint: {
+			type: "ContactPoint",
+			telephone: "+1-401-555-1212",
+			contactType: "Customer service"
 		}
 	}}/>
 ```
@@ -77,13 +77,13 @@ Bulk allows you to add multiple types of head tags in one go. It was designed to
 		},
 		structuredData : {
 			context: "http://schema.org",
-				type: "Organization",
-				url: "http://www.example.com",
-				name: "Unlimited Ball Bearings Corp.",
-				contactPoint: {
-					type: "ContactPoint",
-					telephone: "+1-401-555-1212",
-					contactType: "Customer service"
+			type: "Organization",
+			url: "http://www.example.com",
+			name: "Unlimited Ball Bearings Corp.",
+			contactPoint: {
+				type: "ContactPoint",
+				telephone: "+1-401-555-1212",
+				contactType: "Customer service"
 			}
 		}
 	};

@@ -36,7 +36,7 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 		})
 		.require(entryPoint)
 		.transform((file)=>transform(file, opts))
-		.transform('uglifyify');
+		//.transform('uglifyify');
 
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
 	await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
