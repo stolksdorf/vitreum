@@ -1,6 +1,6 @@
 const path = require('path');
 const selfpath = path.join(__dirname, 'require.js');
-const getDefaultOpts   = require('./lib/default.opts.js');
+const getOpts   = require('./lib/getopts.js');
 const fse = require('fs-extra');
 const keyName = '____';
 
@@ -19,7 +19,7 @@ if(process.argv[1] != selfpath){
 	const browserify = require('browserify');
 	const transform = require('./lib/transforms');
 	const targetFile = process.argv[2];
-	const opts = getDefaultOpts({app:''}, targetFile);
+	const opts = getOpts({app:''}, targetFile);
 	browserify(targetFile, {
 			standalone    : keyName,
 			paths         : opts.shared,

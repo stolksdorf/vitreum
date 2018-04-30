@@ -5,7 +5,7 @@ const path       = require('path');
 const utils     = require('./lib/utils.js');
 const renderer = require('./lib/renderer.js');
 const transform = require('./lib/transforms');
-const getDefaultOpts   = require('./lib/default.opts.js');
+const getOpts   = require('./lib/getopts.js');
 const log      = require('./lib/utils/log.js');
 const Less = require('./lib/utils/less.js');
 
@@ -57,7 +57,7 @@ const bundleLibs = async (opts)=>{
 };
 
 module.exports = async (entryPoints, opts)=>{
-	opts = getDefaultOpts(opts, entryPoints);
+	opts = getOpts(opts, entryPoints);
 	log.beginBuild(opts);
 
 	await fse.emptyDir(opts.paths.build);

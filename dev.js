@@ -8,7 +8,7 @@ const livereload = require('livereload');
 const utils          = require('./lib/utils.js');
 const transform      = require('./lib/transforms');
 const renderer       = require('./lib/renderer.js');
-const getDefaultOpts = require('./lib/default.opts.js');
+const getOpts = require('./lib/getopts.js');
 const log            = require('./lib/utils/log.js');
 const Less           = require('./lib/utils/less.js');
 
@@ -27,9 +27,7 @@ const startApp = async (opts)=>{
 	})
 	.then((appDeps)=>{
 		nodemon({ script:opts.app, watch:appDeps, delay:2 })
-			.on('restart', (files)=>{
-				log.restartServer(opts.app, files);
-			});
+			.on('restart', (files)=>log.restartServer(opts.app, files));
 	})
 };
 
@@ -68,7 +66,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 	const bundle = async ()=>{
 		const logEnd = log.buildEntryPoint(opts.entry);
 		await utils.bundle(bundler).then((code)=>{
-			if(lastBundle != code) fse.writeFileSync(paths.code, code)
+			if(lastBundle != code) fse.writeFileSync(paths.code, code);
 			lastBundle = code;
 		});
 		await Less.render(opts.entry.name, {
@@ -85,7 +83,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 };
 
 module.exports = async (entryPoints, opts)=>{
-	opts = getDefaultOpts(opts, entryPoints);
+	opts = getOpts(opts, entryPoints);
 	log.beginDev(opts);
 	sourceMaps.install();
 	await opts.targets.reduce((flow, ep)=>flow.then(()=>devEntryPoint(ep, opts)), Promise.resolve());
