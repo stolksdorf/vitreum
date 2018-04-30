@@ -1,5 +1,14 @@
 # changelog
 
+### v5.0.4 - Monday, 30/04/2018
+- Cleaning up how the logs look
+- Isolating Less storage from multiple entry points
+- Adding `render` and `cache` options to the `render.js` generated file
+
+
+
+---
+
 ### v4.10.0 - Thursday, 09/11/2017
 - Add babel option to libs step
 

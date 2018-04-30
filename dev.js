@@ -54,6 +54,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			plugin        : [watchify],
 			ignoreMissing : true,
 			//FIXME: This filter breaks when no filepath
+			// Maybe make a smarter check if it's an uninstalled node_module
 			postFilter    : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1,
 		})
 		.require(entryPoint)
@@ -65,6 +66,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 
 	let lastBundle;
 	const bundle = async ()=>{
+		const logEnd = log.buildEntryPoint(opts.entry);
 		await utils.bundle(bundler).then((code)=>{
 			if(lastBundle != code) fse.writeFileSync(paths.code, code)
 			lastBundle = code;
@@ -74,6 +76,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			compress  : false,
 			sourceMap : {sourceMapFileInline: true}
 		}).then((css)=>fse.writeFile(paths.style, css));
+		logEnd();
 	};
 
 	const paths = utils.paths(opts.paths, opts.entry.name);
