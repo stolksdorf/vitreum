@@ -44,7 +44,8 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 		.catch((err)=>{
 			console.log('BUNDLE ERR', err);
 		})
-	await Less.render(opts.entry.name, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
+	//await Less.render(opts.entry.name, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
+	await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
 
 	endLog();

@@ -1,5 +1,8 @@
 # changelog
 
+### v5.0.5 - Tuesday, 01/05/2018
+- Less transforming overhauled. You can now require other style files and assets from style files and they will be tracked by the dependacy tree.
+
 ### v5.0.4 - Monday, 30/04/2018
 - Cleaning up how the logs look
 - Isolating Less storage from multiple entry points

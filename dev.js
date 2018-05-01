@@ -69,11 +69,15 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			if(lastBundle != code) fse.writeFileSync(paths.code, code);
 			lastBundle = code;
 		});
-		await Less.render(opts.entry.name, {
-			paths     : opts.shared,
-			compress  : false,
-			sourceMap : {sourceMapFileInline: true}
-		}).then((css)=>fse.writeFile(paths.style, css));
+		await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
+
+		// await Less.render(opts.entry.name, {
+		// 	paths     : opts.shared,
+		// 	compress  : false,
+		// 	sourceMap : {sourceMapFileInline: true, outputSourceFiles: true}
+		// 	//sourceMap : {outputSourceFiles: true}
+		// }).then((css)=>fse.writeFile(paths.style, css));
+
 		logEnd();
 	};
 
