@@ -39,8 +39,13 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 		//.transform('uglifyify');
 
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
-	await utils.bundle(bundler).then((code)=>fse.writeFile(paths.code, code));
-	await Less.render(opts.entry.name, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
+	await utils.bundle(bundler)
+		.then((code)=>fse.writeFile(paths.code, code))
+		.catch((err)=>{
+			console.log('BUNDLE ERR', err);
+		})
+	//await Less.render(opts.entry.name, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
+	await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
 
 	endLog();
