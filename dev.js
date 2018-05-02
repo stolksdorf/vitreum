@@ -53,7 +53,13 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			ignoreMissing : true,
 			//FIXME: This filter breaks when no filepath
 			// Maybe make a smarter check if it's an uninstalled node_module
-			postFilter    : (id, filepath, pkg)=>filepath.indexOf('node_modules') == -1,
+			postFilter    : (id, filepath, pkg)=>{
+				if(!filepath){
+					console.log(`Can't find module ${id}. Make sure it's installed, or you are referencing properly`);
+					return false;
+				}
+				return filepath.indexOf('node_modules') == -1
+			},
 		})
 		.require(entryPoint)
 		.transform((file)=>transform(file, opts))

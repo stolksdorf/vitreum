@@ -1,8 +1,8 @@
 {
   "name": "vitreum",
-  "version": "5.0.5",
+  "version": "5.0.6",
   "description": "Web app build system using Browserify, React, and Less",
-  "bin": "lib/cli.js",
+  "bin": "lib/vitreum",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
