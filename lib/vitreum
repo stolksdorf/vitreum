@@ -5,7 +5,7 @@ const cli = require('yargs').version();
 cli.command('* [targets...]', 'Build your project', (yargs)=>{
 	yargs
 		.positional('targets', {
-			describe: 'Entrypoints to build',
+			describe: 'Entrypoints to build'
 		})
 		.option('dev', {
 			alias    : 'd',
