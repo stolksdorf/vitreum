@@ -8,9 +8,7 @@
     "url": "git://github.com/stolksdorf/vitreum.git"
   },
   "scripts": {
-    "test:init": "mkdir test_proj && cd ./test_proj && npm init -y && npm link ../ && vitreum init -y",
-    "test": "pico-check tests/**/*.test.js",
-    "dev": "pico-check -v -w tests/**/*.test.js"
+    "test": "cd ../vitreum_test && npm init -y && npm link ../vitreum && vitreum init -y"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
@@ -36,7 +34,7 @@
     "create-react-class": "^15.6.3",
     "fs-extra": "^3.0.1",
     "js-yaml": "^3.10.0",
-    "less": "^2.7.1",
+    "less": "^3.0.4",
     "livereload": "^0.6.0",
     "lodash": "^4.17.5",
     "marked": "^0.3.19",
@@ -46,15 +44,12 @@
     "source-map-support": "^0.4.6",
     "through2": "^2.0.3",
     "uglifyify": "^4.0.5",
-    "watchify": "^3.8.0",
+    "watchify": "^3.11.0",
     "yargs": "^11.0.0"
   },
   "keywords": [
     "browserify",
     "react",
     "build"
-  ],
-  "devDependencies": {
-    "pico-check": "^1.0.4"
-  }
+  ]
 }
