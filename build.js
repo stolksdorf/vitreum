@@ -51,6 +51,7 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 	endLog();
 };
 
+//TODO: add a relative file weight for each lib
 const bundleLibs = async (opts)=>{
 	const logEnd = log.libs(Libs);
 	return utils.bundle(browserify()

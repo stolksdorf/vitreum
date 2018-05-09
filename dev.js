@@ -56,6 +56,8 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			postFilter    : (id, filepath, pkg)=>{
 				if(!filepath){
 					console.log(`Can't find module ${id}. Make sure it's installed, or you are referencing properly`);
+
+					//This allows the error to be caught
 					return false;
 				}
 				return filepath.indexOf('node_modules') == -1
