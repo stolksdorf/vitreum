@@ -3,11 +3,12 @@ const fse        = require('fs-extra');
 const path       = require('path');
 
 const utils     = require('./lib/utils.js');
-const renderer = require('./lib/renderer.js');
+const renderer  = require('./lib/renderer.js');
 const transform = require('./lib/transforms');
 const getOpts   = require('./lib/getopts.js');
-const log      = require('./lib/utils/log.js');
-const Less = require('./lib/utils/less.js');
+const log       = require('./lib/utils/log.js');
+const Less      = require('./lib/utils/less.js');
+
 
 let Libs = {
 	'react-dom' : '',
@@ -22,6 +23,7 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 	}, Opts);
 	const endLog = log.buildEntryPoint(opts.entry);
 
+
 	const paths = utils.paths(opts.paths, opts.entry.name);
 	const bundler = browserify({
 			standalone    : opts.entry.name,
@@ -29,13 +31,13 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>{
 				if(!filepath) throw `Error: Can not find: ${id}`; //TODO: remove
-				if(filepath.indexOf('node_modules') == -1) return true;
+				if(utils.shouldBundle(filepath, opts)) return true;
 				Libs[id] = filepath;
 				return false;
 			}
 		})
 		.require(entryPoint)
-		.transform((file)=>transform(file, opts))
+		.transform((file)=>transform(file, opts), {global: true})
 		//.transform('uglifyify');
 
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
@@ -44,7 +46,6 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 		.catch((err)=>{
 			console.log('BUNDLE ERR', err);
 		})
-	//await Less.render(opts.entry.name, {paths:opts.shared, compress:true}).then((css)=>fse.writeFile(paths.style, css));
 	await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
 

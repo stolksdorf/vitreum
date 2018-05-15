@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "5.0.10",
+  "version": "5.0.11",
   "description": "Web app build system using Browserify, React, and Less",
   "bin": "lib/vitreum",
   "repository": {
@@ -14,15 +14,6 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/stolksdorf/vitreum/issues"
-  },
-  "vitreum": {
-    "targets": [],
-    "babel": {
-      "presets": [
-        "@babel/preset-stage-3",
-        "@babel/preset-react"
-      ]
-    }
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
@@ -38,6 +29,7 @@
     "livereload": "^0.6.0",
     "lodash": "^4.17.5",
     "marked": "^0.3.19",
+    "minimatch": "^3.0.4",
     "nodemon": "^1.11.0",
     "react": "^16.3.0",
     "react-dom": "^16.3.0",

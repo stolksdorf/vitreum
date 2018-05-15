@@ -69,6 +69,11 @@ cli.command('jsx <component>', 'Create a jsx component', (yargs)=>{
 			type : 'boolean',
 			describe : 'Create a smart component',
 		})
+		.option('yaml',{
+			alias    : 'y',
+			type : 'boolean',
+			describe : 'Adds a yaml content file',
+		})
 }, (args)=>require('./templates/jsx.js')(args));
 
 cli.help('help').alias('help', 'h').argv;

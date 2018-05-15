@@ -51,20 +51,16 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			paths         : opts.shared,
 			plugin        : [watchify],
 			ignoreMissing : true,
-			//FIXME: This filter breaks when no filepath
-			// Maybe make a smarter check if it's an uninstalled node_module
 			postFilter    : (id, filepath, pkg)=>{
 				if(!filepath){
 					console.log(`Can't find module ${id}. Make sure it's installed, or you are referencing properly`);
-
-					//This allows the error to be caught
 					return false;
 				}
-				return filepath.indexOf('node_modules') == -1
+				return utils.shouldBundle(filepath, opts);
 			},
 		})
 		.require(entryPoint)
-		.transform((file)=>transform(file, opts))
+		.transform((file)=>transform(file, opts), {global : true})
 		.on('update', (files)=>{
 			log.rebundle(opts.entry, files);
 			bundle();
@@ -78,14 +74,6 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			lastBundle = code;
 		});
 		await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
-
-		// await Less.render(opts.entry.name, {
-		// 	paths     : opts.shared,
-		// 	compress  : false,
-		// 	sourceMap : {sourceMapFileInline: true, outputSourceFiles: true}
-		// 	//sourceMap : {outputSourceFiles: true}
-		// }).then((css)=>fse.writeFile(paths.style, css));
-
 		logEnd();
 	};
 
