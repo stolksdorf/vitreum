@@ -1,5 +1,17 @@
 # changelog
 
+### v5.0.5 - Tuesday, 01/05/2018
+- Less transforming overhauled. You can now require other style files and assets from style files and they will be tracked by the dependacy tree.
+
+### v5.0.4 - Monday, 30/04/2018
+- Cleaning up how the logs look
+- Isolating Less storage from multiple entry points
+- Adding `render` and `cache` options to the `render.js` generated file
+
+
+
+---
+
 ### v4.10.0 - Thursday, 09/11/2017
 - Add babel option to libs step
 

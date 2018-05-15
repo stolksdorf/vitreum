@@ -1,6 +1,10 @@
 # vitreum
 [![bitHound Overall Score](https://www.bithound.io/github/stolksdorf/vitreum/badges/score.svg)](https://www.bithound.io/github/stolksdorf/vitreum)
 
+An opinioned build system for modern web apps.
+
+
+
 `vitreum` is a collection of front-end build tasks using common build tools; React, Browserify, LESS, and LiveReload. `vitreum` focuses on incredibly fast build times and tooling for tightly active development. It's composed of several independant steps that you can configure to meet exactly what your project needs.
 
 ## install
@@ -9,7 +13,27 @@
 npm install vitreum
 ```
 
-Vitreum will use your project's [babel config](https://babeljs.io/docs/usage/babelrc/), so it's a good idea to have at least [`babel-react-preset`](https://babeljs.io/docs/plugins/preset-react/) configured to be able to build react components. 
+#### peer deps
+```
+npm i @babel/core @babel/preset-react @babel/preset-stage-3 react react-dom create-react-class
+```
+
+
+## config
+
+
+### package.json
+vitreum looks to your `package.json` for additional configs.
+
+```
+"vitreum": {
+
+
+}
+```
+
+
+Vitreum will use your project's [babel config](https://babeljs.io/docs/usage/babelrc/), so it's a good idea to have at least [`babel-react-preset`](https://babeljs.io/docs/plugins/preset-react/) configured to be able to build react components.
 
 `package.json`
 ```json
@@ -25,9 +49,7 @@ Vitreum will use your project's [babel config](https://babeljs.io/docs/usage/bab
 }
 ```
 
-#### peer deps
 
-`babel-preset-react`, `react`, `react-dom`, `lodash`, `create-react-class` are listed as peer dependacies, so make sure those are installed. 
 
 
 ### quickstart

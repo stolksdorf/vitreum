@@ -1,0 +1,79 @@
+#!/usr/bin/env node
+const cli = require('yargs').version();
+
+//FIXME: uses cli.js instead of vitreum in the help
+cli.command('* [targets...]', 'Build your project', (yargs)=>{
+	yargs
+		.positional('targets', {
+			describe: 'Entrypoints to build'
+		})
+		.option('dev', {
+			alias    : 'd',
+			type     : 'boolean',
+			describe : 'Run a dev build of the project'
+		})
+		.option('static', {
+			alias    : 's',
+			type     : 'boolean',
+			describe : 'Create static renders of the entrypoints'
+		})
+}, (args)=>{
+	(args.dev
+		? require('../dev.js')
+		: require('../build.js')
+	)(args.targets, args)
+		.catch((err)=>{
+			// console.log('---------------------');
+			console.log(err)
+			console.log('THERE ARE ERRORS');
+			process.exit(0);
+		})
+});
+
+cli.command('init', 'Bootstrap a vitreum project', (yargs)=>{
+	yargs
+		.option('lint', {
+			alias    : 'l',
+			type     : 'boolean',
+			describe : 'Add in eslint config',
+		})
+		.option('tests', {
+			alias    : 't',
+			type     : 'boolean',
+			describe : 'Add in tests',
+		})
+		.option('flux', {
+			alias    : 'f',
+			type     : 'boolean',
+			describe : 'Add in flux stores, actions, and smart component',
+		})
+		.option('all', {
+			alias    : 'y',
+			type     : 'boolean',
+			describe : 'Select everything',
+		})
+}, (args)=>require('./templates/init.js')(args));
+
+cli.command('jsx <component>', 'Create a jsx component', (yargs)=>{
+	yargs
+		.positional('component', {
+			describe: 'name of component',
+		})
+		.option('pure',{
+			alias    : 'p',
+			type : 'boolean',
+			describe : 'Create a functional pure component',
+		})
+		.option('smart',{
+			alias    : 's',
+			type : 'boolean',
+			describe : 'Create a smart component',
+		})
+		.option('yaml',{
+			alias    : 'y',
+			type : 'boolean',
+			describe : 'Adds a yaml content file',
+		})
+}, (args)=>require('./templates/jsx.js')(args));
+
+cli.help('help').alias('help', 'h').argv;

@@ -38,7 +38,7 @@ opts = {
 
 
 #### `jsx(bundleName : string, entryPoint : string, [opts : object]) -> deps : array`
-Creates a named js bundle at `./build/${bundleName}/bundle.js` using the component specified at `entryPoint`. Any modules listed in `libs` will not be included in the bundle and will be expected to be loaded extenerally. Any paths listed in `shared` will be used as additional require paths.
+Creates a named js bundle at `./build/${bundleName}/bundle.js` using the component specified at `entryPoint`. Any modules listed in `libs` will not be included in the bundle and will be expected to be loaded extenerally. Any paths listed in `shared` will be used as additional require paths."files.trimTrailingWhitespace": false,
 
 ```js
 const jsx = require('vitreum/steps/jsx');

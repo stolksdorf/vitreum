@@ -1,10 +1,14 @@
 {
   "name": "vitreum",
-  "version": "4.10.1",
+  "version": "5.0.11",
   "description": "Web app build system using Browserify, React, and Less",
+  "bin": "lib/vitreum",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
+  },
+  "scripts": {
+    "test": "cd ../vitreum_test && npm init -y && npm link ../vitreum && vitreum init -y"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
@@ -13,26 +17,27 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
-    "babelify": "^7.3.0",
+    "@babel/core": "^7.0.0-beta.40",
+    "@babel/preset-react": "^7.0.0-beta.40",
+    "@babel/preset-stage-3": "^7.0.0-beta.40",
     "browserify": "^14.4.0",
     "chalk": "^2.0.1",
-    "chokidar": "^1.6.1",
+    "create-react-class": "^15.6.3",
     "fs-extra": "^3.0.1",
-    "klaw": "^2.0.0",
-    "less": "^2.7.1",
+    "js-yaml": "^3.10.0",
+    "less": "^3.0.4",
     "livereload": "^0.6.0",
-    "minimatch": "^3.0.3",
+    "lodash": "^4.17.5",
+    "marked": "^0.3.19",
+    "minimatch": "^3.0.4",
     "nodemon": "^1.11.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
     "source-map-support": "^0.4.6",
-    "uglify-es": "^3.0.14",
-    "watchify": "^3.8.0"
-  },
-  "peerDependencies": {
-    "babel-preset-react": "^6.24.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
-    "lodash": "^4.17.2",
-    "create-react-class": "^15.6.2"
+    "through2": "^2.0.3",
+    "uglifyify": "^4.0.5",
+    "watchify": "^3.11.0",
+    "yargs": "^11.0.0"
   },
   "keywords": [
     "browserify",
