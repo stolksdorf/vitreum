@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "5.0.13",
+  "version": "5.0.14",
   "description": "Web app build system using Browserify, React, and Less",
   "bin": "lib/vitreum",
   "repository": {
@@ -34,6 +34,7 @@
     "react": "^16.3.0",
     "react-dom": "^16.3.0",
     "source-map-support": "^0.4.6",
+    "svgo": "^1.0.5",
     "through2": "^2.0.3",
     "uglifyify": "^4.0.5",
     "watchify": "^3.11.0",
