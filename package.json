@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "5.0.15",
+  "version": "5.0.16",
   "description": "Web app build system using Browserify, React, and Less",
   "bin": "lib/vitreum",
   "repository": {
@@ -8,7 +8,8 @@
     "url": "git://github.com/stolksdorf/vitreum.git"
   },
   "scripts": {
-    "test": "cd ../vitreum_test && npm init -y && npm link ../vitreum && vitreum init -y"
+    "test": "cd ../vitreum_test && npm init -y && npm link ../vitreum && vitreum init -y",
+    "audit": "npm audit > audit"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
