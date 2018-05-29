@@ -8,7 +8,7 @@ const livereload = require('livereload');
 const utils          = require('./lib/utils.js');
 const transform      = require('./lib/transforms');
 const renderer       = require('./lib/renderer.js');
-const getOpts = require('./lib/getopts.js');
+const getOpts        = require('./lib/getopts.js');
 const log            = require('./lib/utils/log.js');
 const Less           = require('./lib/utils/less.js');
 
@@ -17,7 +17,7 @@ const startApp = async (opts)=>{
 	return new Promise((resolve, reject)=>{
 		let deps = [];
 		browserify({ require : opts.app, bundleExternal : false,
-			postFilter : (id, filepath)=>{
+			postFilter : (id, filepath, pkg)=>{
 				//TODO: use minimatch to do better matching
 				if(id.indexOf(opts.paths.build) !== -1) return false;
 				deps.push(filepath);
@@ -52,11 +52,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			plugin        : [watchify],
 			ignoreMissing : true,
 			postFilter    : (id, filepath, pkg)=>{
-				if(!filepath){
-					console.log(`Can't find module ${id}. Make sure it's installed, or you are referencing properly`);
-					return false;
-				}
-				return utils.shouldBundle(filepath, opts);
+				return utils.shouldBundle(filepath, id, opts);
 			},
 		})
 		.require(entryPoint)

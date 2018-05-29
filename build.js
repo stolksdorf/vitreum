@@ -30,15 +30,15 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 			paths         : opts.shared,
 			ignoreMissing : true,
 			postFilter : (id, filepath, pkg)=>{
-				if(!filepath) throw `Error: Can not find: ${id}`; //TODO: remove
-				if(utils.shouldBundle(filepath, opts)) return true;
+				if(utils.shouldBundle(filepath, id, opts)) return true;
 				Libs[id] = filepath;
 				return false;
 			}
 		})
 		.require(entryPoint)
 		.transform((file)=>transform(file, opts), {global: true})
-		//.transform('uglifyify');
+
+
 
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
 	await utils.bundle(bundler)
