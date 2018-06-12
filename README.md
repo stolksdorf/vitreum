@@ -1,8 +1,5 @@
 # vitreum
-[![bitHound Overall Score](https://www.bithound.io/github/stolksdorf/vitreum/badges/score.svg)](https://www.bithound.io/github/stolksdorf/vitreum)
-
 An opinioned build system for modern web apps.
-
 
 
 `vitreum` is a collection of front-end build tasks using common build tools; React, Browserify, LESS, and LiveReload. `vitreum` focuses on incredibly fast build times and tooling for tightly active development. It's composed of several independant steps that you can configure to meet exactly what your project needs.
