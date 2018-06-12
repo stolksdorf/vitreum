@@ -27,6 +27,11 @@ const HeadTags = {
 		},
 		render(){ return null; }
 	}),
+	Favicon : createClass({
+		getDefaultProps(){ return { type : 'image/png', href : ''}},
+		componentWillMount(){ Storage.favicon = this.props; },
+		render(){ return null; }
+	}),
 	Meta : createClass({
 		componentWillMount(){ Storage.meta.push(this.props); },
 		render(){ return null; }
@@ -38,6 +43,7 @@ const HeadTags = {
 	Bulk : createClass({
 		componentWillMount(){
 			if(this.props.title) Storage.title = this.props.title;
+			if(this.props.favicon) Storage.favicon = this.props.favicon;
 			if(this.props.meta) Storage.meta = Storage.meta.concat(map(this.props.meta, (content, name)=>{return {content, name}}));
 			if(this.props.structuredData) Storage.structuredData = processData(this.props.structuredData);
 		},
@@ -50,6 +56,7 @@ const HeadTags = {
 	generate : ()=>{
 		let res = [];
 		if(Storage.title) res.push(`<title>${Storage.title}</title>`);
+		if(Storage.favicon) res.push(`<link rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
 		if(Storage.meta && Storage.meta.length){
 			res = res.concat(Storage.meta.map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
 		}
