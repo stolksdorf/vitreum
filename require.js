@@ -1,38 +1,31 @@
-const path = require('path');
-const selfpath = path.join(__dirname, 'require.js');
-const getOpts   = require('./lib/getopts.js');
-const keyName = '____';
+const utils      = require('./lib/utils.js');
+const path       = require('path');
+const browserify = require('browserify');
+const transform  = require('./lib/transforms');
+const getOpts    = require('./lib/getopts.js');
 
-let cache = {};
+let Cache = {};
 
-if(process.argv[1] != selfpath){
-	const child_process = require('child_process');
-	const vm = require('vm');
-	return module.exports = (targetPath)=>{
-		const fullTargetPath = path.resolve(path.dirname(module.parent.filename), targetPath);
-		if(cache[fullTargetPath]) return cache[fullTargetPath];
-		const cmd = `node ${__dirname}/require.js ${fullTargetPath}`;
-		const compiledCode = child_process.execSync(cmd).toString();
-		const sandbox = {};
-		vm.runInNewContext(compiledCode, sandbox);
-		cache[fullTargetPath] = sandbox[keyName];
-		return cache[fullTargetPath];
-	}
-}else{
-	const browserify = require('browserify');
-	const transform = require('./lib/transforms');
-	const targetFile = process.argv[2];
-	const opts = getOpts({app:'', entry:{}}, targetFile);
-	opts.babel.compact = true;
-	browserify({
-			standalone    : keyName,
+module.exports = async (targetFile, useCache=true)=>{
+	const fullTargetPath = path.resolve(path.dirname(module.parent.filename), targetFile);
+	const opts = getOpts({app:'', entry:{}}, fullTargetPath);
+
+	return new Promise((resolve, reject)=>{
+		if(useCache && Cache[fullTargetPath]) return resolve(Cache[fullTargetPath]);
+		browserify({
+			standalone    : '___',
 			paths         : opts.shared,
 			ignoreMissing : true,
+			node          : true,
+			postFilter    : (id, filepath, pkg)=>utils.shouldBundle(filepath, id, opts),
 		})
-		.require(targetFile)
+		.require(fullTargetPath)
 		.transform((file)=>transform(file, opts), {global :true})
 		.bundle((err, buf)=>{
-			if(err) return process.stderr.write(err.toString());
-			process.stdout.write(buf.toString())
+			if(err) return reject(err);
+			const code = `(function() { ${buf.toString()}\nreturn module.exports;}())`;
+			Cache[fullTargetPath] = eval(code);
+			return resolve(Cache[fullTargetPath]);
 		});
-}
+	})
+};
