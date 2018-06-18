@@ -5,7 +5,7 @@ const transform  = require('./lib/transforms');
 const getOpts    = require('./lib/getopts.js');
 
 module.exports = (filepath)=>{
-	const fullTargetPath = path.resolve(utils.getCaller().file, filepath);
+	const fullTargetPath = path.resolve(path.dirname(utils.getCaller().file), filepath);
 	const opts = getOpts({app:'', entry:{}}, fullTargetPath);
 	return new Promise((resolve, reject)=>{
 		browserify({
@@ -19,7 +19,7 @@ module.exports = (filepath)=>{
 		.transform((file)=>transform(file, opts), {global :true})
 		.bundle((err, buf)=>{
 			if(err) return reject(err);
-			const code = `(function() { ${buf.toString()}\nreturn module.exports;}())`;
+			const code = `'use strict'; let module = {}; (function() { ${buf.toString()}\nreturn module.exports;}())`;
 			return resolve(eval(code));
 		});
 	})
