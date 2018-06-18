@@ -1,9 +1,11 @@
+const path       = require('path');
 const utils      = require('./lib/utils.js');
 const browserify = require('browserify');
 const transform  = require('./lib/transforms');
 const getOpts    = require('./lib/getopts.js');
 
-module.exports = (fullTargetPath)=>{
+module.exports = (filepath)=>{
+	const fullTargetPath = path.resolve(utils.getCaller().file, filepath);
 	const opts = getOpts({app:'', entry:{}}, fullTargetPath);
 	return new Promise((resolve, reject)=>{
 		browserify({
