@@ -34,7 +34,7 @@ Each of the `headtags` also render to `null`, so they are simply present to indi
 
 
 ### Title
-Sets the title of the document. If this is rendered _after_ the page has already loaded, it will dynamically update the document's title on `componentDidMount`. It just takes a single string child to render
+Sets the title of the document. If this is rendered _after_ the page has already loaded, it will dynamically update the document's title on `componentDidMount`. It just takes a single string child to render.
 
 ```jsx
 	<Title>This is my document title</Title>
@@ -46,6 +46,13 @@ Adds [metatags](https://www.w3schools.com/tags/tag_meta.asp) to your document. S
 ```jsx
 	<Meta charset="UTF-8" />
 	<Meta name="keywords" content="HTML,CSS,XML,JavaScript">
+```
+
+### Favicon
+Adds a favicon into the head with a `type` and `href` prop.
+
+```jsx
+	<Favicon href="/favicon.ico" type="image/x-icon" />
 ```
 
 ### StructuredData
@@ -74,6 +81,10 @@ Bulk allows you to add multiple types of head tags in one go. It was designed to
 		meta : {
 			keywords : "HTML,CSS,XML,JavaScript",
 			description : "Really Fancy Page"
+		},
+		favicon : {
+			type : 'image/png',
+			href : '/favicon.png'
 		},
 		structuredData : {
 			context: "http://schema.org",

@@ -47,6 +47,11 @@ Vitreum will use your project's [babel config](https://babeljs.io/docs/usage/bab
 ```
 
 
+### How it works
+
+Starts at an entry point
+Walks all dependacies, transofrming and compiling
+
 
 
 ### quickstart

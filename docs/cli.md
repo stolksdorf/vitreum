@@ -11,7 +11,7 @@ npm i - g vitreum
 Creates react components with styling at your terminal location
 
 ```
-Usage: vitreum jsx <component name> {OPTIONS}
+Usage: vitreum jsx {OPTIONS} <component name>
 
 Standard Options:
 
@@ -19,6 +19,11 @@ Standard Options:
 
   --smart, -s  Creates an additional smart varient of the compnent
                that communicates with a store
+
+  --yaml, -y   Creates an associated yaml file with the component for content
+
+  --all, -a   Does all of the above
+
 ```
 
 
