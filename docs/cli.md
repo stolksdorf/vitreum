@@ -7,8 +7,25 @@ npm i - g vitreum
 ```
 
 
+## vitreum
+Initiates a project build
+
+
+```
+Usage: vitreum {OPTIONS} <entry points>
+
+Standard Options:
+
+     --dev, -d  Run a dev build of the project
+
+  --static, -s  Create static renders of the entrypoints
+
+```
+
+
+
 ## jsx
-Creates react components with styling at your terminal location
+Creates react components with styling at your terminal location.
 
 ```
 Usage: vitreum jsx {OPTIONS} <component name>
@@ -28,7 +45,9 @@ Standard Options:
 
 
 
-## init
+
+
+## init project
 Bootstraps a full vitreum project based from your `package.json`
 
 ```
@@ -43,4 +62,31 @@ Standard Options:
    --flux, -f  Adds a basic store and actions for flux
 
     --all, -y  Adds all of the above
+```
+
+
+Example file structure:
+
+```
+/project
+  ├─ page.jsx
+  ├─ page.less
+  ├─ user.png
+  ├─ /client
+    ├─ /shared
+    └─ /main
+      ├─ main.jsx
+      └─ main.less
+  ├─ /config
+    ├─ default.js
+    └─ config.init.js
+  ├─ /server
+    ├─ error.handler.js
+    ├─ page.router.js
+    └─ server.js
+  ├─ .gitignore
+  ├─ .gitattributes
+  ├─ app.js
+  └─ package.json
+
 ```
