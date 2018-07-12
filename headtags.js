@@ -30,6 +30,7 @@ const HeadTags = {
 	Favicon : createClass({
 		getDefaultProps(){ return { type : 'image/png', href : ''}},
 		componentWillMount(){ Storage.favicon = this.props; },
+		//TODO: Add abiltiy to dynamically modify favicon
 		render(){ return null; }
 	}),
 	Meta : createClass({

@@ -4,6 +4,9 @@ Vitreum can also be used as a requirable library. This can be used to write spec
 `vitreum/build([targets], [opts])`
 
 
+LINK TO OPTIONS HERE
+
+
 ## options
 
 `targets` an array of paths to entry points for your web app
@@ -19,8 +22,6 @@ Vitreum can also be used as a requirable library. This can be used to write spec
 `embed` a boolean or array of regexes indicating which assets should be base64 encoding and embedding into the bundle.
 
 `template` a string path to a js file that will be used to create the html renders for each entrypoint. _default:_ `vitreum/src/default.template.js`
-
-`babel` an object of babel settings vitreum will use, incase you want to overwrite the ones defined in your `package.json` or your `.babelrc`. _defaults:_ `undefined`
 
 `paths` is an object that defines what paths and files naming conventions vitruem will use. _defaults:_
 
