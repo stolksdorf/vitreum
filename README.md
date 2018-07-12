@@ -10,7 +10,7 @@ An opinioned build system for modern web apps.
 
 ### How it works
 
-Vitreums goal is to take a webapp code, format it, and bundle it so it can be served and rendered client-side. Vitreum takes in a list of entrypoint files; For each file it walks down it's dependacies, [transforming]() the file and then adding it to the various bundles.
+Vitreums goal is to take a webapp code, format it, and bundle it so it can be served and rendered client-side. Vitreum takes in a list of entrypoint files; For each file it walks down it's dependacies, [transforming](docs/transforms.md) the file and then adding it to the various bundles.
 It produces a `bundle.js`, `bundle.css`, and `render.js` for each entrypoint. And produces a shared `libs.js` and an `/assets` folder.
 
 
@@ -66,7 +66,7 @@ This method keeps your components incredibly modular and then your file system r
 
 
 ### Transforms
-Whenever Vitreum encounters a file it will check it's list of [transforms]() and potentially modify the file (or do other operations) before it adds it to the bundle. These transforms allow you to require in assets, styles, or other various files.
+Whenever Vitreum encounters a file it will check it's list of [transforms](docs/transforms.md) and potentially modify the file (or do other operations) before it adds it to the bundle. These transforms allow you to require in assets, styles, or other various files.
 
 
 
@@ -78,9 +78,9 @@ When running a dev-build Vitreum will [livereload](http://livereload.com/) any c
 
 ## Additional Docs
 
-- [Command Line Tools]()
-- [Options]()
-- [Headtags]()
-- [Requirable]()
-- [Transforms]()
-- [Migration from v4]()
+- [Command Line Tools](docs/cli.md)
+- [Options](docs/options.md)
+- [Headtags](docs/headtags.md)
+- [Requirable](docs/requirable.md)
+- [Transforms](docs/transforms.md)
+- [Migration from v4](docs/migration.md)
