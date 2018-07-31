@@ -13,6 +13,8 @@ Options can be set by commandline args or through the `options` parameter using 
 
 `app` - string path to the server entry point. _default:_ `pckg.main`
 
+`prod` - boolean flag to determine if vitreum should compress files. If not set defaults to `true` if `NODE_ENV` is set to production. _default:_ `process.env.NODE_ENV == 'production'`
+
 `dev` - boolean indicating to certain steps if we are doing a dev step. Automatically set by detecting environment, but you can manually set it. _default:_ `auto on env`
 
 `static` - boolean indicating if during a build vitreum should also render a static html version of each entry point. _default:_ `false`

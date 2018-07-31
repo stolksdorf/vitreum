@@ -21,7 +21,7 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 			dir  : path.dirname(entryPoint)
 		}
 	}, Opts);
-	const endLog = log.buildEntryPoint(opts.entry);
+	const endLog = log.buildEntryPoint(opts.entry, opts.prod);
 
 
 	const paths = utils.paths(opts.paths, opts.entry.name);
@@ -36,9 +36,9 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 			}
 		})
 		.require(entryPoint)
-		.transform((file)=>transform(file, opts), {global: true})
+		.transform((file)=>transform(file, opts), {global: true});
 
-
+	if(opts.prod) bundler.transform('uglifyify', {global : true});
 
 	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
 	await utils.bundle(bundler)
@@ -54,13 +54,14 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 
 //TODO: add a relative file weight for each lib
 const bundleLibs = async (opts)=>{
-	const logEnd = log.libs(Libs);
-	return utils.bundle(browserify()
-		.require(Object.keys(Libs))
-		//.transform('uglifyify', {global : true})
-	)
-	.then((code)=>fse.writeFile(`${opts.paths.build}/${opts.paths.libs}`, code))
-	.then(logEnd);
+	const logEnd = log.libs(Libs, opts.prod);
+	const libBundler = browserify().require(Object.keys(Libs));
+	if(opts.prod){
+		libBundler.transform('uglifyify', {global : true});
+	}
+	return utils.bundle(libBundler)
+		.then((code)=>fse.writeFile(`${opts.paths.build}/${opts.paths.libs}`, code))
+		.then(logEnd);
 };
 
 module.exports = async (entryPoints, opts)=>{
