@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const reduce = (obj, fn, init)=>Object.keys(obj).reduce((acc, key)=>fn(acc, obj[key], key), init);
 const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
 
-let Storage={meta:[]};
+let Storage={meta:[], noscript : []};
 
 const mapProps = (props)=>map(props, (val, key)=>`${key}="${val}"`).join(' ');
 const processData = (data)=>{
@@ -31,6 +31,10 @@ const HeadTags = {
 		getDefaultProps(){ return { type : 'image/png', href : ''}},
 		componentWillMount(){ Storage.favicon = this.props; },
 		//TODO: Add abiltiy to dynamically modify favicon
+		render(){ return null; }
+	}),
+	Noscript : createClass({
+		componentWillMount(){ Storage.noscript.push(this.props.children); },
 		render(){ return null; }
 	}),
 	Meta : createClass({
@@ -60,6 +64,9 @@ const HeadTags = {
 		if(Storage.favicon) res.push(`<link rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
 		if(Storage.meta && Storage.meta.length){
 			res = res.concat(Storage.meta.map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
+		}
+		if(Storage.noscript && Storage.noscript.length){
+			res = res.concat(`<noscript>${Storage.noscript.join('\n')}</noscript>`);
 		}
 		if(Storage.structuredData){
 			res.push(`<script type='application/ld+json'>${JSON.stringify(Storage.structuredData, null, '  ')}</script>`);

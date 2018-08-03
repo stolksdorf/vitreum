@@ -48,6 +48,20 @@ Adds [metatags](https://www.w3schools.com/tags/tag_meta.asp) to your document. S
 	<Meta name="keywords" content="HTML,CSS,XML,JavaScript">
 ```
 
+### Noscript
+Adds [noscript](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript) to your document. Simply concatenates whatever children you pass into it.
+
+```jsx
+	<Noscript>
+		{`<style>
+			body{
+				background-color : red !important;
+			}
+		</style>`}`
+	</Noscript>
+```
+
+
 ### Favicon
 Adds a favicon into the head with a `type` and `href` prop.
 
