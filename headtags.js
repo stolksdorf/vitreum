@@ -57,7 +57,7 @@ const HeadTags = {
 		},
 		render(){ return null; }
 	}),
-	flush : ()=>Storage = {meta:[]},
+	flush : ()=>Storage = {meta:[], noscript : []},
 	generate : ()=>{
 		let res = [];
 		if(Storage.title) res.push(`<title>${Storage.title}</title>`);
