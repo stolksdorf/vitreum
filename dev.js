@@ -7,10 +7,12 @@ const livereload = require('livereload');
 
 const utils          = require('./lib/utils.js');
 const transform      = require('./lib/transforms');
+const codeTransform  = require('./lib/transforms/code.js');
 const renderer       = require('./lib/renderer.js');
 const getOpts        = require('./lib/getopts.js');
 const log            = require('./lib/utils/log.js');
 const Less           = require('./lib/utils/less.js');
+
 
 const startApp = async (opts)=>{
 	const nodemon    = require('nodemon');
@@ -23,7 +25,9 @@ const startApp = async (opts)=>{
 				deps.push(filepath);
 				return true;
 			}
-		}).bundle((err)=>err?reject(err):resolve(deps));
+		})
+		.transform((file)=>transform(file, opts, [codeTransform]), {global : true})
+		.bundle((err)=>err?reject(err):resolve(deps));
 	})
 	.then((appDeps)=>{
 		nodemon({ script:opts.app, watch:appDeps, delay:2 })
