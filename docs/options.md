@@ -11,7 +11,7 @@ Options can be set by commandline args or through the `options` parameter using 
 
 `shared` - array of paths vitreum will consider to be part of the `require` look-up paths. _default:_ `['./client']`
 
-`app` - string path to the server entry point. _default:_ `pckg.main`
+`app` - string path to the server entry point. If not set the server will not be automatically started when running the dev task. _default:_ `pckg.main`
 
 `prod` - boolean flag to determine if vitreum should compress files. If not set defaults to `true` if `NODE_ENV` is set to production. _default:_ `process.env.NODE_ENV == 'production'`
 

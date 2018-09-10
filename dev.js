@@ -15,12 +15,15 @@ const Less           = require('./lib/utils/less.js');
 
 
 const startApp = async (opts)=>{
+	if(!opts.app){
+		console.log(`A server app was not specified, dev server will not run. Set 'main' in your package.json to enable this.`);
+		return;
+	}
 	const nodemon    = require('nodemon');
 	return new Promise((resolve, reject)=>{
 		let deps = [];
 		browserify({ require : opts.app, bundleExternal : false,
 			postFilter : (id, filepath, pkg)=>{
-				//TODO: use minimatch to do better matching
 				if(id.indexOf(opts.paths.build) !== -1) return false;
 				deps.push(filepath);
 				return true;
@@ -30,7 +33,7 @@ const startApp = async (opts)=>{
 		.bundle((err)=>err?reject(err):resolve(deps));
 	})
 	.then((appDeps)=>{
-		nodemon({ script:opts.app, watch:appDeps, delay:2 })
+		return nodemon({ script:opts.app, watch:appDeps, delay:2 })
 			.on('restart', (files)=>log.restartServer(opts.app, files));
 	})
 };
@@ -87,6 +90,6 @@ module.exports = async (entryPoints, opts)=>{
 	log.beginDev(opts);
 	sourceMaps.install();
 	await opts.targets.reduce((flow, ep)=>flow.then(()=>devEntryPoint(ep, opts)), Promise.resolve());
-	await startApp(opts);
 	await livereload.createServer().watch(opts.paths.build);
+	return await startApp(opts);
 };
