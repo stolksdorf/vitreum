@@ -19,21 +19,21 @@
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
     "browserify": "^14.4.0",
-    "chalk": "^2.0.1",
+    "chalk": "^2.4.1",
     "fs-extra": "^3.0.1",
-    "js-yaml": "^3.10.0",
-    "less": "^3.0.4",
+    "js-yaml": "^3.12.0",
+    "less": "^3.8.1",
     "livereload": "^0.6.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.11",
     "marked": "^0.3.19",
     "minimatch": "^3.0.4",
-    "nodemon": "^1.17.5",
+    "nodemon": "^1.18.4",
     "source-map-support": "^0.4.6",
     "svgo": "^0.7.2",
     "through2": "^2.0.3",
     "uglifyify": "^4.0.5",
     "watchify": "^3.11.0",
-    "yargs": "^11.0.0"
+    "yargs": "^11.1.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0-beta.56",
