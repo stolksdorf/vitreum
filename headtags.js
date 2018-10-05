@@ -22,16 +22,18 @@ const processData = (data)=>{
 const HeadTags = {
 	Title : createClass({
 		componentWillMount(){ Storage.title = this.props.children; },
-		componentDidMount(){
+		render(){
 			if(typeof document !== 'undefined') document.title = this.props.children;
-		},
-		render(){ return null; }
+			return null;
+		}
 	}),
 	Favicon : createClass({
 		getDefaultProps(){ return { type : 'image/png', href : ''}},
 		componentWillMount(){ Storage.favicon = this.props; },
-		//TODO: Add abiltiy to dynamically modify favicon
-		render(){ return null; }
+		render(){
+			if(typeof document !== 'undefined') document.getElementById('favicon').href=this.props.href;
+			return null;
+		}
 	}),
 	Noscript : createClass({
 		componentWillMount(){ Storage.noscript.push(this.props.children); },
@@ -61,7 +63,7 @@ const HeadTags = {
 	generate : ()=>{
 		let res = [];
 		if(Storage.title) res.push(`<title>${Storage.title}</title>`);
-		if(Storage.favicon) res.push(`<link rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
+		if(Storage.favicon) res.push(`<link id='favicon' rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
 		if(Storage.meta && Storage.meta.length){
 			res = res.concat(Storage.meta.map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
 		}
