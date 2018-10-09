@@ -85,11 +85,23 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 	await bundle();
 };
 
+const setupLiveReload = (opts)=>{
+	const lr = livereload.createServer();
+	lr.server.on('error', (err)=>{
+		if(err.code == 'EADDRINUSE'){
+			console.log('ERR: Could not setup LiveReload conection. This is because another instance of Vitreum Dev is running.');
+		}else{
+			throw err;
+		}
+	})
+	lr.watch(opts.paths.build);
+};
+
 module.exports = async (entryPoints, opts)=>{
 	opts = getOpts(opts, entryPoints);
 	log.beginDev(opts);
 	sourceMaps.install();
 	await opts.targets.reduce((flow, ep)=>flow.then(()=>devEntryPoint(ep, opts)), Promise.resolve());
-	await livereload.createServer().watch(opts.paths.build);
+	setupLiveReload(opts);
 	return await startApp(opts);
 };
