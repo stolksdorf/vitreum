@@ -62,6 +62,18 @@ Adds [noscript](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscri
 ```
 
 
+### Script
+Adds `<script />` to your document. Can pass an `id`, `src`, and/or code as children to the component.
+
+```jsx
+	<Script id='remote-code' src='https://mycode.biz/widget.js' />
+
+	<Script>
+		console.log('Oh hello.');
+	</Script>
+```
+
+
 ### Favicon
 Adds a favicon into the head with a `type` and `href` prop.
 

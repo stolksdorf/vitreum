@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const reduce = (obj, fn, init)=>Object.keys(obj).reduce((acc, key)=>fn(acc, obj[key], key), init);
 const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
 
-let Storage={meta:[], noscript : []};
+let Storage={meta:[], noscript:[], script:[]};
 
 const mapProps = (props)=>map(props, (val, key)=>`${key}="${val}"`).join(' ');
 const processData = (data)=>{
@@ -39,6 +39,11 @@ const HeadTags = {
 		componentWillMount(){ Storage.noscript.push(this.props.children); },
 		render(){ return null; }
 	}),
+	Script : createClass({
+		getDefaultProps(){ return { id : '', src : ''}},
+		componentWillMount(){ Storage.script.push(this.props); },
+		render(){ return null; }
+	}),
 	Meta : createClass({
 		componentWillMount(){ Storage.meta.push(this.props); },
 		render(){ return null; }
@@ -59,7 +64,7 @@ const HeadTags = {
 		},
 		render(){ return null; }
 	}),
-	flush : ()=>Storage = {meta:[], noscript : []},
+	flush : ()=>Storage = {meta:[], noscript : [], script : []},
 	generate : ()=>{
 		let res = [];
 		if(Storage.title) res.push(`<title>${Storage.title}</title>`);
@@ -69,6 +74,11 @@ const HeadTags = {
 		}
 		if(Storage.noscript && Storage.noscript.length){
 			res = res.concat(`<noscript>${Storage.noscript.join('\n')}</noscript>`);
+		}
+		if(Storage.script && Storage.script.length){
+			res = res.concat(Storage.script.map((script)=>{
+				return `<script id='${script.id}' src='${script.src}'>${script.children}</script>`;
+			}).join('\n'));
 		}
 		if(Storage.structuredData){
 			res.push(`<script type='application/ld+json'>${JSON.stringify(Storage.structuredData, null, '  ')}</script>`);
