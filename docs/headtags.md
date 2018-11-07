@@ -2,25 +2,24 @@
 Sometimes you'll want your components to be able to modify what's in your HTML `head`, such for `title` tags or `meta` descriptions. This can be pretty tricky to pull off, so this functionality comes built into Vitreum.
 
 ```jsx
-const { Title, Meta, Bulk, Structured } = require('vitreum/headtags');
+const { Title, Meta, Description, Structured } = require('vitreum/headtags');
 
 const Main = React.createClass({
 	render: function(){
 		return <div className='main'>
 			<Title>My Fancy Page</Title>
-			<Meta name='description' content='This is a really fancy page.' />
+			<Description>This is a really fancy page.</Description>
+			<Meta property='og:whatever' content='Cool page' />
 			<Structured data={{
 				context: "http://schema.org",
 				type: "Organization",
 				url: "http://www.example.com",
 			}} />
-			<Bulk
-				title='Overriden Title'
-				meta={{
+			<Meta
+				bulk={{
 					author : 'John Doe',
 					viewport : 'width=device-width, initial-scale=1.0'
 				}}
-				structuredData={{type:'Organization', logo:'cool.biz/logo.png'}}
 			/>
 			Hello Headtags!
 		</div>;
@@ -40,6 +39,16 @@ Sets the title of the document. If this is rendered _after_ the page has already
 	<Title>This is my document title</Title>
 ```
 
+### Description
+Sets the metatag for the description to the head of the document.
+
+```jsx
+	<Description>This is my document description</Description>
+```
+
+renders to `<meta name='description' content='This is my document description' />`
+
+
 ### Meta
 Adds [metatags](https://www.w3schools.com/tags/tag_meta.asp) to your document. Simply copies whatever props you pass into it.
 
@@ -47,6 +56,22 @@ Adds [metatags](https://www.w3schools.com/tags/tag_meta.asp) to your document. S
 	<Meta charset="UTF-8" />
 	<Meta name="keywords" content="HTML,CSS,XML,JavaScript">
 ```
+
+If you pass an object as the `bulk` prop instead, it will loop through and create many metatags, with the key being the `property` and the value being the `content`
+
+```jsx
+	<Meta charset="UTF-8" />
+	<Meta bulk={{
+		'og:title' : 'My Page',
+		'twitter:url' : 'http://og.gg',
+	}} />
+
+	// renders to
+
+	<meta property='og:title' content='My Page' />
+	<meta property='twitter:url' content='http://og.gg' />
+```
+
 
 ### Noscript
 Adds [noscript](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/noscript) to your document. Simply concatenates whatever children you pass into it.
@@ -96,34 +121,4 @@ Adds a [Structured Data](https://developers.google.com/search/docs/guides/intro-
 			contactType: "Customer service"
 		}
 	}}/>
-```
-
-### Bulk
-Bulk allows you to add multiple types of head tags in one go. It was designed to easily take a JSON config for the page and simple spread it in as props. The `meta` prop is special because it takes key-value pairs that will map to the props of `name` and `content` meta tags respectively.
-
-```jsx
-	const pageConfig = {
-		title : 'Page title',
-		meta : {
-			keywords : "HTML,CSS,XML,JavaScript",
-			description : "Really Fancy Page"
-		},
-		favicon : {
-			type : 'image/png',
-			href : '/favicon.png'
-		},
-		structuredData : {
-			context: "http://schema.org",
-			type: "Organization",
-			url: "http://www.example.com",
-			name: "Unlimited Ball Bearings Corp.",
-			contactPoint: {
-				type: "ContactPoint",
-				telephone: "+1-401-555-1212",
-				contactType: "Customer service"
-			}
-		}
-	};
-
-	<Bulk {...pageConfig} />
 ```

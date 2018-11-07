@@ -27,6 +27,10 @@ const HeadTags = {
 			return null;
 		}
 	}),
+	Description : createClass({
+		componentWillMount(){ Storage.description = this.props.children; },
+		render(){ return null; }
+	}),
 	Favicon : createClass({
 		getDefaultProps(){ return { type : 'image/png', href : ''}},
 		componentWillMount(){ Storage.favicon = this.props; },
@@ -45,32 +49,41 @@ const HeadTags = {
 		render(){ return null; }
 	}),
 	Meta : createClass({
-		componentWillMount(){ Storage.meta.push(this.props); },
+		componentWillMount(){
+			if(!this.props.bulk) return Storage.meta.push(this.props);
+			const tags = map(this.props.bulk, (content, property)=>{
+				return { content, property };
+			});
+			Storage.meta = Storage.meta.concat(tags);
+		},
 		render(){ return null; }
 	}),
 	Structured : createClass({
 		componentWillMount(){ Storage.structuredData = processData(this.props.data); },
 		render(){ return null; }
 	}),
-	Bulk : createClass({
-		componentWillMount(){
-			if(this.props.title) Storage.title = this.props.title;
-			if(this.props.favicon) Storage.favicon = this.props.favicon;
-			if(this.props.meta) Storage.meta = Storage.meta.concat(map(this.props.meta, (content, name)=>{return {content, name}}));
-			if(this.props.structuredData) Storage.structuredData = processData(this.props.structuredData);
-		},
-		componentDidMount(){
-			if(typeof document !== 'undefined' && this.props.title) document.title = this.props.title;
-		},
-		render(){ return null; }
-	}),
-	flush : ()=>Storage = {meta:[], noscript : [], script : []},
+	flush : ()=>{
+		Storage = {
+			title       : null,
+			description : null,
+			meta        :[],
+			noscript    : [],
+			script      : []
+		}
+	},
 	generate : ()=>{
 		let res = [];
-		if(Storage.title) res.push(`<title>${Storage.title}</title>`);
-		if(Storage.favicon) res.push(`<link id='favicon' rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
+		if(Storage.title){
+			res.push(`<title>${Storage.title}</title>`);
+		}
+		if(Storage.favicon){
+			res.push(`<link id='favicon' rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
+		}
+		if(Storage.description){
+			res.push(`<meta content='${Storage.description}' name='description' />`);
+		}
 		if(Storage.meta && Storage.meta.length){
-			res = res.concat(Storage.meta.map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
+			res = res.concat(Storage.meta.reverse().map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
 		}
 		if(Storage.noscript && Storage.noscript.length){
 			res = res.concat(`<noscript>${Storage.noscript.join('\n')}</noscript>`);
@@ -88,4 +101,5 @@ const HeadTags = {
 	}
 };
 
+HeadTags.flush();
 module.exports = HeadTags;
