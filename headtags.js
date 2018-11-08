@@ -4,7 +4,7 @@ const createClass = require('create-react-class');
 const reduce = (obj, fn, init)=>Object.keys(obj).reduce((acc, key)=>fn(acc, obj[key], key), init);
 const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
 
-let Storage={meta:[], noscript:[], script:[]};
+let Storage;
 
 const mapProps = (props)=>map(props, (val, key)=>`${key}="${val}"`).join(' ');
 const processData = (data)=>{
@@ -50,11 +50,14 @@ const HeadTags = {
 	}),
 	Meta : createClass({
 		componentWillMount(){
-			if(!this.props.bulk) return Storage.meta.push(this.props);
-			const tags = map(this.props.bulk, (content, property)=>{
-				return { content, property };
-			});
-			Storage.meta = Storage.meta.concat(tags);
+			const addTag = (props)=>{
+				(props.property || props.name)
+					? Storage.namedMeta[props.property || props.name] = props
+					: Storage.unnamedMeta.push(props);
+			}
+			this.props.bulk
+				? map(this.props.bulk, (content, property)=>addTag({ content, property }))
+				: addTag(this.props);
 		},
 		render(){ return null; }
 	}),
@@ -66,7 +69,8 @@ const HeadTags = {
 		Storage = {
 			title       : null,
 			description : null,
-			meta        :[],
+			namedMeta   : {},
+			unnamedMeta : [],
 			noscript    : [],
 			script      : []
 		}
@@ -82,8 +86,9 @@ const HeadTags = {
 		if(Storage.description){
 			res.push(`<meta content='${Storage.description}' name='description' />`);
 		}
-		if(Storage.meta && Storage.meta.length){
-			res = res.concat(Storage.meta.reverse().map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
+		const Meta = Object.values(Storage.namedMeta).concat(Storage.unnamedMeta);
+		if(Meta && Meta.length){
+			res = res.concat(Meta.reverse().map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
 		}
 		if(Storage.noscript && Storage.noscript.length){
 			res = res.concat(`<noscript>${Storage.noscript.join('\n')}</noscript>`);
