@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "5.4.3",
+  "version": "5.4.4",
   "description": "Web app build system using Browserify, React, and Less",
   "bin": "lib/vitreum",
   "repository": {
@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
-    "browserify": "^14.4.0",
+    "browserify": "^16.2.3",
     "chalk": "^2.4.1",
     "fs-extra": "^3.0.1",
     "js-yaml": "^3.12.0",
