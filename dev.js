@@ -25,6 +25,7 @@ const startApp = async (opts)=>{
 		browserify({ require : opts.app, bundleExternal : false,
 			postFilter : (id, filepath, pkg)=>{
 				if(id.indexOf(opts.paths.build) !== -1) return false;
+
 				deps.push(filepath);
 				return true;
 			}
