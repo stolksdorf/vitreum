@@ -19,6 +19,8 @@ const processData = (data)=>{
 	}, {});
 };
 
+//TODO: Replace all of these with functional components and hooks
+
 const HeadTags = {
 	Title : createClass({
 		componentWillMount(){ Storage.title = this.props.children; },
