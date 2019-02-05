@@ -29,15 +29,30 @@ After the bundle has been created, all the cached styles are compiled into a sin
 
 When you require an asset file, it's copied to `/build/assets/...`, where `...` is it's path relative to the entrypoint folder. The `require` statement resolves to the string path to where the asset was copied to.
 
+This also works within `require`d style files. But instead it will resolve to a css url.
+
 ```js
 const userImg = require('./img/user.png');
 
 // Compiles to ...
 
-const userImg = '/build/assets/userProfile/img/user.png';
+const userImg = '/build/assets/img/user.png';
 
 <img src={userImg} />
 ```
+
+```css
+.component{
+	background-image : require('./user.png');
+}
+
+/* Compiles to ... */
+
+.component{
+	background-image : url('/build/assets/user.png');
+}
+```
+
 
 ## Exotic Transforms
 
@@ -48,10 +63,15 @@ Loads the YAML file, compiles it to JSON, and returns the javascript object. Thi
 
 This can be used in conjuction with a service like [Prose.io](http://prose.io/#about) and Heroku auto-deploys to make a git tracked pseudo-CMS for your web app.
 
-### Markdown
+### Text
+*Exts*: `.md`, `.markdown`, `.txt`
+
+Reads in the file and returns a raw string. All backticks `\`` will be escaped.
+
+### ~Markdown~ _(depricated v5.5.0)_
 *Exts*: `.md`
 
-Reads and compiles the markdown file into raw HTML, and returns a functional react component where the HTML is it's contents. Any prop passed to this component will be passed to the containing `div`
+~Reads and compiles the markdown file into raw HTML, and returns a functional react component where the HTML is it's contents. Any prop passed to this component will be passed to the containing `div`~
 
 ### SVG
 *Exts*: `.svg`
