@@ -6,7 +6,11 @@ const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
 
 let Storage;
 
-const mapProps = (props)=>map(props, (val, key)=>`${key}="${val}"`).join(' ');
+const mapProps = (props)=>{
+	return map(props, (val, key)=>{
+		return val ? `${key}="${val}"` : ''
+	}).join(' ');
+}
 const processData = (data)=>{
 	return reduce(data, (acc, val, key)=>{
 		if(key == 'type')    key = '@type';
@@ -18,6 +22,17 @@ const processData = (data)=>{
 		return acc;
 	}, {});
 };
+
+//TODO: MAke a stringbased component builder (element, propObject, content)=>{}
+	// Adds a close tag only
+const buildElement = (el, props, content)=>{
+	const {children, ...rest} = props;
+	if(!content) content = children;
+	if(typeof content == 'string'){
+		return `<${el} ${mapProps(rest)}>${content}</${el}>`;
+	}
+	return `<${el} ${mapProps(rest)} />`;
+}
 
 //TODO: Replace all of these with functional components and hooks
 
@@ -46,7 +61,7 @@ const HeadTags = {
 		render(){ return null; }
 	}),
 	Script : createClass({
-		getDefaultProps(){ return { id : '', src : ''}},
+		getDefaultProps(){ return { id : '', src : '', children : ''}},
 		componentWillMount(){ Storage.script.push(this.props); },
 		render(){ return null; }
 	}),
@@ -78,6 +93,7 @@ const HeadTags = {
 		}
 	},
 	generate : ()=>{
+		//TODO: Make in element builders
 		let res = [];
 		if(Storage.title){
 			res.push(`<title>${Storage.title}</title>`);
@@ -97,7 +113,9 @@ const HeadTags = {
 		}
 		if(Storage.script && Storage.script.length){
 			res = res.concat(Storage.script.map((script)=>{
+				return buildElement('script', script);
 				return `<script id='${script.id}' src='${script.src}'>${script.children}</script>`;
+				//return `<script id='${script.id}' src='${script.src}'></script>`;
 			}).join('\n'));
 		}
 		if(Storage.structuredData){
