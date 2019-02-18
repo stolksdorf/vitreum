@@ -40,7 +40,7 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 
 	if(opts.prod) bundler.transform('uglifyify', {global : true});
 
-	await fse.ensureDir(`${opts.paths.build}/${opts.entry.name}`);
+	await fse.ensureDir(paths.entry);
 	await utils.bundle(bundler)
 		.then((code)=>fse.writeFile(paths.code, code))
 		.catch((err)=>{
@@ -49,6 +49,20 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 	await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
 
+	if(opts.static){
+		console.log('should run static');
+		console.log(paths);
+		const temp = utils.require(paths.render)
+		console.log(temp);
+
+		await fse.writeFile(paths.static, utils.require(paths.render)())
+			.then(()=>{
+				console.log(`Built the static file`);
+			})
+	}
+
+
+
 	endLog();
 };
 
@@ -56,11 +70,12 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 const bundleLibs = async (opts)=>{
 	const logEnd = log.libs(Libs, opts.prod);
 	const libBundler = browserify().require(Object.keys(Libs));
+	const paths = utils.paths(opts.paths);
 	if(opts.prod){
 		libBundler.transform('uglifyify', {global : true});
 	}
 	return utils.bundle(libBundler)
-		.then((code)=>fse.writeFile(`${opts.paths.build}/${opts.paths.libs}`, code))
+		.then((code)=>fse.writeFile(paths.libs, code))
 		.then(logEnd);
 };
 
@@ -68,7 +83,10 @@ module.exports = async (entryPoints, opts)=>{
 	opts = getOpts(opts, entryPoints);
 	log.beginBuild(opts);
 
+	//const paths = utils.paths(opts.paths, opts.entry.name);
+
 	await fse.emptyDir(opts.paths.build);
 	await opts.targets.reduce((flow, ep)=>flow.then(()=>bundleEntryPoint(ep, opts)), Promise.resolve());
 	await bundleLibs(opts);
+
 };
