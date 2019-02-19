@@ -6,37 +6,43 @@ const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
 
 let Storage;
 
-const mapProps = (props)=>{
+const objToAttr = (props)=>{
 	return map(props, (val, key)=>{
 		return val ? `${key}="${val}"` : ''
 	}).join(' ');
 }
-const processData = (data)=>{
+const processStructuredData = (data)=>{
 	return reduce(data, (acc, val, key)=>{
 		if(key == 'type')    key = '@type';
 		if(key == 'context') key = '@context';
 		acc[key] = (typeof val == 'object'
-			? processData(val)
+			? processStructuredData(val)
 			: val
 		);
 		return acc;
 	}, {});
 };
-
-//TODO: MAke a stringbased component builder (element, propObject, content)=>{}
-	// Adds a close tag only
-const buildElement = (el, props, content)=>{
+const buildElement = (el, props, content, selfClose=false)=>{
 	const {children, ...rest} = props;
 	if(!content) content = children;
-	if(typeof content == 'string'){
-		return `<${el} ${mapProps(rest)}>${content}</${el}>`;
+	return selfClose
+		? `<${el} ${objToAttr(rest)} />`
+		: `<${el} ${objToAttr(rest)}>${content}</${el}>`;
+};
+
+
+
+
+const Render = {
+	script : (scripts)=>{
+		return scripts.map((scriptProps)=>{
+
+			return buildElement('script', scriptProps, null, false);
+		}).join('\n')
 	}
-	return `<${el} ${mapProps(rest)} />`;
-}
+};
 
-//TODO: Replace all of these with functional components and hooks
-
-const HeadTags = {
+const HeadComponents = {
 	Title : createClass({
 		componentWillMount(){ Storage.title = this.props.children; },
 		render(){
@@ -65,7 +71,11 @@ const HeadTags = {
 		componentWillMount(){ Storage.script.push(this.props); },
 		render(){ return null; }
 	}),
+
 	Meta : createClass({
+		getDefaultProps(){ return {
+
+		}},
 		componentWillMount(){
 			const addTag = (props)=>{
 				(props.property || props.name)
@@ -79,9 +89,14 @@ const HeadTags = {
 		render(){ return null; }
 	}),
 	Structured : createClass({
-		componentWillMount(){ Storage.structuredData = processData(this.props.data); },
+		componentWillMount(){ Storage.structuredData = processStructuredData(this.props.data); },
 		render(){ return null; }
-	}),
+	})
+};
+
+
+const HeadTags = {
+	...HeadComponents,
 	flush : ()=>{
 		Storage = {
 			title       : null,
@@ -98,31 +113,35 @@ const HeadTags = {
 		if(Storage.title){
 			res.push(`<title>${Storage.title}</title>`);
 		}
-		if(Storage.favicon){
-			res.push(`<link id='favicon' rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
-		}
 		if(Storage.description){
 			res.push(`<meta content='${Storage.description}' name='description' />`);
 		}
+		if(Storage.favicon){
+			res.push(`<link id='favicon' rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
+		}
 		const Meta = Object.values(Storage.namedMeta).concat(Storage.unnamedMeta);
 		if(Meta && Meta.length){
-			res = res.concat(Meta.reverse().map((metaProps)=>`<meta ${mapProps(metaProps)} />`));
+			res = res.concat(Meta.reverse().map((metaProps)=>`<meta ${objToAttr(metaProps)} />`));
 		}
 		if(Storage.noscript && Storage.noscript.length){
 			res = res.concat(`<noscript>${Storage.noscript.join('\n')}</noscript>`);
 		}
-		if(Storage.script && Storage.script.length){
-			res = res.concat(Storage.script.map((script)=>{
-				return buildElement('script', script);
-				return `<script id='${script.id}' src='${script.src}'>${script.children}</script>`;
-				//return `<script id='${script.id}' src='${script.src}'></script>`;
-			}).join('\n'));
-		}
+
+
+		res.push(Render.script(Storage.script));
+
+		// if(Storage.script && Storage.script.length){
+		// 	res = res.concat(Storage.script.map((scriptProps)=>{
+		// 		return buildElement('script', scriptProps);
+		// 		//return `<script id='${script.id}' src='${script.src}'>${script.children}</script>`;
+		// 		//return `<script id='${script.id}' src='${script.src}'></script>`;
+		// 	}).join('\n'));
+		// }
 		if(Storage.structuredData){
 			res.push(`<script type='application/ld+json'>${JSON.stringify(Storage.structuredData, null, '  ')}</script>`);
 		}
 		HeadTags.flush();
-		return res.join('\n');
+		return res.filter(str=>!!str).join('\n');
 	}
 };
 
