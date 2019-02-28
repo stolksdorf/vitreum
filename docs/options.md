@@ -25,7 +25,7 @@ Options can be set by commandline args or through the `options` parameter using 
 
 `packagesToTransform` - an array of package names that should be ignored when considering which packages to bundle in `libs.js`. This is useful when using private npm modules. _defaults:_ `[]`
 
-`template` - string path to a js file that will be used to create the html renders for each entrypoint. _default:_ `vitreum/src/default.template.js`
+`template` - string path to a js file that will be used to create the html renders for each entrypoint. _default:_ `vitreum/lib/templates/html.js`
 
 `paths` - an object that defines what paths and files naming conventions vitruem will use. _defaults:_
 
