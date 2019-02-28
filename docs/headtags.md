@@ -57,6 +57,8 @@ Adds [metatags](https://www.w3schools.com/tags/tag_meta.asp) to your document. S
 	<Meta name="keywords" content="HTML,CSS,XML,JavaScript">
 ```
 
+TODO: Add docs about named/unanmed tags
+
 If you pass an object as the `bulk` prop instead, it will loop through and create many metatags, with the key being the `property` and the value being the `content`
 
 ```jsx

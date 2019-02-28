@@ -26,6 +26,14 @@ test.group('Title', (test)=>{
 		t.is(tags[0].child[0].text, 'I am a title');
 		t.not(hasSelfClose(raw));
 	});
+
+	test('multiple title tags override eachother', (t)=>{
+		render(Headtags.Title, {}, 'I am a title');
+		render(Headtags.Title, {}, 'I am the new title');
+		const {tags, raw} = getHead();
+		t.is(tags[0].child[0].text, 'I am the new title');
+		t.is(tags.length, 1)
+	});
 });
 
 test.group('Description', (test)=>{
@@ -38,6 +46,15 @@ test.group('Description', (test)=>{
 		t.is(tags[0].attr.name,'description');
 		t.is(tags[0].child, undefined);
 		t.not(hasSelfClose(raw));
+	});
+
+	test('multiple description tags override eachother', (t)=>{
+		render(Headtags.Description, {}, 'I am a description');
+		render(Headtags.Description, {}, 'I am the new description');
+		const {tags, raw} = getHead();
+
+		t.is(tags[0].attr.content, 'I am the new description'.split(' '));
+		t.is(tags.length, 1)
 	});
 })
 
@@ -64,8 +81,6 @@ test.group('Favicon', (test)=>{
 		t.is(tags[0].child, undefined);
 	});
 });
-
-
 
 test.group('Script', (test)=>{
 	test('props work', (t)=>{
@@ -142,6 +157,10 @@ test.group('Meta', (test)=>{
 		t.is(tags[0].attr.content, 'http://og.gg');
 
 		t.ok(hasSelfClose(raw));
+	});
+
+	test('named metatags should override eachother', (test)=>{
+		t.fail();
 	});
 
 
