@@ -4,40 +4,56 @@ const createClass = require('create-react-class');
 const reduce = (obj, fn, init)=>Object.keys(obj).reduce((acc, key)=>fn(acc, obj[key], key), init);
 const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
 
-let Storage;
-
 const objToAttr = (props)=>{
 	return map(props, (val, key)=>{
-		return val ? `${key}="${val}"` : ''
-	}).join(' ');
+		return val ? `${key}="${val}"` : '';
+	}).filter(x=>!!x).join(' ');
 }
-const processStructuredData = (data)=>{
-	return reduce(data, (acc, val, key)=>{
-		if(key == 'type')    key = '@type';
-		if(key == 'context') key = '@context';
-		acc[key] = (typeof val == 'object'
-			? processStructuredData(val)
-			: val
-		);
-		return acc;
-	}, {});
-};
 const buildElement = (el, props, content, selfClose=false)=>{
 	const {children, ...rest} = props;
 	if(!content) content = children;
+	let attrs = objToAttr(rest);
+	if(attrs) attrs = ' ' + attrs;
 	return selfClose
-		? `<${el} ${objToAttr(rest)} />`
-		: `<${el} ${objToAttr(rest)}>${content}</${el}>`;
+		? `<${el}${attrs} />`
+		: `<${el}${attrs}>${content}</${el}>`;
 };
 
 
+let Storage;
 
 
 const Render = {
+	title  : (title)=>{ if(title) return buildElement('title', {}, title); },
+	description  : (description)=>{
+		if(description) return buildElement('meta', {content: description, name: 'description'}, null, true);
+	},
+	favicon  : (favicon)=>{
+		if(favicon) return buildElement('link', favicon, null, true);
+	},
+	namedMeta:(_meta)=>{
+		const meta = Object.values(_meta);
+		if(meta && meta.length){
+			return meta.reverse().map((props)=>buildElement('meta', props, null, true));
+		}
+	},
+	unnamedMeta:(meta)=>{
+		if(meta && meta.length){
+			return meta.reverse().map((props)=>buildElement('meta', props, null, true));
+		}
+	},
+	noscript : (noscripts)=>{
+		if(noscripts && noscripts.length){
+			return buildElement('noscript', {}, noscripts.join('\n'));
+		}
+	},
 	script : (scripts)=>{
 		return scripts.map((scriptProps)=>{
-			return buildElement('script', scriptProps, null, false);
-		}).join('\n')
+			return buildElement('script', scriptProps);
+		})
+	},
+	structuredData : (data)=>{
+		if(data) return buildElement('script', {type:'application/ld+json'}, JSON.stringify(data, null, '  '));
 	}
 };
 
@@ -57,11 +73,12 @@ const HeadComponents = {
 		getDefaultProps(){ return {
 			type : 'image/png',
 			href : '',
-			rel  : 'icon'
+			rel  : 'icon',
+			id   : 'favicon'
 		}},
 		componentWillMount(){ Storage.favicon = this.props; },
 		render(){
-			if(typeof document !== 'undefined') document.getElementById('favicon').href=this.props.href;
+			if(typeof document !== 'undefined') document.getElementById(this.props.id).href=this.props.href;
 			return null;
 		}
 	}),
@@ -92,11 +109,21 @@ const HeadComponents = {
 		render(){ return null; }
 	}),
 	Structured : createClass({
-		componentWillMount(){ Storage.structuredData = processStructuredData(this.props.data); },
+		processStructuredData(data){
+			return reduce(data, (acc, val, key)=>{
+				if(key == 'type')    key = '@type';
+				if(key == 'context') key = '@context';
+				acc[key] = (typeof val == 'object'
+					? this.processStructuredData(val)
+					: val
+				);
+				return acc;
+			}, {});
+		},
+		componentWillMount(){ Storage.structuredData = this.processStructuredData(this.props.data); },
 		render(){ return null; }
 	})
 };
-
 
 const HeadTags = {
 	...HeadComponents,
@@ -104,47 +131,21 @@ const HeadTags = {
 		Storage = {
 			title       : null,
 			description : null,
+			favicon     : null,
 			namedMeta   : {},
 			unnamedMeta : [],
 			noscript    : [],
-			script      : []
+			script      : [],
+			structuredData : null,
 		}
 	},
 	generate : ()=>{
-		//TODO: Make in element builders
-		let res = [];
-		if(Storage.title){
-			res.push(`<title>${Storage.title}</title>`);
-		}
-		if(Storage.description){
-			res.push(`<meta content='${Storage.description}' name='description' />`);
-		}
-		if(Storage.favicon){
-			res.push(`<link id='favicon' rel='icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
-		}
-		const Meta = Object.values(Storage.namedMeta).concat(Storage.unnamedMeta);
-		if(Meta && Meta.length){
-			res = res.concat(Meta.reverse().map((metaProps)=>`<meta ${objToAttr(metaProps)} />`));
-		}
-		if(Storage.noscript && Storage.noscript.length){
-			res = res.concat(`<noscript>${Storage.noscript.join('\n')}</noscript>`);
-		}
+		const headString = Object.keys(Render).reduce((acc, tagName)=>{
+			return acc.concat(Render[tagName](Storage[tagName]))
+		}, []).filter(x=>!!x).join('\n');
 
-
-		res.push(Render.script(Storage.script));
-
-		// if(Storage.script && Storage.script.length){
-		// 	res = res.concat(Storage.script.map((scriptProps)=>{
-		// 		return buildElement('script', scriptProps);
-		// 		//return `<script id='${script.id}' src='${script.src}'>${script.children}</script>`;
-		// 		//return `<script id='${script.id}' src='${script.src}'></script>`;
-		// 	}).join('\n'));
-		// }
-		if(Storage.structuredData){
-			res.push(`<script type='application/ld+json'>${JSON.stringify(Storage.structuredData, null, '  ')}</script>`);
-		}
 		HeadTags.flush();
-		return res.filter(str=>!!str).join('\n');
+		return headString;
 	}
 };
 

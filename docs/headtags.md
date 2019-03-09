@@ -95,8 +95,6 @@ Adds `<script />` to your document. Can pass an `id`, `src`, and/or code as chil
 ```jsx
 	<Script id='remote-code' src='https://mycode.biz/widget.js' />
 
-	<Script code='console.log("hey");' />
-
 	<Script>
 		console.log('Oh hello.');
 	</Script>
