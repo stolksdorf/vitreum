@@ -36,7 +36,6 @@ const buildElement = (el, props, content, selfClose=false)=>{
 const Render = {
 	script : (scripts)=>{
 		return scripts.map((scriptProps)=>{
-
 			return buildElement('script', scriptProps, null, false);
 		}).join('\n')
 	}
@@ -55,7 +54,11 @@ const HeadComponents = {
 		render(){ return null; }
 	}),
 	Favicon : createClass({
-		getDefaultProps(){ return { type : 'image/png', href : ''}},
+		getDefaultProps(){ return {
+			type : 'image/png',
+			href : '',
+			rel  : 'icon'
+		}},
 		componentWillMount(){ Storage.favicon = this.props; },
 		render(){
 			if(typeof document !== 'undefined') document.getElementById('favicon').href=this.props.href;
@@ -117,7 +120,7 @@ const HeadTags = {
 			res.push(`<meta content='${Storage.description}' name='description' />`);
 		}
 		if(Storage.favicon){
-			res.push(`<link id='favicon' rel='shortcut icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
+			res.push(`<link id='favicon' rel='icon' type='${Storage.favicon.type}' href='${Storage.favicon.href}' />`);
 		}
 		const Meta = Object.values(Storage.namedMeta).concat(Storage.unnamedMeta);
 		if(Meta && Meta.length){

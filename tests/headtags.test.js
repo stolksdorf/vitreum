@@ -64,18 +64,18 @@ test.group('Favicon', (test)=>{
 		const {tags, raw} = getHead();
 		t.is(tags[0].tag, 'link');
 		t.is(tags[0].attr.id, 'favicon');
-		t.is(tags[0].attr.rel, ['shortcut', 'icon']);
+		t.is(tags[0].attr.rel, 'icon');
 		t.is(tags[0].attr.type, 'image/png');
 		t.is(tags[0].attr.href, '/fancy.png');
 		t.is(tags[0].child, undefined);
 		t.ok(hasSelfClose(raw));
 	});
 	test('adv props work', (t)=>{
-		render(Headtags.Favicon, {type: 'image/x-icon', href : '/fancy.ico', rel : 'icon'});
+		render(Headtags.Favicon, {type: 'image/x-icon', href : '/fancy.ico', rel : 'shortcut icon'});
 		const {tags, raw} = getHead();
 		t.is(tags[0].tag, 'link');
 		t.is(tags[0].attr.id, 'favicon');
-		t.is(tags[0].attr.rel, 'icon');
+		t.is(tags[0].attr.rel, ['shortcut', 'icon']);
 		t.is(tags[0].attr.type, 'image/x-icon');
 		t.is(tags[0].attr.href, '/fancy.ico');
 		t.is(tags[0].child, undefined);
@@ -159,10 +159,15 @@ test.group('Meta', (test)=>{
 		t.ok(hasSelfClose(raw));
 	});
 
-	test('named metatags should override eachother', (test)=>{
-		t.fail();
-	});
+	test('named metatags should override eachother', (t)=>{
+		render(Headtags.Meta, {property: 'twitter:url', content: 'http://og.gg', name: 'should not exist'});
+		render(Headtags.Meta, {property: 'twitter:url', content: 'http://dance.pizza'});
+		const {tags, raw} = getHead();
 
+		t.no(tags[0].attr.name);
+		t.is(tags[0].attr.property, 'twitter:url');
+		t.is(tags[0].attr.content, 'http://dance.pizza');
+	});
 
 	test('bulk prop', (t)=>{
 		render(Headtags.Meta, {bulk : {
