@@ -59,10 +59,10 @@ cli.command('jsx <component>', 'Create a jsx component', (yargs)=>{
 		.positional('component', {
 			describe: 'name of component',
 		})
-		.option('pure',{
-			alias    : 'p',
+		.option('class',{
+			alias    : 'c',
 			type : 'boolean',
-			describe : 'Create a functional pure component',
+			describe : 'Create a class-based component',
 		})
 		.option('smart',{
 			alias    : 's',

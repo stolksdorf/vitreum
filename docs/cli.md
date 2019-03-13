@@ -32,14 +32,14 @@ Usage: vitreum jsx {OPTIONS} <component name>
 
 Standard Options:
 
-   --pure, -p  Creates a pure functional component
+   --class, -c  Creates a react-class-based component
 
-  --smart, -s  Creates an additional smart varient of the compnent
+   --smart, -s  Creates an additional smart varient of the compnent
                that communicates with a store
 
-  --yaml, -y   Creates an associated yaml file with the component for content
+    --yaml, -y   Creates an associated yaml file with the component for content
 
-  --all, -a   Does all of the above
+     --all, -a   Does all of the above
 
 ```
 
