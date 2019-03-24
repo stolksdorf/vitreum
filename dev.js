@@ -18,7 +18,8 @@ const StaticServer = require('./static.server.js');
 
 const startApp = async (opts)=>{
 	if(opts.static){
-		return StaticServer();
+		console.log('running dev server');
+		return StaticServer(opts);
 	}
 
 	if(!opts.app){
@@ -84,6 +85,7 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			lastBundle = code;
 		});
 		await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
+		if(opts.static) await renderer(opts);
 		logEnd();
 	};
 
