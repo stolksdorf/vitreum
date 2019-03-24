@@ -8,7 +8,10 @@
     "url": "git://github.com/stolksdorf/vitreum.git"
   },
   "scripts": {
-    "scaffold": "cd ../vitreum_test && npm init -y && npm link ../vitreum && vitreum init -y && cd ../vitreum && node scripts/install_local_libs.js",
+    "scaffold": "npm run setup && cd ../vitreum_test && vitreum init -y",
+    "scaffold:static": "npm run setup && cd ../vitreum_test && vitreum init -y --static",
+    "setup_test_proj": "cd ../vitreum_test && npm init -y && node ../vitreum/scripts/install_proj_libs.js && npm link vitreum",
+    "setup": "npm link && node scripts/install_peer_libs.js && npm run setup_test_proj",
     "test": "pico-check",
     "test:dev": "pico-check -w -b",
     "audit": "npm audit > audit"
@@ -37,9 +40,9 @@
     "yargs": "^11.1.0"
   },
   "peerDependencies": {
-    "@babel/core": "^7.0.0-beta.56",
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.56",
-    "@babel/preset-react": "^7.0.0-beta.56",
+    "@babel/core": "^7.4.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
+    "@babel/preset-react": "^7.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "create-react-class": "^15.6.3"

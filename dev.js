@@ -13,13 +13,19 @@ const getOpts        = require('./lib/getopts.js');
 const log            = require('./lib/utils/log.js');
 const Less           = require('./lib/utils/less.js');
 
+const StaticServer = require('./static.server.js');
+
 
 const startApp = async (opts)=>{
+	if(opts.static){
+		return StaticServer();
+	}
+
 	if(!opts.app){
 		console.log(`A server app was not specified, dev server will not run. Set 'main' in your package.json to enable this.`);
 		return;
 	}
-	const nodemon    = require('nodemon');
+	const nodemon = require('nodemon');
 	return new Promise((resolve, reject)=>{
 		let deps = [];
 		browserify({ require : opts.app, bundleExternal : false,

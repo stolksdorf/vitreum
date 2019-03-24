@@ -75,6 +75,14 @@ Whenever Vitreum encounters a file it will check it's list of [transforms](docs/
 When running a dev-build Vitreum will [livereload](http://livereload.com/) any code and style changes that happen. By installing and using the [LiveReload extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) your browser will instantly switch up javscript and styles when they change.
 
 
+### Static
+
+- on build it runs the renderer and produces an `index.html`
+- on dev uses an internal http server to serve the files (possibly use the rootpath?)
+- make sure rootpath works for asset paths
+
+
+
 
 ## Additional Docs
 

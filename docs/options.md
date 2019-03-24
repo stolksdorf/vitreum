@@ -17,9 +17,11 @@ Options can be set by commandline args or through the `options` parameter using 
 
 `dev` - boolean indicating to certain steps if we are doing a dev step. Automatically set by detecting environment, but you can manually set it. _default:_ `auto on env`
 
-`static` - boolean indicating if during a build vitreum should also render a static html version of each entry point. _default:_ `false`
+`static` - boolean indicating if during a build vitreum should also render a static html version of each entry point. If set when using `dev` starts a simple internal http server with livereloading to serve your static files. _default:_ `false`
 
-`embed` - boolean or array of regexes indicating which assets should be base64 encoding and embedding into the bundle. *Not implimented yet*.
+`rootPath` - the path that will be prefixed in the renderer to each of paths of the assets. This is useful if the entrypoint needs to be served from subpath, such as with Github pages. _default:_ `'/'`
+
+~`embed` - boolean or array of regexes indicating which assets should be base64 encoding and embedding into the bundle. *Not implimented yet*.~
 
 `bundle` - an array of [globs]() that should be ignored when considering which packages to bundle in `libs.js`. This is useful when using private npm modules. _defaults:_ `[]`
 
