@@ -1,72 +1,68 @@
 const http = require('http');
 const url = require('url');
-const fs = require('fs');
 const fse = require('fs-extra');
 const path = require('path');
-const port = 8000;
 
-const map = {
-	'.ico': 'image/x-icon',
-	'.html': 'text/html',
-	'.js': 'text/javascript',
-	'.json': 'application/json',
-	'.css': 'text/css',
-	'.png': 'image/png',
-	'.jpg': 'image/jpeg',
-	'.wav': 'audio/wav',
-	'.mp3': 'audio/mpeg',
-	'.svg': 'image/svg+xml',
-	'.pdf': 'application/pdf',
-	'.doc': 'application/msword'
+const PORT = 8000;
+
+const getType = (ext)=>{
+	const types = {
+		'.ico': 'image/x-icon',
+		'.html': 'text/html',
+		'.js': 'text/javascript',
+		'.json': 'application/json',
+		'.css': 'text/css',
+		'.png': 'image/png',
+		'.jpg': 'image/jpeg',
+		'.wav': 'audio/wav',
+		'.mp3': 'audio/mpeg',
+		'.svg': 'image/svg+xml',
+		'.pdf': 'application/pdf',
+		'.doc': 'application/msword'
+	};
+	return types[ext] || 'text/plain';
 };
 
+/** Returns false if file does not exist **/
+const getSystemPath = async (pathname, opts)=>{
+	let res = pathname.replace(RegExp(`^(${opts.rootPath})`),'');
+	res = path.join(process.cwd(), opts.paths.build, res);
+	try{
+		let stats = await fse.stat(res);
+		if(stats.isDirectory()){
+			res = path.join(res, opts.paths.static);
+			stats = await fse.stat(res);
+		}
+		return res;
+	}catch(err){
+		return false;
+	}
+}
+
 module.exports = (opts)=>{
-	//console.log(opts);
-
-
-	http.createServer(function (req, res) {
-		console.log(`${req.method} ${req.url}`);
-
+	http.createServer(async (req, res)=>{
 		let pathname = url.parse(req.url).pathname;
 		if(pathname === '/' && pathname !== opts.rootPath){
-			res.writeHead(302, { "Location": opts.rootPath });
+			res.writeHead(302, { 'Location': opts.rootPath });
 			return res.end();
 		}
+		const systempath = await getSystemPath(pathname, opts);
+		if(!systempath){
+			res.statusCode = 404;
+			res.end(`File ${pathname} not found!`);
+			return;
+		}
+		try{
+			const ext = path.parse(systempath).ext;
+			const file = await fse.readFile(systempath);
+			res.setHeader('Content-type', getType(ext) );
+			res.end(file);
+		}catch(err){
+			res.statusCode = 500;
+			res.end(`Error getting the file: ${err}.`);
+		}
+		return;
+	}).listen(parseInt(PORT));
 
-		pathname = pathname.replace(RegExp(`^(${opts.rootPath})`),'');
-		pathname = path.join(process.cwd(), opts.paths.build, pathname);
-
-		fs.exists(pathname, function (exist) {
-			if(!exist) {
-				// if the file is not found, return 404
-				res.statusCode = 404;
-				res.end(`File ${pathname} not found!`);
-				return;
-			}
-
-			// if is a directory search for index file matching the extention
-			if (fs.statSync(pathname).isDirectory()) pathname = path.join(pathname, opts.paths.static);
-
-			const ext = path.parse(pathname).ext;
-
-			console.log(pathname);
-			console.log(ext);
-
-			// read file from file system
-			fs.readFile(pathname, function(err, data){
-				if(err){
-					res.statusCode = 500;
-					res.end(`Error getting the file: ${err}.`);
-				} else {
-					// if the file is found, set Content-type and send data
-					res.setHeader('Content-type', map[ext] || 'text/plain' );
-					res.end(data);
-				}
-			});
-		});
-
-
-	}).listen(parseInt(port));
-
-	console.log(`Vitreum static server listening on port ${port}`);
+	console.log(`Vitreum static server listening on port ${PORT}`);
 }

@@ -17,10 +17,7 @@ const StaticServer = require('./static.server.js');
 
 
 const startApp = async (opts)=>{
-	if(opts.static){
-		console.log('running dev server');
-		return StaticServer(opts);
-	}
+	if(opts.static) return StaticServer(opts);
 
 	if(!opts.app){
 		console.log(`A server app was not specified, dev server will not run. Set 'main' in your package.json to enable this.`);
@@ -50,7 +47,8 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 	let opts = Object.assign({
 		entry : {
 			name : path.basename(entryPoint).split('.')[0],
-			dir  : path.dirname(entryPoint)
+			dir  : path.dirname(entryPoint),
+			//point: entryPoint
 		}
 	}, Opts);
 
