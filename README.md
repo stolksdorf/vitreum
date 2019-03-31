@@ -24,7 +24,7 @@ It produces a `bundle.js`, `bundle.css`, and `render.js` for each entrypoint. An
 
 Default options for `opts` are `{ render : true, cache : false }`. When `cache` is set to `true` the function will return a cached result if provided identical props it has seen before.
 
-*Note:* Vitreum will populate a global variable client-side called `vitreum_props` with a copy of the props passed in via the `render.js`. This is populated before any other code is loaded so it can be used immediately.
+~*Note:* Vitreum will populate a global variable client-side called `vitreum_props` with a copy of the props passed in via the `render.js`. This is populated before any other code is loaded so it can be used immediately.~
 
 ```js
 // Express Example
@@ -76,10 +76,26 @@ When running a dev-build Vitreum will [livereload](http://livereload.com/) any c
 
 
 ### Static
+Vitreum also supports the ability to do static builds of your project, if you have no need for any server-side logic, or server-side rendering. A useful application of this using this with [Github Pages](https://pages.github.com/).
 
-- on build it runs the renderer and produces an `index.html`
-- on dev uses an internal http server to serve the files (possibly use the rootpath?)
-- make sure rootpath works for asset paths
+
+- *on build* it runs the renderer and produces an `index.html` for each entrypoint.
+- *on dev* uses an internal http server to serve the files and assets. Replicates for Github pages work.
+
+`$ vitreum init --static` will also configure your project to be ready to be used with github pages if you [configure your publish source as `/docs`](https://help.github.com/en/articles/configuring-a-publishing-source-for-github-pages).
+
+
+```
+{
+  "scripts": {
+    "build": "vitreum --static",
+    "dev": "vitreum --dev --static"
+  },
+  ...
+}
+```
+
+
 
 
 
