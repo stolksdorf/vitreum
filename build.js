@@ -50,18 +50,8 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 	await renderer(opts);
 
 	if(opts.static){
-		console.log('should run static222');
-		console.log(paths);
-		const temp = utils.require(paths.render)
-		console.log(temp);
-
 		await fse.writeFile(paths.static, utils.require(paths.render)())
-			.then(()=>{
-				console.log(`Built the static file`);
-			})
 	}
-
-
 
 	endLog();
 };
