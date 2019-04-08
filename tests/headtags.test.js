@@ -16,14 +16,10 @@ const getHead = ()=>{
 const hasSelfClose = (str)=>str.endsWith('/>');
 
 
-test.only().group('Title', (test)=>{
-	console.log('temp');
+test.group('Title', (test)=>{
 	test('works', (t)=>{
-		console.log(Headtags.Title.toString());
 		render(Headtags.Title, {}, 'I am a title');
 		const {tags, raw} = getHead();
-
-		console.log(tags, raw);
 
 		t.is(tags[0].tag, 'title');
 		t.is(tags[0].attr, undefined);
