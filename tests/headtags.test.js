@@ -3,7 +3,6 @@ const React  = require('react');
 const ReactDOMServer = require('react-dom/server');
 const html2json  = require('html2json').html2json;
 
-
 const Headtags = require('../headtags.js');
 
 const render = (el, props, content)=>ReactDOMServer.renderToString(React.createElement(el, props, content));
@@ -17,10 +16,15 @@ const getHead = ()=>{
 const hasSelfClose = (str)=>str.endsWith('/>');
 
 
-test.group('Title', (test)=>{
+test.only().group('Title', (test)=>{
+	console.log('temp');
 	test('works', (t)=>{
+		console.log(Headtags.Title.toString());
 		render(Headtags.Title, {}, 'I am a title');
 		const {tags, raw} = getHead();
+
+		console.log(tags, raw);
+
 		t.is(tags[0].tag, 'title');
 		t.is(tags[0].attr, undefined);
 		t.is(tags[0].child[0].text, 'I am a title');
