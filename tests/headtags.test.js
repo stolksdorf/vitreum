@@ -15,7 +15,6 @@ const getHead = ()=>{
 };
 const hasSelfClose = (str)=>str.endsWith('/>');
 
-
 test.group('Title', (test)=>{
 	test('works', (t)=>{
 		render(Headtags.Title, {}, 'I am a title');
