@@ -43,8 +43,7 @@
     "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
     "@babel/preset-react": "^7.0.0",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "create-react-class": "^15.6.3"
+    "react-dom": "^16.4.2"
   },
   "keywords": [
     "browserify",
