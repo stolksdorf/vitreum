@@ -27,7 +27,7 @@ After the bundle has been created, all the cached styles are compiled into a sin
 ### Assets
 *Exts*: `all not matched by other transforms`
 
-When you require an asset file, it's copied to `/build/assets/...`, where `...` is it's path relative to the entrypoint folder. The `require` statement resolves to the string path to where the asset was copied to.
+When you require an asset file, it's symlinked to `/build/assets/...`, where `...` is it's path relative to the entrypoint folder. The `require` statement resolves to the string path to where the asset was symlinked to.
 
 This also works within `require`d style files. But instead it will resolve to a css url.
 
