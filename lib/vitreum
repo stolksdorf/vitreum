@@ -25,7 +25,7 @@ cli.command('* [targets...]', 'Build your project', (yargs)=>{
 		.catch((err)=>{
 			// console.log('---------------------');
 			console.log(err)
-			console.log('THERE ARE ERRORS');
+			//console.log('THERE ARE ERRORS');
 			process.exit(0);
 		})
 });
