@@ -17,6 +17,11 @@ cli.command('* [targets...]', 'Build your project', (yargs)=>{
 			type     : 'boolean',
 			describe : 'Create static renders of the entrypoints'
 		})
+		.option('embed', {
+			alias    : 'e',
+			type     : 'boolean',
+			describe : 'Embeds your css and js into html'
+		})
 }, (args)=>{
 	(args.dev
 		? require('../dev.js')

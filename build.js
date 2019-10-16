@@ -49,10 +49,6 @@ const bundleEntryPoint = async (entryPoint, Opts)=>{
 	await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
 	await renderer(opts);
 
-	if(opts.static){
-		await fse.writeFile(paths.static, utils.require(paths.render)())
-	}
-
 	endLog();
 };
 
@@ -69,14 +65,32 @@ const bundleLibs = async (opts)=>{
 		.then(logEnd);
 };
 
+//TODO: bump out
+const writeEntryPoint = async (entryPoint, Opts)=>{
+	let opts = Object.assign({
+		entry : {
+			name : path.basename(entryPoint).split('.')[0],
+			dir  : path.dirname(entryPoint)
+		}
+	}, Opts);
+	const paths = utils.paths(opts.paths, opts.entry.name);
+	const isFirstTarget = opts.targets[0].indexOf(opts.entry.dir) === 0;
+	const location = isFirstTarget
+		? path.join(opts.paths.build, opts.paths.static)
+		: path.static
+
+	await fse.writeFile(location, utils.require(paths.render)())
+}
+
 module.exports = async (entryPoints, opts)=>{
 	opts = getOpts(opts, entryPoints);
 	log.beginBuild(opts);
-
-	//const paths = utils.paths(opts.paths, opts.entry.name);
 
 	await fse.emptyDir(opts.paths.build);
 	await opts.targets.reduce((flow, ep)=>flow.then(()=>bundleEntryPoint(ep, opts)), Promise.resolve());
 	await bundleLibs(opts);
 
+	if(opts.static){
+		await opts.targets.reduce((flow, ep)=>flow.then(()=>writeEntryPoint(ep, opts)), Promise.resolve());
+	}
 };

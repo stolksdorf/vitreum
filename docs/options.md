@@ -21,7 +21,7 @@ Options can be set by commandline args or through the `options` parameter using 
 
 `rootPath` - the path that will be prefixed in the renderer to each of paths of the assets. This is useful if the entrypoint needs to be served from subpath, such as with Github pages. _default:_ `'/'`
 
-~`embed` - boolean or array of regexes indicating which assets should be base64 encoding and embedding into the bundle. *Not implimented yet*.~
+`embed` - boolean indicating if the generated js and css should be embeded into the rendered HTML directly.
 
 `bundle` - an array of [globs]() that should be ignored when considering which packages to bundle in `libs.js`. This is useful when using private npm modules. _defaults:_ `[]`
 
@@ -37,7 +37,7 @@ paths  : {
   code   : 'bundle.js',
   style  : 'bundle.css',
   render : 'render.js',
-  static : 'static.html',
+  static : 'index.html',
   libs   : 'libs.js'
 }
 ```

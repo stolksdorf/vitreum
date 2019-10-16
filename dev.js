@@ -83,7 +83,10 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 			lastBundle = code;
 		});
 		await Less.compile(opts).then((css)=>fse.writeFile(paths.style, css));
-		if(opts.static) await renderer(opts);
+		if(opts.static){
+			await renderer(opts);
+			await writeEntryPoint(entryPoint, Opts);
+		}
 		logEnd();
 	};
 
@@ -91,6 +94,24 @@ const devEntryPoint = async (entryPoint, Opts)=>{
 	await renderer(Object.assign(opts, {dev : true}));
 	await bundle();
 };
+
+
+//TODO: bump out
+const writeEntryPoint = async (entryPoint, Opts)=>{
+	let opts = Object.assign({
+		entry : {
+			name : path.basename(entryPoint).split('.')[0],
+			dir  : path.dirname(entryPoint)
+		}
+	}, Opts);
+	const paths = utils.paths(opts.paths, opts.entry.name);
+	const isFirstTarget = opts.targets[0].indexOf(opts.entry.dir) === 0;
+	const location = isFirstTarget
+		? path.join(opts.paths.build, opts.paths.static)
+		: path.static
+
+	await fse.writeFile(location, utils.require(paths.render)())
+}
 
 const setupLiveReload = (opts)=>{
 	const lr = livereload.createServer();
