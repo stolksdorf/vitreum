@@ -57,9 +57,9 @@ const bundleLibs = async (opts)=>{
 	const logEnd = log.libs(Libs, opts.prod);
 	const libBundler = browserify().require(Object.keys(Libs));
 	const paths = utils.paths(opts.paths);
-	if(opts.prod){
-		libBundler.transform('uglifyify', {global : true});
-	}
+	if(opts.transformLibs) libBundler.transform((file)=>transform(file, opts), {global: true});
+	if(opts.prod) libBundler.transform('uglifyify', {global : true});
+
 	return utils.bundle(libBundler)
 		.then((code)=>fse.writeFile(paths.libs, code))
 		.then(logEnd);

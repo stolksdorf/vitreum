@@ -25,6 +25,8 @@ Options can be set by commandline args or through the `options` parameter using 
 
 `bundle` - an array of [globs]() that should be ignored when considering which packages to bundle in `libs.js`. This is useful when using private npm modules. _defaults:_ `[]`
 
+`transformLibs` - (default: false) if true applies the babel transforms to your libs. This will greatly slowdown build times.
+
 `packagesToTransform` - an array of package names that should be ignored when considering which packages to bundle in `libs.js`. This is useful when using private npm modules. _defaults:_ `[]`
 
 `template` - string path to a js file that will be used to create the html renders for each entrypoint. _default:_ `vitreum/lib/templates/html.js`
