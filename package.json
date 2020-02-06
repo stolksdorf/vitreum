@@ -1,8 +1,8 @@
 {
   "name": "vitreum",
-  "version": "5.8.2",
-  "description": "Web app build system using Browserify, React, and Less",
-  "bin": "lib/vitreum",
+  "version": "6.0.0",
+  "description": "Web app build system using Browserify and React",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
@@ -13,8 +13,7 @@
     "setup_test_proj": "cd ../vitreum_test && npm init -y && node ../vitreum/scripts/install_proj_libs.js && npm link vitreum",
     "setup": "npm link && node scripts/install_peer_libs.js && npm run setup_test_proj",
     "test": "pico-check",
-    "test:dev": "pico-check -w -b",
-    "audit": "npm audit > audit"
+    "test:dev": "pico-check -w -b"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
@@ -40,7 +39,6 @@
   },
   "peerDependencies": {
     "@babel/core": "^7.4.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.0",
     "@babel/preset-react": "^7.0.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2"
@@ -51,6 +49,9 @@
     "build"
   ],
   "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-react": "^7.0.0",
+    "express": "^4.17.1",
     "html2json": "^1.0.2",
     "pico-check": "^1.2.1",
     "react": "^16.8.0",
