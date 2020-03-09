@@ -59,7 +59,7 @@ const onServer = (typeof window === 'undefined');
 
 const HeadComponents = {
 	Title({ children }){
-		if(onServer) Storage.title = children;
+		if(onServer) Storage.title = `<title>${children}</title>`;
 		React.useEffect(()=>{document.title = children}, [children]);
 		return null;
 	},
@@ -68,12 +68,12 @@ const HeadComponents = {
 		return null;
 	},
 	Favicon({ type = 'image/png', href = '', rel='icon', id= 'favicon'}){
-		if(onServer) Storage.favicon = {type, href, rel, id};
+		if(onServer) Storage.favicon = `<link rel='shortcut icon' type="${type}" id="${id}" href="${href}" />`
 		React.useEffect(()=>{document.getElementById(id).href=href}, [id, href]);
 		return null;
 	},
 	Noscript({ children }){
-		if(onServer) Storage.noscript.push(children);
+		if(onServer) Storage.rest.push(`<noscript>${children}</noscript>`);
 		return null;
 	},
 	Script({ id='', src='', children='' }){

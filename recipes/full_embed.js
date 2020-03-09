@@ -11,11 +11,14 @@ const build = async ({ bundle, render })=>{
 	}));
 }
 
+
+
+
 build(await pack('../client/main.jsx', {
 	dev : isDev && build
 }));
 
 
 if(isDev){
-	server(utils.rel('../build'))
+	server({ root : utils.rel('../build')})
 }
