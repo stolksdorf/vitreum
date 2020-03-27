@@ -1,122 +1,72 @@
 const React = require('react');
 
-const reduce = (obj, fn, init)=>Object.keys(obj).reduce((acc, key)=>fn(acc, obj[key], key), init);
-const map    = (obj, fn)=>Object.keys(obj).map((key)=>fn(obj[key], key));
-
-const objToAttr = (props)=>{
-	return map(props, (val, key)=>{
-		return val ? `${key}="${val}"` : '';
-	}).filter(x=>!!x).join(' ');
-}
-const buildElement = (el, props, content, selfClose=false)=>{
-	const {children, ...rest} = props;
-	if(!content) content = children;
-	let attrs = objToAttr(rest);
-	if(attrs) attrs = ' ' + attrs;
-	return selfClose
-		? `<${el}${attrs} />`
-		: `<${el}${attrs}>${content}</${el}>`;
-};
-const processStructuredData = (data)=>{
-	return reduce(data, (acc, val, key)=>{
-		if(key == 'type')    key = '@type';
-		if(key == 'context') key = '@context';
-		acc[key] = (typeof val == 'object'
-			? processStructuredData(val)
-			: val
-		);
-		return acc;
-	}, {});
-};
-const addMetaTag = (props)=>{
-	(props.property || props.name)
-		? Storage.namedMeta[props.property || props.name] = props
-		: Storage.unnamedMeta.push(props);
-};
-const isEmpty = (val)=>{
-	if(typeof val == 'object') return Object.values(val).length == 0;
-	return !val;
-};
-
-
-let Storage={};
-
-
-const Render = {
-	title  : (title)=>buildElement('title', {}, title),
-	description  : (description)=>buildElement('meta', {content: description, name: 'description'}, null, true),
-	favicon  : (favicon)=>buildElement('link', favicon, null, true),
-	namedMeta:(meta)=>Object.values(meta).reverse().map((props)=>buildElement('meta', props, null, true)),
-	unnamedMeta:(meta)=>meta.reverse().map((props)=>buildElement('meta', props, null, true)),
-	noscript : (noscripts)=>buildElement('noscript', {}, noscripts.join('\n')),
-	script : (scripts)=>scripts.map((scriptProps)=>buildElement('script', scriptProps)),
-	structuredData : (data)=>buildElement('script', {type:'application/ld+json'}, JSON.stringify(data, null, '  ')),
-};
-
+const obj2props = (obj)=>Object.entries(obj).map(([k,v])=>`${k}="${v}"`).join(' ')
 const onServer = (typeof window === 'undefined');
+
+const injectTag = require('./utils/injectTag.js');
+
+let NamedTags = {};
+let UnnamedTags = [];
 
 const HeadComponents = {
 	Title({ children }){
-		if(onServer) Storage.title = children;
-		React.useEffect(()=>{document.title = children}, [children]);
-		return null;
-	},
-	Description({ children }){
-		if(onServer) Storage.description = children;
+		if(onServer) NamedTags.title = `<title>${children.join('')}</title>`;
+		React.useEffect(()=>{document.title = children.join('')}, [children]);
 		return null;
 	},
 	Favicon({ type = 'image/png', href = '', rel='icon', id= 'favicon'}){
-		if(onServer) Storage.favicon = {type, href, rel, id};
+		if(onServer) NamedTags.favicon = `<link rel='shortcut icon' type="${type}" id="${id}" href="${href}" />`
 		React.useEffect(()=>{document.getElementById(id).href=href}, [id, href]);
 		return null;
 	},
+
+	Description({ children }){
+		if(onServer) NamedTags.description = `<meta name='description' content='${children.join('')}' />`
+		return null;
+	},
+
 	Noscript({ children }){
-		if(onServer) Storage.noscript.push(children);
+		if(onServer) UnnamedTags.push(`<noscript>${children.join('')}<\/noscript>`);
 		return null;
 	},
-	Script({ id='', src='', children='' }){
-		if(onServer) Storage.script.push({ id, src, children });
+	Script({ children=[], ...props }){
+		if(onServer) {
+			UnnamedTags.push(children.length
+				? `<script ${obj2props(props)}>${children.join('')}\<\/script>`
+				: `<script ${obj2props(props)} />`
+			);
+		}
 		return null;
 	},
-	Meta({bulk, ...props}){
+	Meta(props){
 		if(onServer){
-			!!bulk
-				? map(bulk, (content, property)=>addMetaTag({ content, property }))
-				: addMetaTag(props);
+			let tag = `<meta ${obj2props(props)} />`;
+			(props.property || props.name)
+				? NamedTags[props.property || props.name] = tag
+				: UnnamedTags.push(tag)
 		}
 		return null;
 	},
-	Structured({ data }){
-		if(onServer) Object.assign(Storage.structuredData, processStructuredData(data));
+	Style({ children, type='text/css' }){
+		if(onServer) UnnamedTags.push(`<style type="${type}">${children.join('')}</style>`);
 		return null;
-	},
-};
-
-const HeadTags = {
-	...HeadComponents,
-	flush : ()=>{
-		Storage = {
-			title       : undefined,
-			description : undefined,
-			favicon     : undefined,
-			namedMeta   : {},
-			unnamedMeta : [],
-			noscript    : [],
-			script      : [],
-			structuredData : {},
-		}
-	},
-	generate : ()=>{
-		const headString = Object.keys(Render).reduce((acc, tagName)=>{
-			return !isEmpty(Storage[tagName])
-				? acc.concat(Render[tagName](Storage[tagName]))
-				: acc;
-		}, []).filter(x=>!!x).join('\n');
-
-		HeadTags.flush();
-		return headString;
 	}
 };
 
-HeadTags.flush();
-module.exports = HeadTags;
+const Inject = ({tag, children, ...props})=>{
+	React.useEffect(()=>{
+		injectTag(tag, props, children);
+	}, []);
+	return null;
+};
+
+
+module.exports = {
+	Inject,
+	...HeadComponents,
+	generate : ()=>Object.values(NamedTags).concat(UnnamedTags).join('\n'),
+	flush : ()=>{
+		NamedTags = {};
+		UnnamedTags = [];
+	}
+};
