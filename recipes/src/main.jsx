@@ -2,7 +2,9 @@ require('./main.css');
 require('./styles/style.less');
 const React = require('react');
 
-const { Title, Inject, injectTagToHead } = require('../../../vitreum/headtags');
+const { Title, Inject } = require('../../../vitreum/headtags');
+
+const injectTag = require('../../../vitreum/utils/injectTag.js');
 
 //require in an image, should be nested
 //require in some styling
@@ -20,7 +22,7 @@ function Main({ title, ...props }){
 
 
 	React.useEffect(()=>{
-		injectTagToHead('script', {}, `
+		injectTag('script', {}, `
 			console.log('hello world')
 		`);
 	}, [])
