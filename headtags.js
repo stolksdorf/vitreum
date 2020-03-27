@@ -29,21 +29,21 @@ const HeadComponents = {
 		if(onServer) UnnamedTags.push(`<noscript>${children.join('')}</noscript>`);
 		return null;
 	},
-	Script({ children='', ...props }){
+	Script({ children=[], ...props }){
 		if(onServer) UnnamedTags.push(`<script ${obj2props(props)}>${children.join('')}\<\/script>`);
 		return null;
 	},
 	Meta(props){
 		if(onServer){
 			let tag = `<meta ${obj2props(props)} />`;
-			(props.name || props.property)
-				? NamedTags[props.name || props.property] = tag
+			(props.property || props.name)
+				? NamedTags[props.property || props.name] = tag
 				: UnnamedTags.push(tag)
 		}
 		return null;
 	},
 	Style({ children, type='text/css' }){
-		if(onServer) NamedTags.style = `<style type="${type}">${children.join('')}</style>`;
+		if(onServer) UnnamedTags.push(`<style type="${type}">${children.join('')}</style>`);
 		return null;
 	}
 };
@@ -59,5 +59,9 @@ const Inject = ({tag, children, ...props})=>{
 module.exports = {
 	Inject,
 	...HeadComponents,
-	generate : ()=>Object.values(NamedTags).concat(UnnamedTags).join('\n')
+	generate : ()=>Object.values(NamedTags).concat(UnnamedTags).join('\n'),
+	flush : ()=>{
+		NamedTags = {};
+		UnnamedTags = [];
+	}
 };
