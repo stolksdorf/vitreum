@@ -62,12 +62,12 @@ Vitreums goal is to take a path to a react component, process and bundle it, the
 2. `render`: A function to render a string html version of the component with given opts.
 3. `ssr`: Code for server-side rendering this component on request.
 
-It's up to you how'd you like to use these pieces of contruct your app's specific build process.
+It's up to you how'd you like to use these pieces of contruct your app's specific build process. Maybe bundles everything together into a single HTML file and upload it to S3? Easily add a react-powered github page to your repo? Use transforms to bundle everything into a chrome extension and zip it? Entirely up to you!
 
 
 ### Features
 - **Custom Transforms:** Control how vitreum loads and processes specific filetypes. Allowing you to require images, css files, etc. all within your bundle.
-- *Dev Mode:* Vitreum can watch your file system and rebundle only the files that change while developing
+- **Dev Mode:** Vitreum can watch your file system and rebundle only the files that change while developing
 
 
 
@@ -89,57 +89,84 @@ Vitreum comes with several examples, or "recipes" for common build flows. Most o
 
 Takes a `path_to_component`, and any additional options, and async returns `bundle`, `render`, `ssr`.
 
+- `bundle` : A string of javascript that is all the code needed to execute your app client-side (including React and libraries). It exposes a single global function `start(props, target)` that will start your webapp with the props provided and targeting a specific DOM node.
+- `render(props)`: A function that when called with `props` will return a string of HTML of your webapp rendered with the given props.
+- `ssr`: A string of javascript that will expose a function for doing server-side rendering (essentially `render()`). Save this and require it in your server to dynamically server-side render your app on request.
 
-#### options
 
+```js
+const fs = require('fs').promises;
+const { pack, html } = require('vitreum');
+
+const run = async ()=>{
+  const { bundle, render, ssr } = pack('./client/main.jsx', {
+    libs : ['very_large_lib.js'], // Won't have transforms applied to it
+    paths : ['./client/shared']   // option passed to Browserify
+  });
+
+  const mainPage = html({
+    body : render();
+    tail : `<script src='./bundle.js'></script>`
+  });
+  await fs.writeFile('./build/index.html', mainPage);
+  await fs.writeFile('./build/bundle.js', bundle);
+  console.log('Done!');
+}
+
+run();
 ```
+
+
+```js
+//Opts
 {
-  dev : [function], //If provided will put vitreum in dev mode, watching for file changes. Will call the function with the new results of `pack` on change
-  transforms : [object], //Any custom transforms, key should be file extension, and value is a transform function
-  libs : [arr of strings], //Any libraries or files that should not have transforms applied to them. Usually for large complex dependacies
-  ...rest, //Any additional opts will be passed directly to Browserify as options
+  dev : ({bundle, render, ssr})=>{}, //If provided will put vitreum in dev mode, watching for file changes. Will call the function with the new results of `pack` on change
+  transforms : {}, //Any custom transforms, key should be file extension, and value is a transform function
+  libs : ['foo', 'big_lib'], //Any libraries or files that should not have transforms applied to them. Usually for large and/or complex dependacies
+  ...rest, //Any additional opts will be passed directly to Browserify as options, https://github.com/browserify/browserify#browserifyfiles--opts
 }
 ```
+
+
+
 
 
 ### `vitreum.html({head, body, tail, props}) -> string of html`
 
 Provides a very basic html template renderer if you project doesn't need anything special. Copy this file into your project and make changes to it if you'd like more control over how your HTML is rendered.
 
+- `head`: HTML string to be injected in the head of your html
+- `body`: HTML string to be injected into the body of your html, wrapped in a `<main>` tag
+- `tail`: HTML string to be injected at the end of your HTML
+- `props`: A javascript object that will be stringified an embedded in the `start_app()` call
+
+**Note:** `vitreum.html` will automatically add a startup script to the tail of your HTML. This kicks off React and starts your webapp. If you are generating your own HTML, make sure you copy over this functionality.
+
 ```js
-const { pack, writeFile, html } = require('vitreum');
+const fs = require('fs').promises;
+const { pack, html } = require('vitreum');
 
 pack('./client/main.jsx')
   .then(({render})=>{
-    return writeFile('./build/index.html', html({
+    return fs.writeFile('./build/index.html', html({
+      head : `<title>My Project</title>`,
       body : render();
     }))
   });
 ```
 
 
-### `async vitreum.writeFile(path_to_file, contents)`
-A simple utility function that combines [`fs-extra.ensureFile`](https://github.com/jprichardson/node-fs-extra/blob/master/docs/ensureFile.md) and [`fs.writeFile`](https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback). It will create any needed directory structure inorder to successfully create/update the file.
-
-```js
-const { writeFile } = require('vitreum');
-
-writeFile('./build/main/foobar/note.txt', 'oh, Hello.')
-  .then(()=>console.log('Success!'));
-
-```
-
-
 ### `vitreum.server(path_to_folder, [opts]) -> Launches a simple server`
-Sometimes you just need a really simple server to host your project for development purposes. `vitreum` ships with one that does the trick. *Note:* For dev-purposes only, use a more mature solution for production.
+Sometimes you just need a really simple server to host your project for development purposes. `vitreum` ships with one that does just that.
 
-`path_to_folder` is the folder the server will hsot from.
-
+**Note:** For dev-purposes only, use a more mature solution for production.
 
 ```js
 const { server } = require('vitreum');
 
+// Use vitreum to bundle your project here...
 
+//Then kick off the server!
 server('./build', {
   port : 8001,
 })
@@ -150,17 +177,33 @@ server('./build', {
 //Opts
 {
   port : 8000, //What port the server should run on
-  basepath : '/foo', //Always ensures every URL is prefexed with this base_path. Used for testing github pages functionality.
+  basepath : '/foo', //Always ensures every URL is prefexed with this base_path. Used for testing github pages mainly.
 }
 
 ```
 
+### `vitreum.livereload(watch_path)`
+
+Sets up a [LiveReload](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei) watching the `watch_path`. Whenever a file changes there, sends a signal from the LiveReload server. If you have the extension installed it will automatically update the source on your page. Incredibly usage for developing.
+
+```js
+const { livereload, server } = require('vitreum');
+
+// Bundle code here...
+
+server('./build');
+livereload('./build'); // Will update whenever a file is changed in the build folder
+```
 
 
+### `vitreum.utils`
 
+A collection of little utilities that `vitreum` uses.
 
-### `vitreum.livereload({head, body, tail, props}) -> string of html`
-
+- `chalk(msg)`: a micro-implementation of [chalk](https://www.npmjs.com/package/chalk), used to color console messages
+- `relativePath(path, offset=1)`: Returns an absolute path using the passed in relative path, and a stacktrace offset.
+- `decache(path)`: de-caches a file from Node's `require`
+- `writeFile(path, content)`: A simple utility function that combines [`fs-extra.ensureFile`](https://github.com/jprichardson/node-fs-extra/blob/master/docs/ensureFile.md) and [`fs.writeFile`](https://nodejs.org/api/fs.html#fs_fs_writefile_file_data_options_callback). It will create any needed directory structure inorder to successfully create/update the file.
 
 
 
@@ -169,33 +212,54 @@ server('./build', {
 
 ## Transforms
 
+[Transforms](https://github.com/browserify/browserify-handbook#transforms) are Browserify's way of processing certain files before they get bundled. This can be leveraged in powerful ways, such as being able to require in text files as strings, or automatically copying assets to a build folder and getting the new path to it as a string in code.
 
+`vitreum` exposes a simple iterface for writing your own transforms, along with some useful [builtin ones]() you can use.
 
-### Server-side Rendering
-
-
+A transform consists of an extension association and a transforming function, while will be passed the file's path and contents.
 
 ```js
-// Express Example
-const app = require('express')();
-const MainRender = require('./build/main/render.js');
+const foo2js = require('foo2js');
+const fse  = require('fs-extra');
 
-app.get('/', (req, res)=>{
-  res.send(MainRender({ url : req.url });
-});
+const transforms = {
+  '.foo': (code, filename, opts)=>{
+    return foor2js(code);
+  },
+  '*': async (code, filename, opts)=>{
+    const newPath = path.relative(opts.entrypoint, filename);
+    await fse.copy(filename, './build/' + newPath);
+    return `module.exports= '${newPath}';`
+  }
+}
 ```
 
+In this example we have two custom transforms. The first is leveraging a third-party module to transform `.foo` files into javascript. The second transform is applied to any file that doesn't match the other transforms, and will copy them to the build directory and return the new path to it as a string.
 
-### Transforms
-Whenever Vitreum encounters a file it will check it's list of [transforms](docs/transforms.md) and potentially modify the file (or do other operations) before it adds it to the bundle. These transforms allow you to require in assets, styles, or other various files.
+#### Built-in Transforms
 
-** Built in transforms **
+[list will go here]
+- style
+- asset
+- yaml
+- encode
 
 
-### Live-reloading
+#### Default Transforms
 
-When running a dev-build Vitreum will [livereload](http://livereload.com/) any code and style changes that happen. By installing and using the [LiveReload extension](https://chrome.google.com/webstore/detail/livereload/jnihajbhpnppcggbcgedagnkighmdlei?hl=en) your browser will instantly switch up javscript and styles when they change.
+`vitreum` comes with 4 default transforms applied. These can be overwritten if you want.
 
+```js
+const babelify = async (code)=>(await require('@babel/core').transformAsync(code,{ presets : ['@babel/preset-react'] })).code;
+
+const defaultTransforms = {
+  '.js'   : (code, filename, opts)=>babelify(code),
+  '.jsx'  : (code, filename, opts)=>babelify(code),
+  '.json' : (code, filename, opts)=>`module.exports=${code};`,
+  '*'     : (code, filename, opts)=>`module.exports=\`${code}\`;`
+};
+
+```
 
 
 ## Additional Docs
@@ -205,4 +269,3 @@ When running a dev-build Vitreum will [livereload](http://livereload.com/) any c
 - [Headtags](docs/headtags.md)
 - [Requirable](docs/requirable.md)
 - [Transforms](docs/transforms.md)
-- [Migration from v4](docs/migration.md)

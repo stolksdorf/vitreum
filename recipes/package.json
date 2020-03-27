@@ -1,0 +1,16 @@
+{
+  "scripts": {
+    "ssr": "node ./ssr.recipe.js",
+    "ssr:dev": "node ./ssr.recipe.js --dev",
+    "embed": "node ./embed.recipe.js",
+    "embed:dev": "node ./embed.recipe.js --dev",
+    "github": "node ./github_pages.recipe.js",
+    "github:dev": "node ./github_pages.recipe.js --dev"
+  },
+  "name": "vitreum-recipes",
+  "version": "1.0.0",
+  "main": "",
+  "author": "",
+  "license": "",
+  "description": ""
+}

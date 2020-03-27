@@ -1,14 +1,3 @@
-const path = require('path');
-const fs = require('fs');
-const fse = require('fs-extra');
-
-const chalk = Object.entries({
-	bright: 1,  dim:   2,  red:  31,
-	green:  32, yellow:33, blue: 34,
-	magenta:35, cyan:  36, white:37
-}).reduce((acc, [name, id])=>{return {...acc, [name]:(txt)=>`\x1b[${id}m${txt}\x1b[0m`}});
-
-
 const _internalPaths = Object.keys(process.binding('natives')).concat(['bootstrap_node', 'node']).map((name) => `${name}.js`);
 const getStack = (idx=false)=>{
 	const stack = (new Error()).stack.split('\n').map((raw)=>{
@@ -20,11 +9,4 @@ const getStack = (idx=false)=>{
 	return stack;
 };
 
-const relativePath = (fp='.', offset=1)=>path.resolve(path.dirname(getStack(offset).file), fp);
-const decache = (fp)=>delete require.cache[relativePath(fp, 2)];
-
-module.exports = {
-	chalk,
-	relativePath,
-	decache,
-}
+module.exports = getStack;

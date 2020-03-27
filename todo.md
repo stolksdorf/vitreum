@@ -1,10 +1,23 @@
 # Todo
 
+Bump utils to individual files
+
+
+## Sunday, 22/03/2020
+- Update the headtags to be simpler
+	- each chunk should add it's raw html code to storage
+	-
+- Start building out the recipes
+	- make sure to include assets, encoding (use in the full embed), and style
+	- add --release tag to the chrome extension script
+	-
+
 ## Recipes
 - Livereload simple server
 - Custom transform
 - Less and asset transform
 - SSR file with dev decache
+- chrome extension demo
 - Stright github pages bundle
   - Should be mapped under a top-level route
   -
