@@ -9,7 +9,8 @@ An opinioned build system for modern web apps.
 
 *Example build script for your project*
 ```js
-const { pack, writeFile } = require('vitreum');
+const fs = require('fs-extra');
+const { pack } = require('vitreum');
 
 let cssCache = {}
 const transforms = {
@@ -28,7 +29,7 @@ const renderHTML = ({head, body, props})=>{
     <main>${body}</main>
   </body>
   <script src='/bundle.js'></script>
-  <script>start(${JSON.stringify(props)})</script>
+  <script>start_app(${JSON.stringify(props)})</script>
 </html>`
 };
 
@@ -41,8 +42,8 @@ const build = async ()=>{
 
   const props = { msg : 'hello world!'};
 
-  await writeFile('./build/bundle.js', bundle);
-  await writeFile('./build/index.html'), renderHTML({
+  await fs.outputFile('./build/bundle.js', bundle);
+  await fs.outputFile('./build/index.html'), renderHTML({
     head: `<style>${Object.values(cssCache).join('\n')}</style>`
     body : render(props),
     props
@@ -260,12 +261,3 @@ const defaultTransforms = {
 };
 
 ```
-
-
-## Additional Docs
-
-- [Command Line Tools](docs/cli.md)
-- [Options](docs/options.md)
-- [Headtags](docs/headtags.md)
-- [Requirable](docs/requirable.md)
-- [Transforms](docs/transforms.md)
