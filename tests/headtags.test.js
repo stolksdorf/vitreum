@@ -45,7 +45,6 @@ test.group('Description', (test)=>{
 		const desc = 'I am a description';
 		render(Headtags.Description, {}, desc);
 		const {tags, raw} = getHead();
-		console.log(tags);
 		t.is(tags[0].tag, 'meta');
 		t.is(tags[0].attr.content, desc.split(' '));
 		t.is(tags[0].attr.name,'description');
@@ -91,18 +90,23 @@ test.group('Script', (test)=>{
 	test('props work', (t)=>{
 		render(Headtags.Script, {id : 'yo', src : '/fancy.js'});
 		const {tags, raw} = getHead();
-		console.log(tags)
 		t.is(tags[0].tag, 'script');
 		t.is(tags[0].attr.id, 'yo');
 		t.is(tags[0].attr.src, '/fancy.js');
-		t.is(tags[0].child[0].text, '');
-		t.not(hasSelfClose(raw));
+		t.ok(hasSelfClose(raw));
+	});
+
+	test('no children == self close tag', (t)=>{
+		render(Headtags.Script, {src : '/fancy.js'});
+		const {tags, raw} = getHead();
+		t.ok(hasSelfClose(raw));
 	});
 
 	test('content works', (t)=>{
 		const code = 'I am javascript';
 		render(Headtags.Script, {}, code);
 		const {tags, raw} = getHead();
+
 		t.no(tags[0].attr)
 		t.is(tags[0].child[0].text, code);
 		t.no(hasSelfClose(raw));

@@ -26,11 +26,16 @@ const HeadComponents = {
 	},
 
 	Noscript({ children }){
-		if(onServer) UnnamedTags.push(`<noscript>${children.join('')}</noscript>`);
+		if(onServer) UnnamedTags.push(`<noscript>${children.join('')}<\/noscript>`);
 		return null;
 	},
 	Script({ children=[], ...props }){
-		if(onServer) UnnamedTags.push(`<script ${obj2props(props)}>${children.join('')}\<\/script>`);
+		if(onServer) {
+			UnnamedTags.push(children.length
+				? `<script ${obj2props(props)}>${children.join('')}\<\/script>`
+				: `<script ${obj2props(props)} />`
+			);
+		}
 		return null;
 	},
 	Meta(props){

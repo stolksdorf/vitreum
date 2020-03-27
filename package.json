@@ -2,7 +2,7 @@
   "name": "vitreum",
   "version": "6.0.0",
   "description": "Web app build system using Browserify and React",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/stolksdorf/vitreum.git"
