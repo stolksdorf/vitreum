@@ -10,16 +10,23 @@ const clearLessCache = ()=>{
 const imports = new Set();
 const transform = (code, fp, opts)=>imports.add(fp);
 
-transform.generate = async (dev=false)=>{
-	clearLessCache();
-	const lessCode = Array.from(imports).reverse().map((fp)=>`@import (less) "${fp}";`).join('\n');
-	return await LessLib.render(lessCode, {
+const getOpts = (opts)=>{
+	const {dev, ...rest} = opts;
+	return {
 		compress  : !dev,
 		sourceMap : (dev ? {
 			sourceMapFileInline: true,
 			outputSourceFiles: true
 		} : false),
-	})
+		...rest
+	}
+}
+
+transform.generate = async (_opts, dev=false)=>{
+	clearLessCache();
+	const opts = getOpts(_opts);
+	const lessCode = Array.from(imports).reverse().map((fp)=>`@import (less) "${fp}";`).join('\n');
+	return LessLib.render(lessCode, opts).catch((error) => {console.error(error)})
 	.then(({css})=>css);
 };
 
