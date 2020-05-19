@@ -38,13 +38,13 @@ const HeadComponents = {
 		}
 		return null;
 	},
-	Meta(props){
-		if(onServer){
-			let tag = `<meta ${obj2props(props)} />`;
-			(props.property || props.name)
-				? NamedTags[props.property || props.name] = tag
-				: UnnamedTags.push(tag)
-		}
+	Meta(props) {
+    if (onServer) {}
+    let tag = `<meta ${obj2props(props)} />`;
+    props.property || props.name ? NamedTags[props.property || props.name] = tag : UnnamedTags.push(tag);
+    React.useEffect(() => {
+			document.getElementsByTagName('head')[0].insertAdjacentHTML('beforeend', Object.values(NamedTags).join('\n'));
+    },[NamedTags]);
 		return null;
 	},
 	Style({ children, type='text/css' }){
