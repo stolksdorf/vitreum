@@ -1,6 +1,7 @@
 const React = require('react');
 
-const obj2props = (obj)=>Object.entries(obj).map(([k,v])=>`${k}="${v}"`).join(' ')
+const obj2props = (obj)=>Object.entries(obj).map(([k,v])=>`${k}="${v}"`).join(' ');
+const toStr = (chld)=>Array.isArray(chld) ? chld.join('') : chld;
 const onServer = (typeof window === 'undefined');
 
 const injectTag = require('./utils/injectTag.js');
@@ -8,10 +9,11 @@ const injectTag = require('./utils/injectTag.js');
 let NamedTags = {};
 let UnnamedTags = [];
 
+
 const HeadComponents = {
 	Title({ children }){
-		if(onServer) NamedTags.title = `<title>${children.join('')}</title>`;
-		React.useEffect(()=>{document.title = children.join('')}, [children]);
+		if(onServer) NamedTags.title = `<title>${toStr(children)}</title>`;
+		React.useEffect(()=>{document.title = toStr(children)}, [children]);
 		return null;
 	},
 	Favicon({ type = 'image/png', href = '', rel='icon', id= 'favicon'}){
@@ -21,18 +23,18 @@ const HeadComponents = {
 	},
 
 	Description({ children }){
-		if(onServer) NamedTags.description = `<meta name='description' content='${children.join('')}' />`
+		if(onServer) NamedTags.description = `<meta name='description' content='${toStr(children)}' />`
 		return null;
 	},
 
 	Noscript({ children }){
-		if(onServer) UnnamedTags.push(`<noscript>${children.join('')}<\/noscript>`);
+		if(onServer) UnnamedTags.push(`<noscript>${toStr(children)}<\/noscript>`);
 		return null;
 	},
 	Script({ children=[], ...props }){
 		if(onServer) {
 			UnnamedTags.push(children.length
-				? `<script ${obj2props(props)}>${children.join('')}\<\/script>`
+				? `<script ${obj2props(props)}>${toStr(children)}\<\/script>`
 				: `<script ${obj2props(props)} />`
 			);
 		}
@@ -48,7 +50,7 @@ const HeadComponents = {
 		return null;
 	},
 	Style({ children, type='text/css' }){
-		if(onServer) UnnamedTags.push(`<style type="${type}">${children.join('')}</style>`);
+		if(onServer) UnnamedTags.push(`<style type="${type}">${toStr(children)}</style>`);
 		return null;
 	}
 };
