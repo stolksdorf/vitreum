@@ -6,6 +6,8 @@ your urls with your project name.
 This recipe show how to tweak vitreum's builtins to do this prefixing, even while developing.
 
 if you run this recipe with the '--dev' flag it will start a server and a livereload watcher for you
+
+npm i react react-dom less @babel/core @babel/preset-react
 */
 
 
