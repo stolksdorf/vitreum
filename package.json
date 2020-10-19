@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "6.0.3",
+  "version": "6.0.4",
   "description": "Web app build system using Browserify and React",
   "main": "lib/index.js",
   "repository": {
