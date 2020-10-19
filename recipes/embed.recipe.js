@@ -6,9 +6,6 @@ This is useful if you want to simply upload a webapp to S3 to host it.
 We are using the base64encode transform here that will detect the filetype you are trying to require
 and create a base64 url from it and return it as a string, embedding the entire content of the file
 into your bundle
-
-
-
 */
 
 const fs = require('fs-extra');
@@ -29,10 +26,9 @@ const transforms = {
 };
 
 const build = async ({ bundle, render })=>{
-
 	const props = { title : 'embed'};
 	const body = render(props);
-	await fs.outputFile('./build/embed.html', html({
+	await fs.outputFile('./build/index.html', html({
 		head : `
 			${headtags.generate()}
 			<style>${cssTransform.generate()}</style>
@@ -52,4 +48,8 @@ pack('./src/main.jsx', {
 .then(build)
 .catch((err)=>console.log(err));
 
-if(isDev) livereload('./build');
+
+if(isDev){
+	livereload('./build');
+	server('./build');
+}

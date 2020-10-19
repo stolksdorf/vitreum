@@ -1,6 +1,6 @@
 {
   "name": "vitreum",
-  "version": "6.0.2",
+  "version": "6.0.3",
   "description": "Web app build system using Browserify and React",
   "main": "lib/index.js",
   "repository": {
@@ -13,7 +13,8 @@
     "setup_test_proj": "cd ../vitreum_test && npm init -y && node ../vitreum/scripts/install_proj_libs.js && npm link vitreum",
     "setup": "npm link && node scripts/install_peer_libs.js && npm run setup_test_proj",
     "test": "pico-check",
-    "test:dev": "pico-check -w -b"
+    "test:dev": "pico-check -w -b",
+    "postinstall": "node utils/postinstall.js"
   },
   "author": "Scott Tolksdorf <scott.tolksdorf@gmail.com> (https://github.com/stolksdorf)",
   "license": "MIT",
@@ -23,7 +24,7 @@
   "homepage": "https://github.com/stolksdorf/vitreum",
   "dependencies": {
     "browserify": "^16.5.0",
-    "fs-extra": "^9.0.0",
+    "fs-extra": "^9.0.1",
     "livereload": "^0.9.1",
     "nodemon": "^2.0.2",
     "source-map-support": "^0.5.16",

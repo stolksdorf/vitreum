@@ -20,6 +20,7 @@ const assetTransform = require('../../vitreum/transforms/asset.js');
 
 const transforms = {
 	'.less' : lessTransform,
+	'.css' : lessTransform,
 	'*': assetTransform('./build')
 };
 
