@@ -1,9 +1,0 @@
-node_modules
-build
-config/local.*
-.DS_Store
-todo.md
-audit
-recipes/build
-recipes/docs
-*.bundle.*
